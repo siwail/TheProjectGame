@@ -21,7 +21,7 @@ public class FirstMenu extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(img, ((float)Gdx.graphics.getWidth()/2-200), ((float)Gdx.graphics.getHeight()/2-100), 400, 200);
+		batch.draw(img, ((float)Gdx.graphics.getWidth()/2-200), ((float)Gdx.graphics.getHeight()/2-100), 500, 250);
 		batch.end();
 	}
 	
