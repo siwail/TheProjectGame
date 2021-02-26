@@ -13,15 +13,15 @@ public class FirstMenu extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		img = new Texture("button.png");
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(img, 0, 0);
+		batch.draw(img, ((float)Gdx.graphics.getWidth()/2-200), ((float)Gdx.graphics.getHeight()/2-100), 400, 200);
 		batch.end();
 	}
 	
