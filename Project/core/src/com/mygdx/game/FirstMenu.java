@@ -30,7 +30,7 @@ public class FirstMenu extends ApplicationAdapter {
 						if(a >= 12){
 							a=1;
 						}
-						sleep(50);
+						sleep(150);
 
 				}
 				}catch (Exception ignored){
