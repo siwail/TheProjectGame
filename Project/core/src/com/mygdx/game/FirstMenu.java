@@ -37,7 +37,7 @@ public class FirstMenu extends ApplicationAdapter {
 		Music music = Gdx.audio.newMusic(Gdx.files.internal("sound.mp3"));
 		music.setVolume(0.2f);
 		music.play();
-
+		Gdx.input.setInputProcessor(new FirstMenuTouch());
 		anime = new Thread(){
 			@Override
 			public void run(){
