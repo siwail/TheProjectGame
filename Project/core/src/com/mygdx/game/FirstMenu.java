@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,6 +25,7 @@ public class FirstMenu extends ApplicationAdapter {
 	TextureRegion robo;
 	Texture head;
 	Texture button_exit;
+	InputProcessor input;
 	int h = 1;
 	Thread anime;
 	@Override
@@ -35,6 +37,7 @@ public class FirstMenu extends ApplicationAdapter {
 		Music music = Gdx.audio.newMusic(Gdx.files.internal("sound.mp3"));
 		music.setVolume(0.2f);
 		music.play();
+
 		anime = new Thread(){
 			@Override
 			public void run(){
@@ -59,7 +62,7 @@ public class FirstMenu extends ApplicationAdapter {
 	public void render () {
 
 		a+=0.3;
-		if(a >= 5.0){
+		if(a >= 6.0){
 			a=1.0;
 		}
 
