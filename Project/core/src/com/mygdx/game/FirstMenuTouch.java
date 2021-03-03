@@ -1,11 +1,18 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 
 public class FirstMenuTouch implements InputProcessor {
+    Game game;
+    FirstMenu firstMenu;
 
+    public FirstMenuTouch(Game game, FirstMenu firstMenu){
+        this.game = game;
+        this.firstMenu = firstMenu;
+    }
     @Override
     public boolean keyDown(int keycode) {
         return false;
@@ -32,6 +39,8 @@ public class FirstMenuTouch implements InputProcessor {
             Gdx.app.exit();
         }
         if (screenX >= Gdx.graphics.getWidth()/2+300 && screenX <= Gdx.graphics.getWidth()/2+800 && screenY >= Gdx.graphics.getHeight()/2-350 && screenY <= Gdx.graphics.getHeight()/2-100){
+            firstMenu.dispose();
+            game.setScreen(new GameMenu(game));
 
         }
         return false;
