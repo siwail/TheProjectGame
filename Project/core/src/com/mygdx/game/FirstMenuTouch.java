@@ -6,10 +6,10 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 
 public class FirstMenuTouch implements InputProcessor {
-    Game game;
+    MainGame game;
     FirstMenu firstMenu;
 
-    public FirstMenuTouch(Game game, FirstMenu firstMenu){
+    public FirstMenuTouch(MainGame game, FirstMenu firstMenu){
         this.game = game;
         this.firstMenu = firstMenu;
     }

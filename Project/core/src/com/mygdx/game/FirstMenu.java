@@ -20,7 +20,7 @@ public class FirstMenu implements Screen{
 	SpriteBatch batch;
 	Texture button_play;
 	Texture camp;
-	Game game;
+	MainGame game;
 	double a = 1.0;
 	float r = 0;
 
@@ -32,7 +32,7 @@ public class FirstMenu implements Screen{
 	int h = 1;
 	Thread anime;
 
-	public FirstMenu(Game game){
+	public FirstMenu(MainGame game){
 		this.game = game;
 	}
 
@@ -97,29 +97,18 @@ public class FirstMenu implements Screen{
 		};
 		anime.start();
 	}
-
-
-
 	@Override
 	public void resize(int width, int height) {
-
 	}
-
 	@Override
 	public void pause() {
-
 	}
-
 	@Override
 	public void resume() {
-
 	}
-
 	@Override
 	public void hide() {
-
 	}
-
 	@Override
 	public void dispose () {
 

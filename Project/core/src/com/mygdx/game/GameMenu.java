@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GameMenu implements Screen{
-    Game game;
+    MainGame game;
     Texture camp;
     Thread anime;
     SpriteBatch batch;
     int width;
     int height;
-    public GameMenu(Game game) {
+    public GameMenu(MainGame game) {
     this.game = game;
 
     }
