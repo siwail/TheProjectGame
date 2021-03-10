@@ -27,7 +27,6 @@ public class FirstMenu implements Screen{
 	float r = 0;
 	Texture door_left;
 	Texture door_right;
-	Texture setting;
 	int open_x;
 	boolean willClose = false;
 	int width;
@@ -74,7 +73,7 @@ public class FirstMenu implements Screen{
 			drawer.draw(head, ((float) Gdx.graphics.getWidth() - 500), 50, 500, 500);
 			drawer.draw(button_play, ((float) Gdx.graphics.getWidth() / 2 + 300), ((float) Gdx.graphics.getHeight() / 2 + 100), 500, 250);
 			drawer.draw(button_exit, 100.0f, ((float) Gdx.graphics.getHeight() / 2 + 100), 500, 250);
-			drawer.draw(setting, 100.0f, 300.0f, 150, 200);
+
 			robo_texture.dispose();
 			head.dispose();
 			camp.dispose();
@@ -94,7 +93,7 @@ public class FirstMenu implements Screen{
 
 	@Override
 	public void show() {
-		setting = new Texture("settings.png");
+
 		door_left =  new Texture("door_1.png");
 		door_right=  new Texture("door_2.png");
 		width = Gdx.graphics.getWidth();
@@ -163,7 +162,7 @@ public class FirstMenu implements Screen{
 	}
 	@Override
 	public void dispose () {
-		setting.dispose();
+
 		robo_texture.dispose();
 		drawer.dispose();
 		camp.dispose();
