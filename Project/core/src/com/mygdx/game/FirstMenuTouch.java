@@ -45,10 +45,7 @@ public class FirstMenuTouch implements InputProcessor {
         if (screenX >= Gdx.graphics.getWidth()/2+300 && screenX <= Gdx.graphics.getWidth()/2+800 && screenY >= Gdx.graphics.getHeight()/2-350 && screenY <= Gdx.graphics.getHeight()/2-100){
             firstMenu.DoorClose();
         }
-        if (screenX >= 100 && screenX <= 600 && screenY >= Gdx.graphics.getHeight()/2-100 && screenY <= Gdx.graphics.getHeight()/2+150){
-            game.Sound();
 
-        }
 
         return false;
     }

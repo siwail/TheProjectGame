@@ -5,7 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
+import java.util.Random;
+
 public class MainGame extends Game {
+    public Random random;
     boolean isSound = true;
     Music music;
 
@@ -16,6 +19,8 @@ public class MainGame extends Game {
         music.setVolume(0.4f);
         music.setLooping(true);
         music.play();
+        random = new Random();
+
     }
     public void setFirstMenu(){
         getScreen().dispose();
@@ -27,7 +32,7 @@ public class MainGame extends Game {
 
     }
     public void Sound(){
-        if(isSound == false){
+        if(!isSound){
             isSound = true;
             music.play();
         } else{

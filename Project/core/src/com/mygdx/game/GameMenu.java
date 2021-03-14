@@ -130,6 +130,8 @@ public class GameMenu implements Screen{
     @Override
     public void render(float delta) {
 
+
+
         //Очищение памяти экрана (Вроде бы)
         Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 
@@ -149,6 +151,13 @@ public class GameMenu implements Screen{
             TextureRegion bird_region = new TextureRegion(bird, 1000, 1000);
             batch.draw(bird_region, birdx, birdy,0, 0, 250, 250, 1, 1, (birdy-height/2)/5);
         }
+
+        if(game.isSound){
+            music = new Texture("music_1.png");
+        }else{
+            music = new Texture("music_2.png");
+        }
+
         if(close_touch){
             close= new Texture("button_white.png");
         }else{
@@ -177,6 +186,7 @@ public class GameMenu implements Screen{
             bird.dispose();
         close.dispose();
         smoke.dispose();
+        music.dispose();
     }
 
     public void setRandomAnime(){
@@ -256,6 +266,7 @@ public class GameMenu implements Screen{
         smoke.dispose();
         camp.dispose();
         batch.dispose();
+        music.dispose();
     }
 
 }
