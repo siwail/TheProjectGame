@@ -27,6 +27,7 @@ public class GameMenu implements Screen{
     Texture frame;
     Texture smoke;
     Texture bird;
+    boolean close_touch = false;
     boolean BirdFly;
     boolean isOpen = false;
     int smoke_anime = 1;
@@ -44,6 +45,9 @@ public class GameMenu implements Screen{
     @Override
     public void show() {
 
+        //Установка InputProcessor
+        Gdx.input.setInputProcessor(new GameMenuTouch(game, this));
+
         //Выделение памяти для текстур и игровых элементов
         frame = new Texture("frame.png");
         play =  new Texture("button.png");
@@ -52,6 +56,7 @@ public class GameMenu implements Screen{
         workspace =  new Texture("work.png");
         door_left =  new Texture("door_1.png");
         door_right=  new Texture("door_2.png");
+
         camp = new Texture("camp_2.png");
 
         //Объявление переменных, содержащих ширину и длину экрана
@@ -127,22 +132,29 @@ public class GameMenu implements Screen{
 
         //Очищение памяти экрана (Вроде бы)
         Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
-        if (BirdFly){
-            if(bird_anime - 2 > 0) {
+
+        //Открытие SpriteBatch и прорисовка всех объектов.
+        batch.begin();
+        batch.draw(camp, 0, 0, width, height);
+
+        //Выбор текстуры и прорисовка птицы
+        bird = new Texture("bird_1.png");
+        if (BirdFly) {
+
+            if (bird_anime - 2 > 0) {
+                bird.dispose();
                 bird = new Texture("bird_" + (bird_anime - 2) + ".png");
-            }else{
-                bird = new Texture("bird_1.png");
             }
-            smoke = new Texture("smoke" + smoke_anime + ".png");
-
-            //Открытие SpriteBatch и прорисовка всех объектов.
-            batch.begin();
-            batch.draw(camp, 0, 0, width, height);
-
 
             TextureRegion bird_region = new TextureRegion(bird, 1000, 1000);
             batch.draw(bird_region, birdx, birdy,0, 0, 250, 250, 1, 1, (birdy-height/2)/5);
         }
+        if(close_touch){
+            close= new Texture("button_white.png");
+        }else{
+            close= new Texture("exit.png");
+        }
+        smoke = new Texture("smoke" + smoke_anime + ".png");
         batch.draw(close, 50, 0, 500, 250);
         batch.draw(play, width-550, 0, 500, 250);
         batch.draw(workspace, 620, height-200, 400, 200);
@@ -161,9 +173,9 @@ public class GameMenu implements Screen{
 
         //Закрытие SpriteBatch, удаление переменных объектов, которые больше не пригодятся
         batch.end();
-        if (BirdFly){
+
             bird.dispose();
-        }
+        close.dispose();
         smoke.dispose();
     }
 
@@ -172,8 +184,8 @@ public class GameMenu implements Screen{
             @Override
             public void run(){
                 while(true){
-                    Random random = new Random();
-                    int a = random.nextInt( 20);
+
+                    int a = game.random.nextInt( 20);
                     if (a == 1){
                         if(!BirdFly){
                             Bird();
@@ -198,7 +210,8 @@ public class GameMenu implements Screen{
 
                 bird_anime = 1;
                 birdx = -250;
-                birdy = height/2;
+
+                birdy = height/2 - game.random.nextInt(50);
                 while(birdx < width+250){
                     birdx+=10;
                     birdy++;

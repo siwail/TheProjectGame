@@ -4,7 +4,10 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
+import java.util.Random;
+
 public class MainGame extends Game {
+    Random random = new Random();
     @Override
     public void create() {
         Music music = Gdx.audio.newMusic(Gdx.files.internal("sound.mp3"));
