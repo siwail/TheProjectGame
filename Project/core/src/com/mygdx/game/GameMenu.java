@@ -20,6 +20,7 @@ public class GameMenu implements Screen{
     boolean isOpen = false;
     int width;
     int height;
+
     public GameMenu(MainGame game) {
     this.game = game;
 
