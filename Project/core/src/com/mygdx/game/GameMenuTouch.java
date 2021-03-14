@@ -31,24 +31,20 @@ public class GameMenuTouch implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-            if (screenX >= 50 && screenX <= 550 && screenY >= Gdx.graphics.getHeight() && screenY <= Gdx.graphics.getHeight()-250){
-                gameMenu.close_touch = true;
+        if (screenX >= 50 && screenX <= 550 && screenY <= Gdx.graphics.getHeight() && screenY >= Gdx.graphics.getHeight()-250){
 
-            }
-            return false;
+            gameMenu.close_touch = true;
+
+        }
+        return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         gameMenu.close_touch = false;
-        if (screenX >= 50 && screenX <= 550 && screenY >= 0 && screenY <= 250){
-            gameMenu.close.dispose();
-            gameMenu.close = new Texture("exit.png");
+        if (screenX >= 50 && screenX <= 550 && screenY <= Gdx.graphics.getHeight() && screenY >= Gdx.graphics.getHeight()-250){
             Gdx.app.exit();
 
-        }
-        if(screenX>=510 && screenX<=610 && screenY>=0 && screenY<=100){
-            game.Sound();
         }
 
 
