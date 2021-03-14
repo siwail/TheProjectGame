@@ -51,7 +51,6 @@ public class GameMenu implements Screen{
         //Выделение памяти для текстур и игровых элементов
         frame = new Texture("frame.png");
         play =  new Texture("button.png");
-        close =  new Texture("exit.png");
         music =  new Texture("music_1.png");
         workspace =  new Texture("work.png");
         door_left =  new Texture("door_1.png");
