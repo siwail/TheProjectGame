@@ -8,6 +8,7 @@ import java.util.Random;
 
 public class MainGame extends Game {
     Random random = new Random();
+    RoboStructure robot = new RoboStructure();
     @Override
     public void create() {
         Music music = Gdx.audio.newMusic(Gdx.files.internal("sound.mp3"));
@@ -25,6 +26,11 @@ public class MainGame extends Game {
     public void setGameMenu(){
         getScreen().dispose();
         setScreen(new GameMenu(this));
+
+    }
+    public void setWorkMenu(){
+        getScreen().dispose();
+        setScreen(new WorkMenu(this));
 
     }
 
