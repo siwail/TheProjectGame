@@ -1,9 +1,7 @@
 package com.mygdx.game;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 public class Openable {
     MainGame game;
     Texture door_left;
@@ -14,7 +12,7 @@ public class Openable {
     boolean isOpen = false;
     int width;
     int height;
-    int open_x;
+    int open_x = 0;
     public void Start(){
         door_left =  new Texture("door_1.png");
         door_right=  new Texture("door_2.png");
@@ -52,7 +50,6 @@ public class Openable {
             door.start();
         }
     }
-
     public void CheckOpen(SpriteBatch drawer){
         if(!isOpen) {
             drawer.draw(door_right, open_x, 0, width, height);
@@ -70,6 +67,4 @@ public class Openable {
             t.sleep(time);
         } catch (Exception ignored) { }
     }
-
-
 }

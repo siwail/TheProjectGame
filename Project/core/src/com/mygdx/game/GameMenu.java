@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class GameMenu extends Openable implements Screen{
-    MainGame game;
     SpriteBatch batch;
     Thread anime;
     Thread door;
@@ -25,53 +24,37 @@ public class GameMenu extends Openable implements Screen{
     int birdx;
     int birdy;
     int bird_anime;
-    //Конструктор, принимающий основу приложения (MainGame)
     public GameMenu(MainGame game) { this.game = game; }
-    //При установке экрана активируется метод show:
     @Override
     public void show() {
-        //Установка InputProcessor
         Gdx.input.setInputProcessor(new GameMenuTouch(game, this));
-        //Выделение памяти для текстур и игровых элементов
         frame = new Texture("frame.png");
         play =  new Texture("button.png");
         music =  new Texture("music_1.png");
         camp = new Texture("camp_2.png");
         Start();
         open_x = 0;
-        //Запуск интересной функции. Она не имеет никакого отношения к аниме, а лишь запускает случайный порядок различных анимаций на фоне
         setRandomAnime();
-        //Выделение места для объекта типа SpriteBatch, который вроде бы осуществляет прорисовку текстур на экране
         batch = new SpriteBatch();
-        //Описание потока anime, который осуществляет некоторые анимации
         anime  = new Thread(){
             @Override
             public void run(){
                 while(true){
-                    //Анимация легкого дымка, веящего из костра
                     smoke_anime++;
                     if (smoke_anime>=5){
-                        smoke_anime=1;
-                    }
-                    //Безопасная установка тактов смены анимации
+                        smoke_anime=1; }
                     Sleep(this, 100);
                 }
             }
         };
-        //Запуск потока anime
         anime.start();
-        //Описание потока door, осуществляющего анимацию открытия металлической двери при переходе на данный экран
         DoorOpen();
     }
-    //Описание класса render, в котором происходит все самое интересное. В том числе, прорисовка
     @Override
     public void render(float delta) {
-        //Очищение памяти экрана (Вроде бы)
         Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
-        //Открытие SpriteBatch и прорисовка всех объектов.
         batch.begin();
         batch.draw(camp, 0, 0, width, height);
-        //Выбор текстуры и прорисовка птицы
         bird = new Texture("bird_1.png");
         if (BirdFly) {
             if (bird_anime - 2 > 0) {
@@ -105,7 +88,6 @@ public class GameMenu extends Openable implements Screen{
         CheckClose(batch);
         CheckOpen(batch);
         batch.end();
-        //Закрытие SpriteBatch, удаление переменных объектов, которые больше не пригодятся
         workspace.dispose();
         bird.dispose();
         close.dispose();

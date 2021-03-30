@@ -1,11 +1,9 @@
 package com.mygdx.game;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
 import java.util.Random;
-
 public class MainGame extends Game {
     Random random = new Random();
     RoboStructure robot = new RoboStructure();
@@ -16,8 +14,6 @@ public class MainGame extends Game {
         music.setLooping(true);
         music.play();
         setScreen(new FirstMenu(this));
-
-
     }
     public void setFirstMenu(){
         getScreen().dispose();
@@ -26,12 +22,9 @@ public class MainGame extends Game {
     public void setGameMenu(){
         getScreen().dispose();
         setScreen(new GameMenu(this));
-
     }
     public void setWorkMenu(){
         getScreen().dispose();
         setScreen(new WorkMenu(this));
-
     }
-
 }
