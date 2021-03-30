@@ -33,11 +33,22 @@ public class FirstMenuTouch implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
+        if (screenX >= 100 && screenX <= 600 && screenY >= Gdx.graphics.getHeight()/2-350 && screenY <= Gdx.graphics.getHeight()/2-100){
+            firstMenu.close_touch = true;
+        }
+        if (screenX >= Gdx.graphics.getWidth()/2+300 && screenX <= Gdx.graphics.getWidth()/2+800 && screenY >= Gdx.graphics.getHeight()/2-350 && screenY <= Gdx.graphics.getHeight()/2-100){
+            firstMenu.play_touch = true;
+        }
+
+
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        firstMenu.play_touch = false;
+        firstMenu.close_touch = false;
         if (screenX >= 100 && screenX <= 600 && screenY >= Gdx.graphics.getHeight()/2-350 && screenY <= Gdx.graphics.getHeight()/2-100){
             firstMenu.dispose();
             Gdx.app.exit();

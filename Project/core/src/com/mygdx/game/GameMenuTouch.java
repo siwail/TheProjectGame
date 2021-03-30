@@ -36,17 +36,27 @@ public class GameMenuTouch implements InputProcessor {
             gameMenu.close_touch = true;
 
         }
+        if (screenX >= 620 && screenX <= 1020 && screenY <= 200 && screenY >= 0){
+            if(gameMenu.isOpen) {
+                gameMenu.work_touch = true;
+            }
+        }
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         gameMenu.close_touch = false;
+        gameMenu.work_touch = false;
         if (screenX >= 50 && screenX <= 550 && screenY <= Gdx.graphics.getHeight() && screenY >= Gdx.graphics.getHeight()-250){
             Gdx.app.exit();
 
         }
-
+        if (screenX >= 620 && screenX <= 1020 && screenY <= 200 && screenY >= 0){
+            if(gameMenu.isOpen) {
+                gameMenu.DoorClose();
+            }
+        }
 
         return false;
     }
