@@ -9,11 +9,13 @@ public class MainGame extends Game {
     RoboStructure robot = new RoboStructure();
     @Override
     public void create() {
+        robot.UpdateTextures();
         Music music = Gdx.audio.newMusic(Gdx.files.internal("sound.mp3"));
         music.setVolume(0.2f);
         music.setLooping(true);
         music.play();
         setScreen(new FirstMenu(this));
+
     }
     public void setFirstMenu(){
         getScreen().dispose();

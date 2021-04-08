@@ -7,6 +7,7 @@ public class Openable {
     Texture door_left;
     Texture door_right;
     Thread door;
+
     boolean closed = false;
     boolean willClose = false;
     boolean isOpen = false;
@@ -20,12 +21,22 @@ public class Openable {
         height = Gdx.graphics.getHeight();
         open_x = width/2;
     }
+    public void DrawRobot(SpriteBatch drawer, int x, int y, int scale, int rothand, int rothead, int rotleg, int rot) {
+        drawer.draw(game.robot.H, x+100, y+350, 0, 0, 200, 200, scale, scale,(float) rot);
+        drawer.draw(game.robot.B, x+100, y+150, 0, 0, 200, 200, scale, scale, (float)rot);
+        drawer.draw(game.robot.LH, x, y+200, 0, 0, 200, 200, scale, scale, (float) rot);
+        drawer.draw(game.robot.RH, x+200, y+200, 0, 0, 200, 200, scale, scale, (float)rot);
+        drawer.draw(game.robot.LL, x, y, 0, 0, 200, 200, scale, scale,(float)rot);
+        drawer.draw(game.robot.RL, x+200, y, 0, 0, 200, 200, scale, scale,(float)rot);
+
+
+    }
     public void DoorOpen(){
         door = new Thread(){
             @Override
             public void run(){
                 Sleep(this, 1000);
-                while(open_x < width) {
+                while(open_x < width/2) {
                     open_x += 5;
                     Sleep(this, 5);
                 }

@@ -54,6 +54,7 @@ public class GameMenu extends Openable implements Screen{
     public void render(float delta) {
         Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
         batch.begin();
+        DrawRobot(batch, 600, 200, 1, 0, 0, 0, 0 );
         batch.draw(camp, 0, 0, width, height);
         bird = new Texture("bird_1.png");
         if (BirdFly) {
