@@ -4,12 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
-public class GameMenuTouch implements InputProcessor {
+public class GamePlayTouch implements InputProcessor {
     MainGame game;
-    GameMenu gameMenu;
-    public GameMenuTouch(MainGame game, GameMenu gameMenu){
+    GamePlay gamePlay;
+    public GamePlayTouch(MainGame game, GamePlay gamePlay){
         this.game = game;
-        this.gameMenu = gameMenu;
+        this.gamePlay = gamePlay;
     }
     @Override
     public boolean keyDown(int keycode) {
@@ -25,29 +25,10 @@ public class GameMenuTouch implements InputProcessor {
     }
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (screenX >= 50 && screenX <= 550 && screenY <= Gdx.graphics.getHeight() && screenY >= Gdx.graphics.getHeight()-250){
-
-            gameMenu.close_touch = true;
-        }
-        if (screenX >= 620 && screenX <= 1020 && screenY <= 200 && screenY >= 0){
-            if(gameMenu.isOpen) {
-                gameMenu.work_touch = true;
-            }
-        }
         return false;
     }
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        gameMenu.close_touch = false;
-        gameMenu.work_touch = false;
-        if (screenX >= 50 && screenX <= 550 && screenY <= Gdx.graphics.getHeight() && screenY >= Gdx.graphics.getHeight()-250){
-            Gdx.app.exit();
-        }
-        if (screenX >= 620 && screenX <= 1020 && screenY <= 200 && screenY >= 0){
-            if(gameMenu.isOpen) {
-                gameMenu.DoorClose();
-            }
-        }
         return false;
     }
     @Override

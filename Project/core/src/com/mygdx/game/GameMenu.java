@@ -5,10 +5,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import java.util.Random;
 public class GameMenu extends Openable implements Screen{
     SpriteBatch batch;
-    Thread anime;
-    Thread door;
+    Thread anime_smoke;
+    Thread anime_hand;
     Texture camp;
     Texture play;
     Texture close;
@@ -17,9 +19,21 @@ public class GameMenu extends Openable implements Screen{
     Texture frame;
     Texture smoke;
     Texture bird;
+    Texture gear;
+    Texture chip;
+    Texture metall;
+    Texture bulb;
+    float rotation_hand = 0.0f;
+    float scale = 1.05f;
+    float rotation_head = 0.0f;
+    float rotation = 0.0f;
+    float rotation_leg = 0.0f;
     boolean close_touch = false;
     boolean BirdFly;
     boolean work_touch = false;
+    boolean isJump = false;
+    double robot_x;
+    int robot_y = 250;
     int smoke_anime = 1;
     int birdx;
     int birdy;
@@ -27,40 +41,78 @@ public class GameMenu extends Openable implements Screen{
     public GameMenu(MainGame game) { this.game = game; }
     @Override
     public void show() {
+        metall = new Texture("metall.png");
+        chip = new Texture("chip.png");
+        bulb = new Texture("bulb.png");
+        gear = new Texture("gear.png");
         Gdx.input.setInputProcessor(new GameMenuTouch(game, this));
         frame = new Texture("frame.png");
         play =  new Texture("button.png");
         music =  new Texture("music_1.png");
         camp = new Texture("camp_2.png");
         Start();
+        robot_x = width-400;
         open_x = 0;
         setRandomAnime();
         batch = new SpriteBatch();
-        anime  = new Thread(){
+        anime_smoke = new Thread(){
             @Override
             public void run(){
                 while(true){
                     smoke_anime++;
                     if (smoke_anime>=5){
-                        smoke_anime=1; }
+                        smoke_anime=1;
+                    }
                     Sleep(this, 100);
                 }
             }
         };
-        anime.start();
+        anime_hand = new Thread(){
+            @Override
+            public void run(){
+                int dir = 0;
+                int time = game.random.nextInt(10)+6;
+                while(true){
+                    if(dir==1){
+                        robot_x+=0.1;
+                        scale-=0.0008f;
+                        rotation_head+=0.2f;
+                        rotation_hand-=0.1f;
+                        if(rotation_head>=4.0f){
+                            dir=2;
+                            time = game.random.nextInt(10)+6;
+                        }
+                    }else{
+                        robot_x-=0.1;
+                        scale+=0.0008f;
+                        rotation_head-=0.2f;
+                        rotation_hand+=0.1f;
+                        if(rotation_head<=-4.0f){
+                            dir=1;
+                            time = game.random.nextInt(10)+6;
+                        }
+                    }
+                    Sleep(this, time);
+                }
+            }
+        };
+        anime_hand.start();
+        anime_smoke.start();
         DoorOpen();
     }
     @Override
     public void render(float delta) {
         Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
         batch.begin();
-        DrawRobot(batch, 600, 200, 1, 0, 0, 0, 0 );
         batch.draw(camp, 0, 0, width, height);
+        DrawRobot(batch, (int)robot_x, robot_y, scale, rotation_hand+90, rotation_head, rotation_leg, 0 );
         bird = new Texture("bird_1.png");
         if (BirdFly) {
             if (bird_anime - 2 > 0) {
                 bird.dispose();
-                bird = new Texture("bird_" + (bird_anime - 2) + ".png");
+                    try {
+                        bird = new Texture("bird_" + (bird_anime - 2) + ".png");
+                    }catch (Exception ignored){}
             }
             TextureRegion bird_region = new TextureRegion(bird, 400, 400);
             batch.draw(bird_region, birdx, birdy,0, 0, 250, 250, 1, 1, (birdy-height/2)/5);
@@ -79,12 +131,22 @@ public class GameMenu extends Openable implements Screen{
         batch.draw(close, 50, 0, 500, 250);
         batch.draw(play, width-550, 0, 500, 250);
         batch.draw(workspace, 620, height-200, 400, 200);
-        batch.draw(music, 510, height-100, 100, 100);
-        batch.draw(frame, 10, height-100, 100, 100);
-        batch.draw(frame, 110, height-100, 100, 100);
-        batch.draw(frame, 210, height-100, 100, 100);
-        batch.draw(frame, 310, height-100, 100, 100);
-        batch.draw(frame, 410, height-100, 100, 100);
+        batch.draw(music, 1020, height-100, 100, 100);
+        batch.draw(frame, 10, height-120, 120, 120);
+        batch.draw(frame, 130, height-120, 120, 120);
+        batch.draw(frame, 250, height-120, 120, 120);
+        batch.draw(frame, 370, height-120, 120, 120);
+        batch.draw(frame, 490, height-120, 120, 120);
+        batch.draw(metall, 10, height-120, 120, 120);
+        batch.draw(gear, 130, height-120, 120, 120);
+        batch.draw(chip, 250, height-120, 120, 120);
+        batch.draw(bulb, 370, height-120, 120, 120);
+        batch.draw(frame, 490, height-120, 120, 120);
+        item_font.draw(batch, Integer.toString(game.robot.metal), 20, height-80);
+        item_font.draw(batch, Integer.toString(game.robot.gears), 140, height-80);
+        item_font.draw(batch, Integer.toString(game.robot.microchips), 260, height-80);
+        item_font.draw(batch, Integer.toString(game.robot.lamps), 380, height-80);
+        item_font.draw(batch, Integer.toString(game.robot.gears), 500, height-80);
         batch.draw(smoke, width/2-125, 400, 175, 175);
         CheckClose(batch);
         CheckOpen(batch);
@@ -108,11 +170,82 @@ public class GameMenu extends Openable implements Screen{
                             Bird();
                         }
                     }
+                    if(a == 2){
+                        BotJump();
+                    }
+                    if(a == 3){
+                        HandSwap();
+                    }
+                    if(a == 4){
+                        HandStab();
+                    }
                     Sleep(this, 1000);
                 }
             }
         };
         rand.start();
+    }
+    public void HandStab(){
+        Thread stab = new Thread(){
+            @Override
+            public void run(){
+                while(rotation_hand<=-1.5f||rotation_hand>=1.5f){
+                    if(rotation_hand>0){
+                        rotation_hand-=0.5f;
+                    }
+                    if(rotation_hand<0){
+                        rotation_hand+=0.5f;
+                    }
+                    Sleep(this, 5);
+                }
+            }
+        };
+        stab.start();
+    }
+    public void HandSwap(){
+        Thread swap = new Thread(){
+            @Override
+            public void run(){
+                int hand = 0;
+                while(hand < 270){
+                    hand+=1;
+                    rotation_hand-=1.0f;
+                    Sleep(this, 5);
+                }
+            }
+        };
+        swap.start();
+    }
+    public void BotJump() {
+        if (!isJump) {
+            Thread top = new Thread() {
+                @Override
+                public void run() {
+                    isJump=true;
+                    int rotdirect = 1;
+                    while (rotdirect != 3) {
+                        if (rotdirect == 1) {
+                            rotation_leg += 1.0;
+                            robot_y += 3;
+                            if (rotation_leg >= 30.0f) {
+                                rotdirect = 2;
+                            }
+                        } else {
+                            robot_y -= 3;
+                            rotation_leg -= 1.0f;
+                            if (rotation_leg <= 0.0f) {
+                                rotdirect = 3;
+                            }
+                        }
+                        Sleep(this, 10);
+                    }
+                    isJump=false;
+                    rotation_leg = 0.0f;
+                    robot_y = 250;
+                }
+            };
+            top.start();
+        }
     }
     public void Bird(){
         Thread fly = new Thread(){
@@ -121,7 +254,7 @@ public class GameMenu extends Openable implements Screen{
                 BirdFly = true;
                 bird_anime = 1;
                 birdx = -250;
-                birdy = height/2 - game.random.nextInt(50);
+                birdy = height/2 - game.random.nextInt(80);
                 while(birdx < width+250){
                     birdx+=10;
                     birdy++;
@@ -137,14 +270,6 @@ public class GameMenu extends Openable implements Screen{
         };
         fly.start();
     }
-    @Override
-    public void resize(int width, int height) { }
-    @Override
-    public void pause() { }
-    @Override
-    public void resume() { }
-    @Override
-    public void hide() { }
     @Override
     public void dispose () {
         smoke.dispose();

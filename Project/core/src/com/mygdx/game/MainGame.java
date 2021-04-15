@@ -2,6 +2,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.GL20;
 
 import java.util.Random;
 public class MainGame extends Game {
@@ -15,11 +16,14 @@ public class MainGame extends Game {
         music.setLooping(true);
         music.play();
         setScreen(new FirstMenu(this));
-
     }
     public void setFirstMenu(){
         getScreen().dispose();
         setScreen(new FirstMenu(this));
+    }
+    public void setGamePlay(){
+        getScreen().dispose();
+        setScreen(new GamePlay(this));
     }
     public void setGameMenu(){
         getScreen().dispose();

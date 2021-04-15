@@ -1,13 +1,24 @@
 package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-public class Openable {
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
+public class Openable implements Screen{
     MainGame game;
+    BitmapFont item_font;
     Texture door_left;
     Texture door_right;
     Thread door;
-
+    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("main_font.ttf"));
+    FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    public static final String FONT_CHARACTERS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyzАБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;,{}\"´`'<>";
     boolean closed = false;
     boolean willClose = false;
     boolean isOpen = false;
@@ -15,21 +26,24 @@ public class Openable {
     int height;
     int open_x = 0;
     public void Start(){
+        parameter.size = 35;
+        parameter.characters = FONT_CHARACTERS;
+        item_font = generator.generateFont(parameter);
+        generator.dispose();
+        item_font.setColor(Color.WHITE);
         door_left =  new Texture("door_1.png");
         door_right=  new Texture("door_2.png");
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
         open_x = width/2;
     }
-    public void DrawRobot(SpriteBatch drawer, int x, int y, int scale, int rothand, int rothead, int rotleg, int rot) {
-        drawer.draw(game.robot.H, x+100, y+350, 0, 0, 200, 200, scale, scale,(float) rot);
-        drawer.draw(game.robot.B, x+100, y+150, 0, 0, 200, 200, scale, scale, (float)rot);
-        drawer.draw(game.robot.LH, x, y+200, 0, 0, 200, 200, scale, scale, (float) rot);
-        drawer.draw(game.robot.RH, x+200, y+200, 0, 0, 200, 200, scale, scale, (float)rot);
-        drawer.draw(game.robot.LL, x, y, 0, 0, 200, 200, scale, scale,(float)rot);
-        drawer.draw(game.robot.RL, x+200, y, 0, 0, 200, 200, scale, scale,(float)rot);
-
-
+    public void DrawRobot(SpriteBatch drawer, int x, int y, double scale, float rothand, float rothead, float rotleg, float rot) {
+        drawer.draw(game.robot.H, x, (float)(y+335*scale), 150, 25, (float)(200*scale), (float)(200*scale), 1, 1,(float) rothead);
+        drawer.draw(game.robot.B, x, (float)(y+170*scale), 150, 25, (float)(200*scale), (float)(200*scale), 1, 1, (float)rot);
+        drawer.draw(game.robot.LL, (float)(x-50*scale), y, (float)(100*scale), (float)(160*scale), (float)(200*scale), (float)(200*scale), 1, 1,(float)-rotleg);
+        drawer.draw(game.robot.RL, (float)(x+50*scale), y, (float)(100*scale), (float)(160*scale), (float)(200*scale), (float)(200*scale), 1, 1,(float)rotleg);
+        drawer.draw(game.robot.LH, (float)(x+90*scale), (float)(y+170*scale), (float)(100*scale), (float)(160*scale), (float)(200*scale), (float)(200*scale), 1,1, (float)rothand);
+        drawer.draw(game.robot.RH, (float)(x-90*scale), (float)(y+170*scale), (float)(100*scale), (float)(160*scale), (float)(200*scale), (float)(200*scale), 1, 1, (float)rothand-90);
     }
     public void DoorOpen(){
         door = new Thread(){
@@ -55,6 +69,7 @@ public class Openable {
                         open_x -= 5;
                         Sleep(this, 5);
                     }
+                    Sleep(this, 100);
                     closed = true;
                 }
             };
@@ -78,4 +93,19 @@ public class Openable {
             t.sleep(time);
         } catch (Exception ignored) { }
     }
+    @Override
+    public void render(float d) { }
+    @Override
+    public void show() { }
+    @Override
+    public void resize(int width, int height) { }
+    @Override
+    public void pause() { }
+    @Override
+    public void resume() { }
+    @Override
+    public void hide() { }
+    @Override
+    public void dispose(){
+   }
 }
