@@ -29,6 +29,7 @@ public class GameMenu extends Openable implements Screen{
     float rotation = 0.0f;
     float rotation_leg = 0.0f;
     boolean close_touch = false;
+    boolean play_touch = false;
     boolean BirdFly;
     boolean work_touch = false;
     boolean isJump = false;
@@ -127,6 +128,11 @@ public class GameMenu extends Openable implements Screen{
         }else{
             workspace= new Texture("work.png");
         }
+        if(play_touch){
+            play= new Texture("button_white.png");
+        }else{
+            play= new Texture("button.png");
+        }
         smoke = new Texture("smoke" + smoke_anime + ".png");
         batch.draw(close, 50, 0, 500, 250);
         batch.draw(play, width-550, 0, 500, 250);
@@ -154,9 +160,15 @@ public class GameMenu extends Openable implements Screen{
         workspace.dispose();
         bird.dispose();
         close.dispose();
+        play.dispose();
         smoke.dispose();
         if(closed){
-            game.setWorkMenu();
+            if(type_close == 1) {
+                game.setWorkMenu();
+            }
+            if(type_close == 2) {
+                game.setGamePlay();
+            }
         }
     }
     public void setRandomAnime(){

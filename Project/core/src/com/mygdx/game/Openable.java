@@ -22,6 +22,7 @@ public class Openable implements Screen{
     boolean closed = false;
     boolean willClose = false;
     boolean isOpen = false;
+    int type_close = 0;
     int width;
     int height;
     int open_x = 0;
@@ -46,6 +47,7 @@ public class Openable implements Screen{
         drawer.draw(game.robot.RH, (float)(x-90*scale), (float)(y+170*scale), (float)(100*scale), (float)(160*scale), (float)(200*scale), (float)(200*scale), 1, 1, (float)rothand-90);
     }
     public void DoorOpen(){
+
         door = new Thread(){
             @Override
             public void run(){
@@ -59,7 +61,8 @@ public class Openable implements Screen{
         };
         door.start();
     }
-    public void DoorClose(){
+    public void DoorClose(int type_close){
+        this.type_close = type_close;
         if(!willClose) {
             willClose = true;
             door = new Thread() {

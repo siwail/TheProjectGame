@@ -34,7 +34,7 @@ public class FirstMenuTouch implements InputProcessor {
             Gdx.app.exit();
         }
         if (screenX >= Gdx.graphics.getWidth()/2+300 && screenX <= Gdx.graphics.getWidth()/2+800 && screenY >= Gdx.graphics.getHeight()/2-350 && screenY <= Gdx.graphics.getHeight()/2-100){
-           firstMenu.DoorClose();
+           firstMenu.DoorClose(1);
         }
         return false;
     }
