@@ -21,7 +21,4 @@ public class RoboStructure {
     int rocket_fuel = 20;
 
 
-
-
-
 }

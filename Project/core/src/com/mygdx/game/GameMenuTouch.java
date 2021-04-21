@@ -57,6 +57,9 @@ public class GameMenuTouch implements InputProcessor {
                 gameMenu.DoorClose();
             }
         }
+        if(screenX>=510 && screenX<=610 && screenY>=0 && screenY<=100){
+            //game.Sound();
+        }
 
         return false;
     }
