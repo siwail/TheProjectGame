@@ -35,7 +35,7 @@ public WorkMenuTouch(MainGame game, WorkMenu workMenu){
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if(screenX >= 250 && screenX <= 400 && screenY <= 145 && screenY >= -5){
             if(workMenu.isOpen) {
-                workMenu.DoorClose();
+                workMenu.DoorClose(1);
             }
         }
 

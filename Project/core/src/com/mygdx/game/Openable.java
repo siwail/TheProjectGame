@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-
 public class Openable implements Screen{
     MainGame game;
     BitmapFont item_font;
@@ -46,8 +45,37 @@ public class Openable implements Screen{
         drawer.draw(game.robot.LH, (float)(x+90*scale), (float)(y+170*scale), (float)(100*scale), (float)(160*scale), (float)(200*scale), (float)(200*scale), 1,1, (float)rothand);
         drawer.draw(game.robot.RH, (float)(x-90*scale), (float)(y+170*scale), (float)(100*scale), (float)(160*scale), (float)(200*scale), (float)(200*scale), 1, 1, (float)rothand-90);
     }
+    public void DrawEnemy(SpriteBatch drawer, int x, int y, double scale, float rothand, float rothead, float rotleg, float rot) {
+        drawer.draw(game.robot.EH, x, (float)(y+335*scale), 150, 25, (float)(200*scale), (float)(200*scale), 1, 1,(float) rothead);
+        drawer.draw(game.robot.EB, x, (float)(y+170*scale), 150, 25, (float)(200*scale), (float)(200*scale), 1, 1, (float)rot);
+        drawer.draw(game.robot.ELL, (float)(x-50*scale), y, (float)(100*scale), (float)(160*scale), (float)(200*scale), (float)(200*scale), 1, 1,(float)-rotleg);
+        drawer.draw(game.robot.ERL, (float)(x+50*scale), y, (float)(100*scale), (float)(160*scale), (float)(200*scale), (float)(200*scale), 1, 1,(float)rotleg);
+        drawer.draw(game.robot.ELH, (float)(x+90*scale), (float)(y+170*scale), (float)(100*scale), (float)(160*scale), (float)(200*scale), (float)(200*scale), 1,1, (float)rothand);
+        drawer.draw(game.robot.ERH, (float)(x-90*scale), (float)(y+170*scale), (float)(100*scale), (float)(160*scale), (float)(200*scale), (float)(200*scale), 1, 1, (float)rothand-90);
+    }
+    public void DrawRobotIcon(SpriteBatch drawer, int x, int y, double scale, int health) {
+        if(y+510*scale>=height-70*scale){
+            drawer.draw(game.robot.BackHealth, x, (float) (height-70*scale), (float) (200 * scale), (float) (70 * scale));
+            drawer.draw(game.robot.RobotHealth, x, (float) (height-70*scale), (float) (200 * scale * (health / game.robot.health)), (float) (70 * scale));
+            drawer.draw(game.robot.RobotIcon, x, (float) (height-70*scale), (float) (200 * scale), (float) (70 * scale));
+        }else {
+            drawer.draw(game.robot.BackHealth, x, (float) (y + 510 * scale), (float) (200 * scale), (float) (70 * scale));
+            drawer.draw(game.robot.RobotHealth, x, (float) (y + 510 * scale), (float) (200 * scale * (health / game.robot.health)), (float) (70 * scale));
+            drawer.draw(game.robot.RobotIcon, x, (float) (y + 510 * scale), (float) (200 * scale), (float) (70 * scale));
+        }
+    }
+    public void DrawEnemyIcon(SpriteBatch drawer, int x, int y, double scale, int health) {
+        if(y+510*scale>=height-70*scale){
+            drawer.draw(game.robot.BackHealth, x, (float) (height-70*scale), (float) (200 * scale), (float) (70 * scale));
+            drawer.draw(game.robot.EnemyHealth, x, (float) (height-70*scale), (float) (200 * scale * (health / game.robot.Ehealth)), (float) (70 * scale));
+            drawer.draw(game.robot.EnemyIcon, x, (float) (height-70*scale), (float) (200 * scale), (float) (70 * scale));
+        }else {
+            drawer.draw(game.robot.BackHealth, x, (float) (y + 510 * scale), (float) (200 * scale), (float) (70 * scale));
+            drawer.draw(game.robot.EnemyHealth, x, (float) (y + 510 * scale), (float) (200 * scale * (health / game.robot.Ehealth)), (float) (70 * scale));
+            drawer.draw(game.robot.EnemyIcon, x, (float) (y + 510 * scale), (float) (200 * scale), (float) (70 * scale));
+        }
+    }
     public void DoorOpen(){
-
         door = new Thread(){
             @Override
             public void run(){
@@ -109,6 +137,5 @@ public class Openable implements Screen{
     @Override
     public void hide() { }
     @Override
-    public void dispose(){
-   }
+    public void dispose(){ }
 }

@@ -6,11 +6,13 @@ import com.badlogic.gdx.graphics.GL20;
 
 import java.util.Random;
 public class MainGame extends Game {
-    Random random = new Random();
-    RoboStructure robot = new RoboStructure();
+    Random random;
+    RoboStructure robot = new RoboStructure(this);
     @Override
     public void create() {
+        random = new Random();
         robot.UpdateTextures();
+        robot.SetFirstChanges();
         Music music = Gdx.audio.newMusic(Gdx.files.internal("sound.mp3"));
         music.setVolume(0.2f);
         music.setLooping(true);
