@@ -13,7 +13,14 @@ public class WorkMenu extends Openable implements Screen {
     Texture red;
     Texture lamp;
     Texture light;
-
+    int x = 0;
+    int y = 0;
+    double scale = 0;
+    float rothand = 0;
+    float rothead = 0;
+    float rotleg = 0;
+    float rot = 0;
+    int which_select = 0;
     int light_anime = 1;
     public WorkMenu(MainGame mainGame){
         this.game = mainGame;
@@ -58,6 +65,8 @@ public class WorkMenu extends Openable implements Screen {
         batch.draw(frame, 50, height-575, 125, 125);
         batch.draw(frame, 50, height-700, 125, 125);
         batch.draw(metal, width/2+250, 25, width/2-300, height-50);
+        DrawRobot(batch, x, y, scale, rothand, rothead, rotleg, rot, false, false, false);
+        DrawSelect(batch, x, y, scale, rothand, rothead, rotleg, rot, which_select);
         batch.draw(light, width/2-500, -50, 1000, height);
         batch.draw(lamp, width/2-200, height-200, 400,350);
         CheckOpen(batch);
@@ -67,7 +76,6 @@ public class WorkMenu extends Openable implements Screen {
         if(closed){
             game.setGameMenu();
         }
-
     }
     @Override
     public void resize(int width, int height) { }
