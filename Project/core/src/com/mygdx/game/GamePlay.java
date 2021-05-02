@@ -1157,5 +1157,7 @@ public class GamePlay extends Openable implements Screen{
         redir_touched.dispose();
         fire_touched.dispose();
         jump_touched.dispose();
+        door_left.dispose();
+        door_right.dispose();
     }
 }

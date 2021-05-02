@@ -29,6 +29,8 @@ public class RoboStructure {
     Texture EBullet;
     Texture ESelect;
     Texture Select;
+    Texture SelectRobott;
+    Texture Hidet;
 
     Texture HeadDeadt;
     Texture BodyDeadt;
@@ -62,6 +64,8 @@ public class RoboStructure {
     Texture LLt;
     Texture Ht;
     Texture Bt;
+    TextureRegion SelectRobot;
+    TextureRegion Hide;
     TextureRegion RH;
     TextureRegion LH;                                                                                               
     TextureRegion RL;
@@ -125,6 +129,8 @@ public class RoboStructure {
         Edamage =(int)((double)ERHid/2.0+(double)ELHid/2.0)*2;
         damage =(int)((double)RHid/2.0+(double)LHid/2.0)*2;
 
+        SelectRobott = new Texture("select3.png");
+        Hidet = new Texture("hide.png");
         Energy = new Texture("energy.png");
         EnergyBack = new Texture("back_energy.png");
         EnergyFront = new Texture("front_energy.png");
@@ -162,6 +168,9 @@ public class RoboStructure {
         RightLegDeadt = new Texture("leg_dead.png");
         LeftHandDeadt = new Texture("hand_dead.png");
         RightHandDeadt = new Texture("hand_dead.png");
+
+        SelectRobot =  new TextureRegion(SelectRobott, 300, 300);
+        Hide =  new TextureRegion(Hidet, 300, 300);
     }
     public void UpdateTextures(){
 

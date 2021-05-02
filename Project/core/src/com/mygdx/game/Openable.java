@@ -56,6 +56,39 @@ public class Openable implements Screen{
         drawer.draw(game.robot.Energy, x+(game.robot.energy-energy)/3, y, (int)(200*((double)energy/(double)game.robot.energy)*scale), (int)(200*scale));
         drawer.draw(front, x, y, (int)(200*scale), (int)(200*scale));
     }
+    public void DrawSelect(SpriteBatch drawer, int x, int y, double scale, float rothand, float rothead, float rotleg, float rot, int which_select) {
+        TextureRegion Head = game.robot.Hide;
+        TextureRegion Body = game.robot.Hide;
+        TextureRegion LeftLeg = game.robot.Hide;
+        TextureRegion RightLeg = game.robot.Hide;
+        TextureRegion LeftHand = game.robot.Hide;
+        TextureRegion RightHand = game.robot.Hide;
+        if(which_select == 1){
+            Head = game.robot.SelectRobot;
+        }
+        if(which_select == 2){
+            Body = game.robot.SelectRobot;
+        }
+        if(which_select == 3){
+            LeftLeg = game.robot.SelectRobot;
+        }
+        if(which_select == 4){
+            RightLeg = game.robot.SelectRobot;
+        }
+        if(which_select == 5){
+            LeftHand = game.robot.SelectRobot;
+        }
+        if(which_select == 6){
+            RightHand = game.robot.SelectRobot;
+        }
+        drawer.draw(Head, x, (float) (y + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothead);
+        drawer.draw(Body, x, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rot);
+        drawer.draw(LeftLeg, (float) (x - 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) -rotleg);
+        drawer.draw(RightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rotleg);
+        drawer.draw(LeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothand);
+        drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothand - 90);
+
+    }
     public void DrawRobot(SpriteBatch drawer, int x, int y, double scale, float rothand, float rothead, float rotleg, float rot, boolean swap, boolean hurt, boolean dead) {
         TextureRegion Head = game.robot.H;
         TextureRegion Body = game.robot.B;

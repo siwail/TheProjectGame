@@ -13,6 +13,7 @@ public class WorkMenu extends Openable implements Screen {
     Texture red;
     Texture lamp;
     Texture light;
+
     int light_anime = 1;
     public WorkMenu(MainGame mainGame){
         this.game = mainGame;
@@ -21,14 +22,12 @@ public class WorkMenu extends Openable implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(new WorkMenuTouch(game, this));
         Start();
-
         lamp = new Texture("lamp.png");
         frame = new Texture("frame.png");
         background = new Texture("back.png");
         red = new Texture("button_red.png");
         metal = new Texture("metalic.png");
         open_x = 0;
-
         anime  = new Thread(){
             @Override
             public void run(){
@@ -63,11 +62,8 @@ public class WorkMenu extends Openable implements Screen {
         batch.draw(lamp, width/2-200, height-200, 400,350);
         CheckOpen(batch);
         CheckClose(batch);
-
         batch.end();
-
         light.dispose();
-
         if(closed){
             game.setGameMenu();
         }
