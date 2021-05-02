@@ -3,12 +3,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureArray;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
-
-import javax.xml.soap.Text;
 public class FirstMenu  extends Openable implements Screen{
 	SpriteBatch drawer;
 	Texture[] backs = new Texture[5];
@@ -16,6 +12,9 @@ public class FirstMenu  extends Openable implements Screen{
 	Texture head;
 	Texture button_exit;
 	Texture robo_texture;
+	Texture white;
+	Texture play;
+	Texture exit;
 	TextureRegion robo;
 	Thread anime;
 	Thread leg;
@@ -34,14 +33,14 @@ public class FirstMenu  extends Openable implements Screen{
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 			head = new Texture(Gdx.files.internal("logo_" + (1 + h) + ".png"));
 			if(close_touch){
-				button_exit = new Texture("button_white.png");
+				button_exit = white;
 			}else{
-				button_exit = new Texture("exit.png");
+				button_exit = exit;
 			}
 			if(play_touch){
-				button_play = new Texture("button_white.png");
+				button_play = white;
 			}else{
-				button_play = new Texture("button.png");
+				button_play = play;
 			}
 			drawer.begin();
 			drawer.draw(backs[a-1], 0, 0, width, height);
@@ -55,13 +54,14 @@ public class FirstMenu  extends Openable implements Screen{
 			if(closed){
 				game.setGameMenu();
 			}
-			button_play.dispose();
-			button_exit.dispose();
 		}
 	}
 	@Override
 	public void show() {
 		drawer = new SpriteBatch();
+		exit = new Texture("exit.png");
+		play = new Texture("button.png");
+		white = new Texture("button_white.png");
 		robo_texture = new Texture("logo_1.png");
 		for(int i=0;i<5;i++){
 			backs[i] = new Texture("back" + (i+1) + ".png");
@@ -81,10 +81,10 @@ public class FirstMenu  extends Openable implements Screen{
 					}else{
 						a=1;
 					}
-					if (h > 3) {
-						h = 1;
+					if(closed){
+						break;
 					}
-				Sleep(this, 90);
+				Sleep( 90);
 			}
 		}
 	};
@@ -101,7 +101,10 @@ public class FirstMenu  extends Openable implements Screen{
 				if (r >= 30 | r <= 0) {
 					dir_r = 1 - dir_r;
 				}
-				Sleep(this, 15);
+				if(closed){
+					break;
+				}
+				Sleep( 15);
 			}
 		}
 	};
@@ -110,6 +113,8 @@ public class FirstMenu  extends Openable implements Screen{
 }
 	@Override
 	public void dispose () {
+		play.dispose();
+		white.dispose();
 		robo_texture.dispose();
 		drawer.dispose();
 		for(Texture t: backs){ t.dispose(); }
@@ -117,5 +122,6 @@ public class FirstMenu  extends Openable implements Screen{
 		button_exit.dispose();
 		door_right.dispose();
 		door_left.dispose();
+
 	}
 }

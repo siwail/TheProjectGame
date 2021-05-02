@@ -5,12 +5,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
-import java.util.Random;
 public class GameMenu extends Openable implements Screen{
     SpriteBatch batch;
     Thread anime_smoke;
     Thread anime_hand;
+    Thread anime_grass;
     Texture camp;
     Texture play;
     Texture close;
@@ -19,6 +18,7 @@ public class GameMenu extends Openable implements Screen{
     Texture frame;
     Texture smoke;
     Texture bird;
+    Texture grass;
     Texture gear;
     Texture chip;
     Texture metall;
@@ -26,7 +26,6 @@ public class GameMenu extends Openable implements Screen{
     float rotation_hand = 0.0f;
     float scale = 1.05f;
     float rotation_head = 0.0f;
-    float rotation = 0.0f;
     float rotation_leg = 0.0f;
     boolean close_touch = false;
     boolean play_touch = false;
@@ -34,6 +33,10 @@ public class GameMenu extends Openable implements Screen{
     boolean work_touch = false;
     boolean isJump = false;
     double robot_x;
+    int anime_grass_1 = 0;
+    int anime_grass_2 = 0;
+    int grass_dir_1 = 1;
+    int grass_dir_2 = 0;
     int robot_y = 250;
     int smoke_anime = 1;
     int birdx;
@@ -42,6 +45,7 @@ public class GameMenu extends Openable implements Screen{
     public GameMenu(MainGame game) { this.game = game; }
     @Override
     public void show() {
+        grass = new Texture("grass_2.png");
         metall = new Texture("metall.png");
         chip = new Texture("chip.png");
         bulb = new Texture("bulb.png");
@@ -56,15 +60,52 @@ public class GameMenu extends Openable implements Screen{
         open_x = 0;
         setRandomAnime();
         batch = new SpriteBatch();
+        anime_grass = new Thread(){
+            @Override
+            public void run(){
+                while(true){
+                    if(grass_dir_1 == 1){
+                        anime_grass_1+=1;
+                        if(anime_grass_1>=50){
+                            grass_dir_1 = 0;
+                        }
+                    }else{
+                        anime_grass_1-=1;
+                        if(anime_grass_1<=-10){
+                            grass_dir_1 = 1;
+                        }
+                    }
+                    if(grass_dir_2 == 1){
+                        anime_grass_2+=1;
+                        if(anime_grass_2>=50){
+                            grass_dir_2 = 0;
+                        }
+                    }else{
+                        anime_grass_2-=1;
+                        if(anime_grass_2<=-10){
+                            grass_dir_2 = 1;
+                        }
+                    }
+                    if(closed){
+                        break;
+                    }
+                    Sleep(15);
+                }
+            }
+        };
         anime_smoke = new Thread(){
             @Override
             public void run(){
                 while(true){
                     smoke_anime++;
+
                     if (smoke_anime>=5){
                         smoke_anime=1;
                     }
-                    Sleep(this, 100);
+                    if(closed){
+                        break;
+                    }
+                    Sleep( 100);
                 }
             }
         };
@@ -93,10 +134,14 @@ public class GameMenu extends Openable implements Screen{
                             time = game.random.nextInt(10)+6;
                         }
                     }
-                    Sleep(this, time);
+                    if(closed){
+                        break;
+                    }
+                    Sleep( time);
                 }
             }
         };
+        anime_grass.start();
         anime_hand.start();
         anime_smoke.start();
         DoorOpen();
@@ -106,7 +151,9 @@ public class GameMenu extends Openable implements Screen{
         Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
         batch.begin();
         batch.draw(camp, 0, 0, width, height);
-        DrawRobot(batch, (int)robot_x, robot_y, scale, rotation_hand+90, rotation_head, rotation_leg, 0 );
+        batch.draw(grass, width-200, 230, 250, 250+anime_grass_1);
+        batch.draw(grass, -70, 230, 250, 250+anime_grass_2);
+        DrawRobot(batch, (int)robot_x, robot_y, scale, rotation_hand+90, rotation_head, rotation_leg, 0 , false, false, false);
         bird = new Texture("bird_1.png");
         if (BirdFly) {
             if (bird_anime - 2 > 0) {
@@ -191,7 +238,10 @@ public class GameMenu extends Openable implements Screen{
                     if(a == 4){
                         HandStab();
                     }
-                    Sleep(this, 1000);
+                    if(closed){
+                        break;
+                    }
+                    Sleep( 1000);
                 }
             }
         };
@@ -208,7 +258,7 @@ public class GameMenu extends Openable implements Screen{
                     if(rotation_hand<0){
                         rotation_hand+=0.5f;
                     }
-                    Sleep(this, 5);
+                    Sleep( 5);
                 }
             }
         };
@@ -222,7 +272,7 @@ public class GameMenu extends Openable implements Screen{
                 while(hand < 270){
                     hand+=1;
                     rotation_hand-=1.0f;
-                    Sleep(this, 5);
+                    Sleep( 5);
                 }
             }
         };
@@ -249,7 +299,7 @@ public class GameMenu extends Openable implements Screen{
                                 rotdirect = 3;
                             }
                         }
-                        Sleep(this, 10);
+                        Sleep( 10);
                     }
                     isJump=false;
                     rotation_leg = 0.0f;
@@ -274,7 +324,7 @@ public class GameMenu extends Openable implements Screen{
                     if(bird_anime > 10){
                         bird_anime = 1;
                     }
-                    Sleep(this, 30);
+                    Sleep( 30);
                 }
                 BirdFly = false;
                 bird.dispose();

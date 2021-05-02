@@ -8,18 +8,47 @@ public class RoboStructure {
     int microchips = 0;
     int lamps = 0;
     int metal = 0;
-    int energy = 0;
-    int Hid = 3;
-    int Bid = 3;
-    int RHid = 3; //Правая рука
-    int LHid = 3; //Левая рука
-    int RLid = 3; //Правая нога
-    int LLid = 3; //Левая нога
-    int health = 300;
-    int damage = 50;
-    int attack_speed = 30;
-    int move_speed = 50;
-    int rocket_fuel = 20;
+    int energy = 100;
+    int Hid = 1;
+    int Bid = 1;
+    int RHid = 1; //Правая рука
+    int LHid = 1; //Левая рука
+    int RLid = 1; //Правая нога
+    int LLid = 1; //Левая нога
+    int health = 100;
+    int damage = 2;
+    int attack_speed;
+    int move_speed;
+    int energy_speed;
+    Texture EnergyBack;
+    Texture Energy;
+    Texture EnergyFront;
+    Texture EnergyWarning1;
+    Texture EnergyWarning2;
+    Texture Bullet;
+    Texture EBullet;
+    Texture ESelect;
+    Texture Select;
+
+    Texture HeadDeadt;
+    Texture BodyDeadt;
+    Texture LeftLegDeadt;
+    Texture RightLegDeadt;
+    Texture LeftHandDeadt;
+    Texture RightHandDeadt;
+
+    Texture HeadHurtt;
+    Texture BodyHurtt;
+    Texture LeftLegHurtt;
+    Texture RightLegHurtt;
+    Texture LeftHandHurtt;
+    Texture RightHandHurtt;
+    Texture HeadSwapt;
+    Texture BodySwapt;
+    Texture LeftLegSwapt;
+    Texture RightLegSwapt;
+    Texture LeftHandSwapt;
+    Texture RightHandSwapt;
     Texture BackHealth;
     Texture RobotIcon;
     Texture EnemyIcon;
@@ -45,11 +74,11 @@ public class RoboStructure {
     int ELHid;
     int ERLid;
     int ELLid;
-    int Ehealth = 300;
-    int Edamage = 50;
-    int Eattack_speed = 30;
-    int Emove_speed = 50;
-    int Erocket_fuel = 20;
+    int Ehealth = 100;
+    int Edamage;
+    int Eattack_speed;
+    int Emove_speed;
+    int Eenergy_speed = 80-EBid*7;
     Texture ERHt;
     Texture ELHt;
     Texture ERLt;
@@ -72,6 +101,39 @@ public class RoboStructure {
         Bt.dispose();
     }
     public void SetFirstChanges(){
+        Hid = game.random.nextInt(4)+1;
+        Bid = game.random.nextInt(4)+1;
+        RHid = game.random.nextInt(4)+1; //Правая рука
+        LHid = game.random.nextInt(4)+1; //Левая рука
+        RLid = game.random.nextInt(4)+1; //Правая нога
+        LLid = game.random.nextInt(4)+1; //Левая нога
+
+
+        EHid = game.random.nextInt(4)+1;
+        EBid = game.random.nextInt(4)+1;
+        ERHid = game.random.nextInt(4)+1; //Правая рука
+        ELHid = game.random.nextInt(4)+1; //Левая рука
+        ERLid = game.random.nextInt(4)+1; //Правая нога
+        ELLid = game.random.nextInt(4)+1; //Левая нога
+
+        energy_speed = 90-Bid*7;
+        Eenergy_speed = 90-EBid*7;
+        attack_speed = (int)(8.0-((double)RHid/2.0+(double)LHid/2.0));
+        move_speed = (int)(7.0-((double)RLid/2.0+(double)LLid/2.0));
+        Eattack_speed = (int)(8.0-((double)ERHid/2.0+(double)ELHid/2.0));
+        Emove_speed = (int)(7.0-((double)ERLid/2.0+(double)ELLid/2.0));
+        Edamage =(int)((double)ERHid/2.0+(double)ELHid/2.0)*2;
+        damage =(int)((double)RHid/2.0+(double)LHid/2.0)*2;
+
+        Energy = new Texture("energy.png");
+        EnergyBack = new Texture("back_energy.png");
+        EnergyFront = new Texture("front_energy.png");
+        EnergyWarning1 = new Texture("front_energy_w1.png");
+        EnergyWarning2 = new Texture("front_energy_w2.png");
+        EBullet = new Texture("bullet.png");
+        Bullet = new Texture("bullet2.png");
+        ESelect = new Texture("select.png");
+        Select = new Texture("select2.png");
         BackHealth = new Texture("back_health.png");
         RobotIcon = new Texture("friend.png");
         EnemyIcon = new Texture("enemy.png");
@@ -79,8 +141,30 @@ public class RoboStructure {
         EnemyHealth = new Texture("enemy_health.png");
         RobotDetect = new Texture("friend_detect.png");
         EnemyDetect = new Texture("enemy_detect.png");
+
+        HeadSwapt = new Texture("head_swap.png");
+        BodySwapt = new Texture("body_swap.png");
+        LeftLegSwapt = new Texture("leg_swap.png");
+        RightLegSwapt = new Texture("leg_swap.png");
+        LeftHandSwapt = new Texture("hand_swap.png");
+        RightHandSwapt = new Texture("hand_swap.png");
+
+        HeadHurtt = new Texture("head_hurt.png");
+        BodyHurtt = new Texture("body_hurt.png");
+        LeftLegHurtt = new Texture("leg_hurt.png");
+        RightLegHurtt = new Texture("leg_hurt.png");
+        LeftHandHurtt = new Texture("hand_hurt.png");
+        RightHandHurtt = new Texture("hand_hurt.png");
+
+        HeadDeadt = new Texture("head_dead.png");
+        BodyDeadt = new Texture("body_dead.png");
+        LeftLegDeadt = new Texture("leg_dead.png");
+        RightLegDeadt = new Texture("leg_dead.png");
+        LeftHandDeadt = new Texture("hand_dead.png");
+        RightHandDeadt = new Texture("hand_dead.png");
     }
     public void UpdateTextures(){
+
         RHt =  new Texture("hand_" + RHid + ".png");
         LHt = new Texture("hand_" + LHid + ".png");
         RLt = new Texture("leg_" + RLid + ".png");
@@ -93,12 +177,6 @@ public class RoboStructure {
         LL =  new TextureRegion(LLt, 300, 300);
         H =  new TextureRegion(Ht, 300, 300);
         B =  new TextureRegion(Bt, 300, 300);
-        EHid = game.random.nextInt(4)+1;
-        EBid = game.random.nextInt(4)+1;
-        ERHid = game.random.nextInt(4)+1; //Правая рука
-        ELHid = game.random.nextInt(4)+1; //Левая рука
-        ERLid = game.random.nextInt(4)+1; //Правая нога
-        ELLid = game.random.nextInt(4)+1; //Левая нога
         ERHt =  new Texture("hand_" + ERHid + ".png");
         ELHt = new Texture("hand_" + ELHid + ".png");
         ERLt = new Texture("leg_" + ERLid + ".png");

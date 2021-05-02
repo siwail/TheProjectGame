@@ -36,7 +36,10 @@ public class WorkMenu extends Openable implements Screen {
                     light_anime++;
                     if (light_anime>2){
                         light_anime=1; }
-                    Sleep(this, 500);
+                    if(closed){
+                        break;
+                    }
+                    Sleep( 500);
                 }
             }
         };
@@ -49,7 +52,6 @@ public class WorkMenu extends Openable implements Screen {
         batch.begin();
         light = new Texture("light"+ light_anime +".png");
         batch.draw(background, 0, 0, width, height);
-        batch.draw(lamp, 800, height-345, 350,350);
         batch.draw(red, 250, height-145, 150, 150);
         batch.draw(frame, 50, height-200, 125, 125);
         batch.draw(frame, 50, height-325, 125, 125);
@@ -57,7 +59,8 @@ public class WorkMenu extends Openable implements Screen {
         batch.draw(frame, 50, height-575, 125, 125);
         batch.draw(frame, 50, height-700, 125, 125);
         batch.draw(metal, width/2+250, 25, width/2-300, height-50);
-        batch.draw(light, 857, height-699, 250, 500);
+        batch.draw(light, width/2-500, -50, 1000, height);
+        batch.draw(lamp, width/2-200, height-200, 400,350);
         CheckOpen(batch);
         CheckClose(batch);
 
