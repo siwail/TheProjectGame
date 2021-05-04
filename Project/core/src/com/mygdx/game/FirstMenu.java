@@ -122,6 +122,6 @@ public class FirstMenu  extends Openable implements Screen{
 		button_exit.dispose();
 		door_right.dispose();
 		door_left.dispose();
-
+		exit.dispose();
 	}
 }

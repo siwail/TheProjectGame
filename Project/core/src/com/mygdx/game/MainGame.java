@@ -19,6 +19,7 @@ public class MainGame extends Game {
     }
     public void setGamePlay(){
         getScreen().dispose();
+        robot.level = random.nextInt(4)+1;
         setScreen(new GamePlay(this));
     }
     public void setGameMenu(){

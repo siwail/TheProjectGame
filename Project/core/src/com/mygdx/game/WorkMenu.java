@@ -4,18 +4,23 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class WorkMenu extends Openable implements Screen {
     SpriteBatch batch = new SpriteBatch();
     Thread anime;
+    Thread anime_hand;
     Texture frame;
     Texture background;
     Texture metal;
     Texture red;
-    Texture lamp;
-    Texture light;
-    int x = 0;
+    Texture lampt;
+    Texture lightt;
+    TextureRegion lamp;
+    TextureRegion light;
+    double x = 0.0;
     int y = 0;
-    double scale = 0;
+    double scale = 1.35;
+    float rotlamp = 0.0f;
     float rothand = 0;
     float rothead = 0;
     float rotleg = 0;
@@ -27,9 +32,12 @@ public class WorkMenu extends Openable implements Screen {
     }
     @Override
     public void show() {
+        game.robot.SetWorkMenuTextures();
         Gdx.input.setInputProcessor(new WorkMenuTouch(game, this));
         Start();
-        lamp = new Texture("lamp.png");
+        x = width/2-400;
+        lampt = new Texture("lamp_full.png");
+        lamp = new TextureRegion(lampt, 1280, 720);
         frame = new Texture("frame.png");
         background = new Texture("back.png");
         red = new Texture("button_red.png");
@@ -49,6 +57,51 @@ public class WorkMenu extends Openable implements Screen {
                 }
             }
         };
+        anime_hand = new Thread(){
+            @Override
+            public void run(){
+                int dir = 0;
+                int dir_lamp = 0;
+                int time = game.random.nextInt(10)+6;
+                while(true){
+                    if(dir_lamp == 1){
+                        rotlamp+=0.2f;
+                        if(rotlamp>=10){
+                            dir_lamp=0;
+                        }
+                    }else{
+                        rotlamp-=0.2f;
+                        if(rotlamp<=-10){
+                            dir_lamp=1;
+                        }
+                    }
+                    if(dir==1){
+                        x+=0.1;
+                        scale-=0.0008f;
+                        rothead+=0.2f;
+                        rothand-=0.1f;
+                        if(rothead>=4.0f){
+                            dir=2;
+                            time = game.random.nextInt(10)+6;
+                        }
+                    }else{
+                        x-=0.1;
+                        scale+=0.0008f;
+                        rothead-=0.2f;
+                        rothand+=0.1f;
+                        if(rothead<=-4.0f){
+                            dir=1;
+                            time = game.random.nextInt(10)+6;
+                        }
+                    }
+                    if(closed){
+                        break;
+                    }
+                    Sleep( time);
+                }
+            }
+        };
+        anime_hand.start();
         anime.start();
         DoorOpen();
     }
@@ -56,23 +109,25 @@ public class WorkMenu extends Openable implements Screen {
     public void render(float delta) {
         Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
         batch.begin();
-        light = new Texture("light"+ light_anime +".png");
+        if(light_anime<3) {
+            lightt = new Texture("light" + light_anime + ".png");
+        }
+        light = new TextureRegion(lightt, 1280, 720);
         batch.draw(background, 0, 0, width, height);
-        batch.draw(red, 250, height-145, 150, 150);
-        batch.draw(frame, 50, height-200, 125, 125);
-        batch.draw(frame, 50, height-325, 125, 125);
-        batch.draw(frame, 50, height-450, 125, 125);
-        batch.draw(frame, 50, height-575, 125, 125);
-        batch.draw(frame, 50, height-700, 125, 125);
+        batch.draw(red, 10, height-150, 150, 150);
+        batch.draw(frame, 10, height-350, 150, 150);
+        batch.draw(frame, 10, height-500, 150, 150);
+        batch.draw(frame, 10, height-650, 150, 150);
+        batch.draw(frame, 10, height-800, 150, 150);
         batch.draw(metal, width/2+250, 25, width/2-300, height-50);
-        DrawRobot(batch, x, y, scale, rothand, rothead, rotleg, rot, false, false, false);
-        DrawSelect(batch, x, y, scale, rothand, rothead, rotleg, rot, which_select);
-        batch.draw(light, width/2-500, -50, 1000, height);
-        batch.draw(lamp, width/2-200, height-200, 400,350);
+        DrawRobot(batch, (int)x, y, scale, rothand, rothead, rotleg, rot, false, false, false, 90);
+        DrawSelect(batch, (int)x, y, scale, rothand, rothead, rotleg, rot, which_select);
+        batch.draw(light, -200.0f, -200, (float)(width/2-100), height+350.0f, (float) (width), (float) (height+300), 1, 1, rotlamp);
+        batch.draw(lamp, -200.0f, -250, (float)(width/2-100), height+350.0f, (float) (width), (float) (height+300), 1, 1, rotlamp);
         CheckOpen(batch);
         CheckClose(batch);
         batch.end();
-        light.dispose();
+        lightt.dispose();
         if(closed){
             game.setGameMenu();
         }
@@ -87,8 +142,9 @@ public class WorkMenu extends Openable implements Screen {
     public void hide() { }
     @Override
     public void dispose() {
-        light.dispose();
-        lamp.dispose();
+        game.robot.DisposeWorkMenuTextures();
+        lightt.dispose();
+        lampt.dispose();
         red.dispose();
         background.dispose();
         frame.dispose();

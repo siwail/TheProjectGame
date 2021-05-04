@@ -4,6 +4,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class GamePlay extends Openable implements Screen{
     SpriteBatch batch;
     Thread anime;//Анимации перса
@@ -11,6 +12,7 @@ public class GamePlay extends Openable implements Screen{
     Thread EnergyAdd;
     Thread EnemyBrine;
     Thread EEnergyAdd;
+    Thread CrossAdd;
     Texture floor;
     Texture background;
     Texture grass;
@@ -24,6 +26,17 @@ public class GamePlay extends Openable implements Screen{
     Texture redir_touched;
     Texture fire_touched;
     Texture jump_touched;
+    Texture Meteort;
+    Texture Splash;
+    Texture Fire;
+    Texture Frontground;
+    TextureRegion Meteor;
+    int meteor_splash_size = 0;
+    int cross_size= 200;
+    int meteor_x = 0;
+    int meteor_y = 0;
+    int will_meteor_x = 0;
+    int will_meteor_y = 0;
     int[] bullets_x = new int[40];
     double[] bullets_y = new double[40];
     int[] bullets_dir = new int[40];
@@ -45,7 +58,7 @@ public class GamePlay extends Openable implements Screen{
     int energy;
     int Eenergy = 200;
     int energy_use = 0;
-    double speed = 1.0;
+    double speed =  .0;
     double anime_grass = 0;
     int[] grass_1 = new int[5];
     int[] grass_2 = new int[5];
@@ -65,6 +78,9 @@ public class GamePlay extends Openable implements Screen{
     float Erothead = 0;
     float Erot = 0;
     float Escale = 0.8f;
+    float meteor_rot = 0.0f;
+    boolean meteor_splash = false;
+    boolean meteor_run = false;
     boolean dead = false;
     boolean Edead = false;
     boolean hurt = false;
@@ -90,8 +106,14 @@ public class GamePlay extends Openable implements Screen{
     public GamePlay(MainGame game) { this.game = game; }
     @Override
     public void show() {
+        game.robot.SetGamePlayTextures();
         energy = game.robot.energy;
-        grass = new Texture("grass_2.png");
+        Frontground = new Texture("frontground.png");
+        Splash = new Texture("splash.png");
+        Fire = new Texture("fire.png");
+        Meteort = new Texture("meteor_" + game.robot.level + ".png");
+        Meteor = new TextureRegion(Meteort, 300, 300);
+        grass = new Texture("grass_" + game.robot.level + ".png");
         up = new Texture("button_up.png");
         down = new Texture("button_down.png");
         redir = new Texture("button_redir.png");
@@ -123,8 +145,8 @@ public class GamePlay extends Openable implements Screen{
         Ehealth = game.robot.Ehealth;
         y = game.random.nextInt(3)+1;
         Ey = game.random.nextInt(3)+1;
-        background = new Texture("background.png");
-        floor = new Texture("grass_alpha.png");
+        background = new Texture("background_" + game.robot.level + ".png");
+        floor = new Texture("grass_alpha_" + game.robot.level + ".png");
         open_x = 0;
         batch = new SpriteBatch();
         anime = new Thread(){
@@ -170,10 +192,27 @@ public class GamePlay extends Openable implements Screen{
                 }
             }
         };
+        CrossAdd = new Thread(){
+            @Override
+            public void run(){
+                int random;
+                while(true){
+                    random = game.random.nextInt(5);
+                    if(!meteor_run && random==0){
+                        meteor_run=true;
+                        SetMeteor();
+                    }
+                    if(closed){
+                        break;
+                    }
+                    Sleep(  (int)(1000*speed));
+                }
+            }
+        };
         Eanime = new Thread(){
             @Override
             public void run(){
-                int Edir = 2;                                      //Переменные с обозначением "E" в начале принадлежат врагу.
+                int Edir = 2;                                         //Переменные с обозначением "E" в начале принадлежат врагу.
                 int Etime = game.random.nextInt(10)+10;
                 while(true){
                     if(Edir==1){
@@ -253,7 +292,6 @@ public class GamePlay extends Openable implements Screen{
                             if (Ey + 1 < 4 && move_dir == 0) {
                                 EUp();
                             }
-
                         }
                     }
                     if (random_act < 13 && random_act > 10) {
@@ -262,7 +300,6 @@ public class GamePlay extends Openable implements Screen{
                             }
                     }
                     if (random_act < 16 && random_act > 13) {
-
                             int move_dir = game.random.nextInt(2) - 1;
                             if (Ey - 1 > 0 && move_dir == -1) {
                                 EDown();
@@ -305,6 +342,7 @@ public class GamePlay extends Openable implements Screen{
                 }
             }
         };
+        CrossAdd.start();
         EnemyBrine.start();
         EnergyAdd.start();
         EEnergyAdd.start();
@@ -322,24 +360,57 @@ public class GamePlay extends Openable implements Screen{
             batch.draw(grass, grass_3[i]*(width/10), (height/5)*3-70-15*3, 150, (int)(150+anime_grass));
             i++;
         }
+        if(will_meteor_y == 3 && meteor_run){
+            if(!meteor_splash) {
+                batch.draw(Fire, meteor_x-12, meteor_y, 175.0f, 200.0f+(meteor_rot)/4);
+                batch.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1,1, meteor_rot);
+            }else{
+                batch.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
+            }
+        }
         batch.draw(floor, 0, height/5*2-80, width, height/5);
+        if(meteor_run && will_meteor_y == 3) {
+            batch.draw(game.robot.Cross, meteor_x + (150-cross_size)/2, will_meteor_y * (height / 5) - 60 - 10 * will_meteor_y, cross_size, cross_size);
+        }
         i = 0;
         while(i!=5){
             batch.draw(grass, grass_2[i]*(width/10), (height/5)*2-105, 150, (int)(150+anime_grass));
             i++;
         }
+        if(will_meteor_y == 2 && meteor_run){
+            if(!meteor_splash) {
+                batch.draw(Fire, meteor_x-12, meteor_y, 175.0f, 200.0f+(meteor_rot)/4);
+                batch.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1,1, meteor_rot);
+            }else{
+                batch.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
+            }
+        }
         batch.draw(floor, 0, height/5-70, width, height/5);
+        if(meteor_run && will_meteor_y == 2) {
+            batch.draw(game.robot.Cross, meteor_x + (150-cross_size)/2, will_meteor_y * (height / 5) - 60 - 10 * will_meteor_y, cross_size, cross_size);
+        }
         i = 0;
         while(i!=5){
             batch.draw(grass, grass_1[i]*(width/10), (height/5)-70-15, 150, (int)(150+anime_grass));
             i++;
         }
+        if(will_meteor_y == 1 && meteor_run){
+            if(!meteor_splash) {
+                batch.draw(Fire, meteor_x-12, meteor_y, 175.0f, 200.0f+(meteor_rot)/4);
+                batch.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1,1, meteor_rot);
+            }else{
+                batch.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
+            }
+        }
         batch.draw(floor, 0, -60, width, height/5);
+        if(meteor_run && will_meteor_y == 1) {
+            batch.draw(game.robot.Cross, meteor_x + (150-cross_size)/2, will_meteor_y * (height / 5) - 60 - 10 * will_meteor_y, cross_size, cross_size);
+        }
         int index = 0;
         if(bullets>0) {
             while (index < 40) {
                 if (bullets_dir[index] != 0 && Math.floor(bullets_y[index]) == 3.0) {
-                    DrawBullet(batch, (int)(bullets_x[index] + 135 * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+240*scale), bullets_type[index]);
+                    DrawBullet(batch, (bullets_x[index] + 135 * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+190), bullets_type[index]);
                 }
                 index++;
             }
@@ -348,13 +419,14 @@ public class GamePlay extends Openable implements Screen{
             DrawEnemy(batch, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale*(1.0f-0.03f*Ey), Erothand+90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
         }
         if(y == 3){
-            DrawRobot(batch, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead);
+            DrawRobot(batch, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead, 0);
         }
+
         index = 0;
         if(bullets>0) {
             while (index < 40) {
                 if (bullets_dir[index] != 0 && Math.floor(bullets_y[index]) == 2.0) {
-                    DrawBullet(batch, (int)(bullets_x[index] + 135  * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+240*scale), bullets_type[index]);
+                    DrawBullet(batch, (bullets_x[index] + 135  * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+190), bullets_type[index]);
                 }
                 index++;
             }
@@ -363,13 +435,13 @@ public class GamePlay extends Openable implements Screen{
             DrawEnemy(batch, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale*(1.0f-0.03f*Ey), Erothand+90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
         }
         if(y == 2){
-            DrawRobot(batch, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead);
+            DrawRobot(batch, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead, 0);
         }
         index = 0;
         if(bullets>0) {
             while (index < 40) {
                 if (bullets_dir[index] != 0 && Math.floor(bullets_y[index]) == 1.0) {
-                    DrawBullet(batch, (int)(bullets_x[index] + 135 * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+240*scale), bullets_type[index]);
+                    DrawBullet(batch, (bullets_x[index] + 135 * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+190), bullets_type[index]);
                 }
                 index++;
             }
@@ -378,7 +450,7 @@ public class GamePlay extends Openable implements Screen{
             DrawEnemy(batch, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale*(1.0f-0.03f*Ey), Erothand+90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
         }
         if(y == 1){
-            DrawRobot(batch, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead);
+            DrawRobot(batch, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead, 0);
         }
         DrawEnemyIcon(batch, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale, Ehealth);
         DrawRobotIcon(batch, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale, health);
@@ -408,14 +480,16 @@ public class GamePlay extends Openable implements Screen{
             batch.draw(jump, (int)(width-400*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
         }
         DrawEnergy(batch, (int)(400*(scale_inteface-0.1)), (int)(-50*(scale_inteface-0.1)), 1.3*(scale_inteface-0.1), energy, warning);
+        batch.draw(Frontground, 0, 0, width, height);
         CheckClose(batch);
         CheckOpen(batch);
+        batch.end();
         if(closed){
             if(type_close == 1) {
                 game.setGameMenu();
             }
         }
-        batch.end();
+
     }
     public boolean CheckBullet(){
         if(bullets>0) {
@@ -459,7 +533,7 @@ public class GamePlay extends Openable implements Screen{
                             break;
                         }
                         if(bullets_x[num] >= (int)(x*width/10+robot_x) && bullets_x[num] <= (int)(x*width/10+robot_x+(290.0*scale)) && (int)Math.round(bullets_y[num]) == y){
-                            DamageRobot(game.robot.damage);
+                            DamageRobot(game.robot.Edamage);
                             break;
                         }
                         if(bullets == 0 || bullets_dir[num] == 0){
@@ -623,6 +697,73 @@ public class GamePlay extends Openable implements Screen{
                     }
                     Sleep(  500);
                     DoorClose(1);
+                }
+            };
+            anime.start();
+        }
+    }
+    public void SetMeteor(){
+        if(meteor_run){
+            int rand = game.random.nextInt(2);
+            if(rand == 0) {
+                will_meteor_x = Ex;
+                will_meteor_y = Ey;
+            }else{
+                will_meteor_x = x;
+                will_meteor_y = y;
+            }
+            meteor_y = height;
+            meteor_x = will_meteor_x*width/10;
+            Thread anime = new Thread() {
+                @Override
+                public void run() {
+                    cross_size= 5;
+                    while (cross_size< 200) {
+                        cross_size+=1;
+                        Sleep(  (int)(5*speed));
+                    }
+                    while (meteor_y>will_meteor_y*(height/5)-270) {
+                        meteor_rot += 0.5f;
+                        if(meteor_rot >= 360.0f){
+                            meteor_rot = 0.0f;
+                        }
+                        if(meteor_y < will_meteor_y*(height/5)+150 && meteor_y > will_meteor_y*(height/5)-100){
+                            if(will_meteor_x == x && will_meteor_y == y){
+                                DamageRobot(10);
+                            }
+                            if(will_meteor_x == Ex && will_meteor_y == Ey){
+                                DamageEnemy(10);
+                            }
+                        }
+                        if(cross_size> 5){
+                            cross_size-=1;
+                        }
+                        meteor_y-=3;
+                        Sleep(  (int)(5*speed));
+                    }
+                    if(will_meteor_x == x && will_meteor_y == y){
+                        DamageRobot(20);
+                    }
+                    if(will_meteor_x == Ex && will_meteor_y == Ey){
+                        DamageEnemy(10);
+                    }
+                    meteor_rot = 0.0f;
+                    meteor_splash=true;
+                    while (meteor_splash_size<225) {
+                        meteor_splash_size+=2;
+                        Sleep(  (int)(5*speed));
+                    }
+                    while (meteor_splash_size>-100) {
+                        meteor_splash_size-=1;
+                        Sleep(  (int)(5*speed));
+                    }
+                    meteor_y = 0;
+                    meteor_x = 0;
+                    will_meteor_y = 0;
+                    will_meteor_x = 0;
+                    cross_size= 200;
+                    meteor_splash=false;
+                    meteor_run = false;
                 }
             };
             anime.start();
@@ -1144,7 +1285,11 @@ public class GamePlay extends Openable implements Screen{
         }
     }
     @Override
-    public void dispose (){                                                        //Очистка памяти.
+    public void dispose (){
+        game.robot.DisposeGamePlayTextures();
+        Splash.dispose();
+        Fire.dispose();
+        Meteort.dispose();                          //Очистка памяти.
         batch.dispose();
         floor.dispose();
         up.dispose();

@@ -16,13 +16,17 @@ public class GameMenu extends Openable implements Screen{
     Texture music;
     Texture workspace;
     Texture frame;
-    Texture smoke;
-    Texture bird;
     Texture grass;
     Texture gear;
     Texture chip;
     Texture metall;
     Texture bulb;
+    Texture white;
+    Texture exit;
+    Texture work;
+    Texture go;
+    Texture[] smoke = new Texture[4];
+    Texture[] birds = new Texture[4];
     float rotation_hand = 0.0f;
     float scale = 1.05f;
     float rotation_head = 0.0f;
@@ -45,14 +49,25 @@ public class GameMenu extends Openable implements Screen{
     public GameMenu(MainGame game) { this.game = game; }
     @Override
     public void show() {
-        grass = new Texture("grass_2.png");
+        smoke[0] = new Texture("smoke1.png");
+        smoke[1] = new Texture("smoke2.png");
+        smoke[2] = new Texture("smoke3.png");
+        smoke[3] = new Texture("smoke4.png");
+        birds[0] = new Texture("bird_1.png");
+        birds[1] = new Texture("bird_2.png");
+        birds[2] = new Texture("bird_3.png");
+        birds[3] = new Texture("bird_4.png");
+        work = new Texture("work.png");
+        exit = new Texture("exit.png");
+        go = new Texture("button.png");
+        white = new Texture("button_white.png");
+        grass = new Texture("grass_1.png");
         metall = new Texture("metall.png");
         chip = new Texture("chip.png");
         bulb = new Texture("bulb.png");
         gear = new Texture("gear.png");
         Gdx.input.setInputProcessor(new GameMenuTouch(game, this));
         frame = new Texture("frame.png");
-        play =  new Texture("button.png");
         music =  new Texture("music_1.png");
         camp = new Texture("camp_2.png");
         Start();
@@ -98,9 +113,8 @@ public class GameMenu extends Openable implements Screen{
             public void run(){
                 while(true){
                     smoke_anime++;
-
-                    if (smoke_anime>=5){
-                        smoke_anime=1;
+                    if (smoke_anime>=3){
+                        smoke_anime=0;
                     }
                     if(closed){
                         break;
@@ -153,34 +167,26 @@ public class GameMenu extends Openable implements Screen{
         batch.draw(camp, 0, 0, width, height);
         batch.draw(grass, width-200, 230, 250, 250+anime_grass_1);
         batch.draw(grass, -70, 230, 250, 250+anime_grass_2);
-        DrawRobot(batch, (int)robot_x, robot_y, scale, rotation_hand+90, rotation_head, rotation_leg, 0 , false, false, false);
-        bird = new Texture("bird_1.png");
+        DrawRobot(batch, (int)robot_x, robot_y, scale, rotation_hand+90, rotation_head, rotation_leg, 0 , false, false, false, 0);
         if (BirdFly) {
-            if (bird_anime - 2 > 0) {
-                bird.dispose();
-                    try {
-                        bird = new Texture("bird_" + (bird_anime - 2) + ".png");
-                    }catch (Exception ignored){}
-            }
-            TextureRegion bird_region = new TextureRegion(bird, 400, 400);
+            TextureRegion bird_region = new TextureRegion(birds[bird_anime], 400, 400);
             batch.draw(bird_region, birdx, birdy,0, 0, 250, 250, 1, 1, (birdy-height/2)/5);
         }
         if(close_touch){
-            close= new Texture("button_white.png");
+            close = white;
         }else{
-            close= new Texture("exit.png");
+            close = exit;
         }
         if(work_touch){
-            workspace= new Texture("button_white.png");
+            workspace = white;
         }else{
-            workspace= new Texture("work.png");
+            workspace = work;
         }
         if(play_touch){
-            play= new Texture("button_white.png");
+            play= white;
         }else{
-            play= new Texture("button.png");
+            play= go;
         }
-        smoke = new Texture("smoke" + smoke_anime + ".png");
         batch.draw(close, 50, 0, 500, 250);
         batch.draw(play, width-550, 0, 500, 250);
         batch.draw(workspace, 620, height-200, 400, 200);
@@ -189,26 +195,18 @@ public class GameMenu extends Openable implements Screen{
         batch.draw(frame, 130, height-120, 120, 120);
         batch.draw(frame, 250, height-120, 120, 120);
         batch.draw(frame, 370, height-120, 120, 120);
-        batch.draw(frame, 490, height-120, 120, 120);
         batch.draw(metall, 10, height-120, 120, 120);
         batch.draw(gear, 130, height-120, 120, 120);
         batch.draw(chip, 250, height-120, 120, 120);
         batch.draw(bulb, 370, height-120, 120, 120);
-        batch.draw(frame, 490, height-120, 120, 120);
         item_font.draw(batch, Integer.toString(game.robot.metal), 20, height-80);
         item_font.draw(batch, Integer.toString(game.robot.gears), 140, height-80);
         item_font.draw(batch, Integer.toString(game.robot.microchips), 260, height-80);
         item_font.draw(batch, Integer.toString(game.robot.lamps), 380, height-80);
-        item_font.draw(batch, Integer.toString(game.robot.gears), 500, height-80);
-        batch.draw(smoke, width/2-125, 400, 175, 175);
+        batch.draw(smoke[smoke_anime], width/2-125, 400, 175, 175);
         CheckClose(batch);
         CheckOpen(batch);
         batch.end();
-        workspace.dispose();
-        bird.dispose();
-        close.dispose();
-        play.dispose();
-        smoke.dispose();
         if(closed){
             if(type_close == 1) {
                 game.setWorkMenu();
@@ -312,7 +310,8 @@ public class GameMenu extends Openable implements Screen{
     public void Bird(){
         Thread fly = new Thread(){
             @Override
-            public  void run(){
+            public void run(){
+                int dir_anime = 1;
                 BirdFly = true;
                 bird_anime = 1;
                 birdx = -250;
@@ -320,21 +319,41 @@ public class GameMenu extends Openable implements Screen{
                 while(birdx < width+250){
                     birdx+=10;
                     birdy++;
-                    bird_anime++;
-                    if(bird_anime > 10){
-                        bird_anime = 1;
+                    if(dir_anime == 1) {
+                        bird_anime++;
+                        if(bird_anime > 3){
+                            bird_anime = 3;
+                            dir_anime = 0;
+                        }
+                    }else{
+                        bird_anime--;
+                        if(bird_anime < 0){
+                            bird_anime = 0;
+                            dir_anime = 1;
+                        }
                     }
                     Sleep( 30);
                 }
                 BirdFly = false;
-                bird.dispose();
             }
         };
         fly.start();
     }
     @Override
     public void dispose () {
-        smoke.dispose();
+        smoke[0].dispose();
+        smoke[1].dispose();
+        smoke[2].dispose();
+        smoke[3].dispose();
+        birds[0].dispose();
+        birds[1].dispose();
+        birds[2].dispose();
+        birds[3].dispose();
+        go.dispose();
+        exit.dispose();
+        close.dispose();
+        white.dispose();
+        work.dispose();
         camp.dispose();
         batch.dispose();
         door_left.dispose();
@@ -342,6 +361,5 @@ public class GameMenu extends Openable implements Screen{
         play.dispose();
         workspace.dispose();
         music.dispose();
-
     }
 }

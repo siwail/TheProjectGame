@@ -64,31 +64,31 @@ public class Openable implements Screen{
         TextureRegion LeftHand = game.robot.Hide;
         TextureRegion RightHand = game.robot.Hide;
         if(which_select == 1){
-            Head = game.robot.SelectRobot;
+            Head = new TextureRegion(game.robot.HeadSelectt, 300, 300);
         }
         if(which_select == 2){
-            Body = game.robot.SelectRobot;
+            Body = new TextureRegion(game.robot.BodySelectt, 300, 300);
         }
         if(which_select == 3){
-            LeftLeg = game.robot.SelectRobot;
+            LeftLeg = new TextureRegion(game.robot.LeftLegSelectt, 300, 300);
         }
         if(which_select == 4){
-            RightLeg = game.robot.SelectRobot;
+            RightLeg = new TextureRegion(game.robot.RightLegSelectt, 300, 300);
         }
         if(which_select == 5){
-            LeftHand = game.robot.SelectRobot;
+            LeftHand = new TextureRegion(game.robot.LeftHandSelectt, 300, 300);
         }
         if(which_select == 6){
-            RightHand = game.robot.SelectRobot;
+            RightHand = new TextureRegion(game.robot.RightHandSelectt, 300, 300);
         }
         drawer.draw(Head, x, (float) (y + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothead);
         drawer.draw(Body, x, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rot);
         drawer.draw(LeftLeg, (float) (x - 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) -rotleg);
         drawer.draw(RightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rotleg);
         drawer.draw(LeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothand);
-        drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothand - 90);
+        drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothand);
     }
-    public void DrawRobot(SpriteBatch drawer, int x, int y, double scale, float rothand, float rothead, float rotleg, float rot, boolean swap, boolean hurt, boolean dead) {
+    public void DrawRobot(SpriteBatch drawer, int x, int y, double scale, float rothand, float rothead, float rotleg, float rot, boolean swap, boolean hurt, boolean dead, int rotate) {
         TextureRegion Head = game.robot.H;
         TextureRegion Body = game.robot.B;
         TextureRegion LeftLeg = game.robot.LL;
@@ -124,7 +124,7 @@ public class Openable implements Screen{
         drawer.draw(LeftLeg, (float) (x - 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) -rotleg);
         drawer.draw(RightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rotleg);
         drawer.draw(LeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothand);
-        drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothand - 90);
+        drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothand - 90 + rotate);
 
     }
     public void DrawEnemy(SpriteBatch drawer, int x, int y, double scale, float rothand, float rothead, float rotleg, float rot, boolean swap, boolean hurt, boolean dead) {
