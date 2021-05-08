@@ -1,6 +1,7 @@
 package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,16 +14,21 @@ public class GamePlay extends Openable implements Screen{
     Thread EnemyBrine;
     Thread EEnergyAdd;
     Thread CrossAdd;
+    Thread StartLevel;
     Texture floor;
     Texture background;
     Texture grass;
-    Texture up;
-    Texture down;
+    Texture up_1;
+    Texture down_1;
+    Texture up_2;
+    Texture down_2;
     Texture redir;
     Texture fire;
     Texture jump;
-    Texture up_touched;
-    Texture down_touched;
+    Texture up_1_touched;
+    Texture down_1_touched;
+    Texture up_2_touched;
+    Texture down_2_touched;
     Texture redir_touched;
     Texture fire_touched;
     Texture jump_touched;
@@ -30,6 +36,8 @@ public class GamePlay extends Openable implements Screen{
     Texture Splash;
     Texture Fire;
     Texture Frontground;
+    Texture Openlevel_1;
+    Texture Openlevel_2;
     TextureRegion Meteor;
     int meteor_splash_size = 0;
     int cross_size= 200;
@@ -58,7 +66,8 @@ public class GamePlay extends Openable implements Screen{
     int energy;
     int Eenergy = 200;
     int energy_use = 0;
-    double speed =  .0;
+    int openlevel_x = 0;
+    double speed = 1.0;
     double anime_grass = 0;
     int[] grass_1 = new int[5];
     int[] grass_2 = new int[5];
@@ -79,6 +88,7 @@ public class GamePlay extends Openable implements Screen{
     float Erot = 0;
     float Escale = 0.8f;
     float meteor_rot = 0.0f;
+    boolean pause = true;
     boolean meteor_splash = false;
     boolean meteor_run = false;
     boolean dead = false;
@@ -109,23 +119,32 @@ public class GamePlay extends Openable implements Screen{
         game.robot.SetGamePlayTextures();
         energy = game.robot.energy;
         Frontground = new Texture("frontground.png");
+        Openlevel_1 = new Texture("openlevel_1.png");
+        Openlevel_2 = new Texture("openlevel_2.png");
         Splash = new Texture("splash.png");
         Fire = new Texture("fire.png");
         Meteort = new Texture("meteor_" + game.robot.level + ".png");
         Meteor = new TextureRegion(Meteort, 300, 300);
         grass = new Texture("grass_" + game.robot.level + ".png");
-        up = new Texture("button_up.png");
-        down = new Texture("button_down.png");
+        up_1 = new Texture("button_up_-1.png");
+        down_1 = new Texture("button_down_-1.png");
+        up_2 = new Texture("button_up_1.png");
+        down_2 = new Texture("button_down_1.png");
         redir = new Texture("button_redir.png");
         fire = new Texture("button_fire.png");
         jump = new Texture("button_jump.png");
-        up_touched = new Texture("button_up_touched.png");
-        down_touched = new Texture("button_down_touched.png");
+        up_1_touched = new Texture("button_up_-1_touched.png");
+        down_1_touched = new Texture("button_down_-1_touched.png");
+        up_2_touched = new Texture("button_up_1_touched.png");
+        down_2_touched = new Texture("button_down_1_touched.png");
         redir_touched = new Texture("button_redir_touched.png");
         fire_touched = new Texture("button_fire_touched.png");
         jump_touched = new Texture("button_jump_touched.png");
         Gdx.input.setInputProcessor(new GamePlayTouch(game, this));
         Start();
+        parameter.size = 250;
+        item_font = generator.generateFont(parameter);
+        item_font.setColor(Color.GREEN);
         int i = 0;                                                 //Стандартная переменная, которая, почему-то, используется везде. Зачем я вообще написал этот комментарий?
         while(i != 5){
             grass_1[i] = game.random.nextInt(10)+1;
@@ -149,6 +168,24 @@ public class GamePlay extends Openable implements Screen{
         floor = new Texture("grass_alpha_" + game.robot.level + ".png");
         open_x = 0;
         batch = new SpriteBatch();
+        StartLevel = new Thread(){
+            @Override
+            public void run(){
+                openlevel_x = 0;
+                Sleep(1500);
+                while(openlevel_x<width){
+                    openlevel_x+=2;
+                    Sleep(1);
+                }
+                Sleep(1000);
+                while(openlevel_x>-200){
+                    openlevel_x-=2;
+                    Sleep(1);
+                }
+                openlevel_x = 0;
+                pause=false;
+            }
+        };
         anime = new Thread(){
             @Override
             public void run(){
@@ -195,6 +232,7 @@ public class GamePlay extends Openable implements Screen{
         CrossAdd = new Thread(){
             @Override
             public void run(){
+                Sleep( (int)(5000*speed));
                 int random;
                 while(true){
                     random = game.random.nextInt(5);
@@ -244,6 +282,7 @@ public class GamePlay extends Openable implements Screen{
         EnergyAdd = new Thread(){
             @Override
             public void run(){
+                Sleep(  (int)(5000*speed));
                 while(true){
                     if(energy<game.robot.energy){
                         energy+=1;
@@ -258,6 +297,7 @@ public class GamePlay extends Openable implements Screen{
         EEnergyAdd = new Thread(){
             @Override
             public void run(){
+                Sleep(  (int)(5000*speed));
                 while(true){
                     if(Eenergy<game.robot.energy){
                         Eenergy+=1;
@@ -272,6 +312,7 @@ public class GamePlay extends Openable implements Screen{
         EnemyBrine = new Thread(){
             @Override
             public void run(){
+                Sleep(  (int)(5000*speed));
                 while(true) {
                     int random_act = game.random.nextInt(26) + 1;
                     if (random_act < 11 && random_act > 0) {
@@ -342,6 +383,7 @@ public class GamePlay extends Openable implements Screen{
                 }
             }
         };
+        StartLevel.start();
         CrossAdd.start();
         EnemyBrine.start();
         EnergyAdd.start();
@@ -459,15 +501,29 @@ public class GamePlay extends Openable implements Screen{
         }else{
             batch.draw(fire, (int) (width - 275 * scale_inteface), -pos_interface, (int) (250 * scale_inteface), (int) (250 * scale_inteface));
         }
-        if(up_touch) {
-            batch.draw(up_touched, (int)(50*scale_inteface), (int)(125*scale_inteface-pos_interface), (int)(150*scale_inteface), (int)(150*scale_inteface));
+        if(dir == 1) {
+
+            if (up_touch) {
+                batch.draw(up_2_touched, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+            } else {
+                batch.draw(up_2, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+            }
+            if (down_touch) {
+                batch.draw(down_2_touched, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+            } else {
+                batch.draw(down_2, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+            }
         }else{
-            batch.draw(up, (int)(50*scale_inteface), (int)(125*scale_inteface-pos_interface), (int)(150*scale_inteface), (int)(150*scale_inteface));
-        }
-        if(down_touch) {
-            batch.draw(down_touched, (int)(50*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
-        }else{
-            batch.draw(down, (int)(50*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
+            if (up_touch) {
+                batch.draw(up_1_touched, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+            } else {
+                batch.draw(up_1, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+            }
+            if (down_touch) {
+                batch.draw(down_1_touched, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+            } else {
+                batch.draw(down_1, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+            }
         }
         if(redir_touch) {
             batch.draw(redir_touched, (int)(200*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
@@ -481,6 +537,11 @@ public class GamePlay extends Openable implements Screen{
         }
         DrawEnergy(batch, (int)(400*(scale_inteface-0.1)), (int)(-50*(scale_inteface-0.1)), 1.3*(scale_inteface-0.1), energy, warning);
         batch.draw(Frontground, 0, 0, width, height);
+        if(pause){
+            batch.draw(Openlevel_1, openlevel_x-width-10, 0, width, height);
+            batch.draw(Openlevel_2, width-openlevel_x+10, 0, width, height);
+            item_font.draw(batch, Integer.toString(game.robot.level), width/2-150, (int)((double)height/(double)width*(double)openlevel_x/2.0)+100);
+        }
         CheckClose(batch);
         CheckOpen(batch);
         batch.end();
@@ -489,7 +550,6 @@ public class GamePlay extends Openable implements Screen{
                 game.setGameMenu();
             }
         }
-
     }
     public boolean CheckBullet(){
         if(bullets>0) {
@@ -791,7 +851,7 @@ public class GamePlay extends Openable implements Screen{
         }
     }
     public void EFire(){
-        if(!Efire_clicked && !Eup_clicked && !Edown_clicked && !Eredir_clicked && !Ejump_clicked) {
+        if(!Efire_clicked && !Eup_clicked && !Edown_clicked && !Eredir_clicked && !Ejump_clicked && !Edead && !pause) {
             if (EEnergyExists(10)) {
                 EEnergyUse(10);
                 Efire_clicked = true;
@@ -828,7 +888,7 @@ public class GamePlay extends Openable implements Screen{
         }
     }
     public void Fire(){
-        if(!fire_clicked && !up_clicked && !down_clicked && !redir_clicked && !jump_clicked) {
+        if(!fire_clicked && !up_clicked && !down_clicked && !redir_clicked && !jump_clicked && !dead && !pause) {
             if (EnergyExists(10)) {
                 EnergyUse(10);
                 fire_clicked = true;
@@ -911,7 +971,7 @@ public class GamePlay extends Openable implements Screen{
         }
         return this.energy >= energy;
     }    public void EUp(){
-        if(!Eup_clicked && !Edown_clicked && !Efire_clicked && !Edead) {
+        if(!Eup_clicked && !Edown_clicked && !Efire_clicked && !Edead && !pause) {
             Eup_clicked = true;
             if (Ey < 3) {
                 Thread anime = new Thread() {
@@ -967,7 +1027,7 @@ public class GamePlay extends Openable implements Screen{
         }
     }
     public void EDown(){
-        if(!Eup_clicked && !Edown_clicked && !Efire_clicked && !Edead) {
+        if(!Eup_clicked && !Edown_clicked && !Efire_clicked && !Edead && !pause) {
             Edown_clicked = true;
             if (Ey > 1) {
                 Thread anime = new Thread() {
@@ -1023,7 +1083,7 @@ public class GamePlay extends Openable implements Screen{
         }
     }
     public void Up(){                                                                                        //Вира!
-        if(!up_clicked && !down_clicked && !fire_clicked && !dead) {
+        if(!up_clicked && !down_clicked && !fire_clicked && !dead && !pause) {
             if (y < 3) {
                 up_clicked = true;
                 Thread anime = new Thread() {
@@ -1079,7 +1139,7 @@ public class GamePlay extends Openable implements Screen{
         }
     }
     public void Down(){                                             //Майна!
-        if(!up_clicked && !down_clicked && !fire_clicked  && !dead) {
+        if(!up_clicked && !down_clicked && !fire_clicked  && !dead && !pause) {
             if (y > 1) {
                 down_clicked = true;
                 Thread anime = new Thread() {
@@ -1135,7 +1195,7 @@ public class GamePlay extends Openable implements Screen{
         }
     }
     public void ERedir() {                                                       // Поворот.
-        if (!Eredir_clicked && !Efire_clicked && !Edead) {
+        if (!Eredir_clicked && !Efire_clicked && !Edead && !pause) {
             Eredir_clicked = true;
             Thread anime = new Thread() {
                 @Override
@@ -1166,7 +1226,7 @@ public class GamePlay extends Openable implements Screen{
         }
     }
     public void Redir() {                                                       // Поворот.
-        if (!redir_clicked && !fire_clicked && !dead) {
+        if (!redir_clicked && !fire_clicked && !dead && !pause) {
             redir_clicked = true;
             Thread anime = new Thread() {
                 @Override
@@ -1197,7 +1257,7 @@ public class GamePlay extends Openable implements Screen{
         }
     }
     public void EJump() {                                                                // На самом деле, это не прыжок, а телепорт. Не баг, а фича!
-        if (!Eup_clicked && !Edown_clicked && !Ejump_clicked  && !Edead) {
+        if (!Eup_clicked && !Edown_clicked && !Ejump_clicked  && !Edead && !pause) {
             if (EEnergyExists(30)) {
                 EEnergyUse(30);
                 Ejump_clicked = true;
@@ -1240,7 +1300,7 @@ public class GamePlay extends Openable implements Screen{
         }
     }
     public void Jump() {                                                                // На самом деле, это не прыжок, а телепорт. Не баг, а фича!
-        if (!up_clicked && !down_clicked && !jump_clicked && !dead) {
+        if (!up_clicked && !down_clicked && !jump_clicked && !dead && !pause) {
             if (EnergyExists(30)) {
                 EnergyUse(30);
                 jump_clicked = true;
@@ -1287,18 +1347,25 @@ public class GamePlay extends Openable implements Screen{
     @Override
     public void dispose (){
         game.robot.DisposeGamePlayTextures();
+        Frontground.dispose();
+        Openlevel_1.dispose();
+        Openlevel_2.dispose();
         Splash.dispose();
         Fire.dispose();
         Meteort.dispose();                          //Очистка памяти.
         batch.dispose();
         floor.dispose();
-        up.dispose();
-        down.dispose();
+        up_1.dispose();
+        down_1.dispose();
+        up_2.dispose();
+        down_2.dispose();
         redir.dispose();
         fire.dispose();
         jump.dispose();
-        up_touched.dispose();
-        down_touched.dispose();
+        up_1_touched.dispose();
+        down_1_touched.dispose();
+        up_2_touched.dispose();
+        down_2_touched.dispose();
         redir_touched.dispose();
         fire_touched.dispose();
         jump_touched.dispose();

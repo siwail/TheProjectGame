@@ -27,7 +27,6 @@ public class Openable implements Screen{
         parameter.size = 35;
         parameter.characters = FONT_CHARACTERS;
         item_font = generator.generateFont(parameter);
-        generator.dispose();
         item_font.setColor(Color.WHITE);
         door_left =  new Texture("door_1.png");
         door_right=  new Texture("door_2.png");
