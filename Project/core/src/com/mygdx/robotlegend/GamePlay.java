@@ -47,7 +47,7 @@ public class GamePlay extends Openable implements Screen{
     Texture Openlevel_2;
     TextureRegion Meteor;
     int meteor_splash_size = 0;
-    int cross_size= 200;
+    int cross_size= 0;
     int meteor_x = 0;
     int meteor_y = 0;
     int will_meteor_x = 0;
