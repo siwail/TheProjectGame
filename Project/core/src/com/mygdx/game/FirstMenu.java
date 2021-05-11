@@ -2,11 +2,14 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class FirstMenu  extends Openable implements Screen{
-	SpriteBatch drawer;
+	SpriteBatch batch;
+
+
 	Texture[] backs = new Texture[5];
 	Texture button_play;
 	Texture head;
@@ -31,7 +34,7 @@ public class FirstMenu  extends Openable implements Screen{
 	public void render(float delta) {
 		if (!closed) {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-			head = new Texture(Gdx.files.internal("logo_" + (1 + h) + ".png"));
+			head = new Texture(Gdx.files.internal("Object/logo_" + (1 + h) + ".png"));
 			if(close_touch){
 				button_exit = white;
 			}else{
@@ -42,15 +45,15 @@ public class FirstMenu  extends Openable implements Screen{
 			}else{
 				button_play = play;
 			}
-			drawer.begin();
+			batch.begin();
 			drawer.draw(backs[a-1], 0, 0, width, height);
-			drawer.draw(head, ((float) Gdx.graphics.getWidth() - 500), 50, 500, 500);
-			drawer.draw(button_exit, 100.0f, ((float) Gdx.graphics.getHeight() / 2 + 100), 500, 250);
+			drawer.draw(head, ((float) width - 500), 50, 500, 500);
+			drawer.draw(button_exit, 100.0f, ((float) height / 2 + 100), 500, 250);
 			drawer.draw(robo, -150, -150, 100, 100, 750, 750, 1, 1, r - 30);
-			drawer.draw(button_play, ((float) Gdx.graphics.getWidth() / 2 + 300), ((float) Gdx.graphics.getHeight() / 2 + 100), 500, 250);
+			drawer.draw(button_play, ((float) width / 2 + 300), ((float) height / 2 + 100), 500, 250);
 			head.dispose();
 			CheckClose(drawer);
-			drawer.end();
+			batch.end();
 			if(closed){
 				game.setGameMenu();
 			}
@@ -58,13 +61,13 @@ public class FirstMenu  extends Openable implements Screen{
 	}
 	@Override
 	public void show() {
-		drawer = new SpriteBatch();
-		exit = new Texture("exit.png");
-		play = new Texture("button.png");
-		white = new Texture("button_white.png");
-		robo_texture = new Texture("logo_1.png");
+		batch = new SpriteBatch();
+		exit = new Texture("Button/exit.png");
+		play = new Texture("Button/button.png");
+		white = new Texture("Button/button_white.png");
+		robo_texture = new Texture("Object/logo_1.png");
 		for(int i=0;i<5;i++){
-			backs[i] = new Texture("back" + (i+1) + ".png");
+			backs[i] = new Texture("Interface/back" + (i+1) + ".png");
 		}
 		robo = new TextureRegion(robo_texture, 500, 500);
 		Gdx.input.setInputProcessor(new FirstMenuTouch(game, this));
@@ -108,6 +111,7 @@ public class FirstMenu  extends Openable implements Screen{
 			}
 		}
 	};
+		drawer = new SpriteBatchRubber(this, batch);
 		leg.start();
 		anime.start();
 }
@@ -116,7 +120,7 @@ public class FirstMenu  extends Openable implements Screen{
 		play.dispose();
 		white.dispose();
 		robo_texture.dispose();
-		drawer.dispose();
+		batch.dispose();
 		for(Texture t: backs){ t.dispose(); }
 		button_play.dispose();
 		button_exit.dispose();

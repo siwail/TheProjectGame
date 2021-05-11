@@ -2,6 +2,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -49,27 +50,27 @@ public class GameMenu extends Openable implements Screen{
     public GameMenu(MainGame game) { this.game = game; }
     @Override
     public void show() {
-        smoke[0] = new Texture("smoke1.png");
-        smoke[1] = new Texture("smoke2.png");
-        smoke[2] = new Texture("smoke3.png");
-        smoke[3] = new Texture("smoke4.png");
-        birds[0] = new Texture("bird_1.png");
-        birds[1] = new Texture("bird_2.png");
-        birds[2] = new Texture("bird_3.png");
-        birds[3] = new Texture("bird_4.png");
-        work = new Texture("work.png");
-        exit = new Texture("exit.png");
-        go = new Texture("button.png");
-        white = new Texture("button_white.png");
-        grass = new Texture("grass_1.png");
-        metall = new Texture("metall.png");
-        chip = new Texture("chip.png");
-        bulb = new Texture("bulb.png");
-        gear = new Texture("gear.png");
+        smoke[0] = new Texture("Object/smoke1.png");
+        smoke[1] = new Texture("Object/smoke2.png");
+        smoke[2] = new Texture("Object/smoke3.png");
+        smoke[3] = new Texture("Object/smoke4.png");
+        birds[0] = new Texture("Object/bird_1.png");
+        birds[1] = new Texture("Object/bird_2.png");
+        birds[2] = new Texture("Object/bird_3.png");
+        birds[3] = new Texture("Object/bird_4.png");
+        work = new Texture("Button/work.png");
+        exit = new Texture("Button/exit.png");
+        go = new Texture("Button/button.png");
+        white = new Texture("Button/button_white.png");
+        grass = new Texture("Location/grass_1.png");
+        metall = new Texture("Item/metall.png");
+        chip = new Texture("Item/chip.png");
+        bulb = new Texture("Item/bulb.png");
+        gear = new Texture("Item/gear.png");
         Gdx.input.setInputProcessor(new GameMenuTouch(game, this));
-        frame = new Texture("frame.png");
-        music =  new Texture("music_1.png");
-        camp = new Texture("camp_2.png");
+        frame = new Texture("Interface/frame.png");
+        music =  new Texture("Button/music_1.png");
+        camp = new Texture("Interface/camp_2.png");
         Start();
         robot_x = width-400;
         open_x = 0;
@@ -155,6 +156,7 @@ public class GameMenu extends Openable implements Screen{
                 }
             }
         };
+        drawer = new SpriteBatchRubber(this, batch);
         anime_grass.start();
         anime_hand.start();
         anime_smoke.start();
@@ -164,10 +166,10 @@ public class GameMenu extends Openable implements Screen{
     public void render(float delta) {
         Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
         batch.begin();
-        batch.draw(camp, 0, 0, width, height);
-        batch.draw(grass, width-200, 230, 250, 250+anime_grass_1);
-        batch.draw(grass, -70, 230, 250, 250+anime_grass_2);
-        DrawRobot(batch, (int)robot_x, robot_y, scale, rotation_hand+90, rotation_head, rotation_leg, 0 , false, false, false, 0);
+        drawer.draw(camp, 0, 0, width, height);
+        drawer.draw(grass, width-200, 230, 250, 250+anime_grass_1);
+        drawer.draw(grass, -70, 230, 250, 250+anime_grass_2);
+        DrawRobot(drawer, (int)robot_x, robot_y, scale, rotation_hand+90, rotation_head, rotation_leg, 0 , false, false, false, 0);
         if (BirdFly) {
             TextureRegion bird_region = new TextureRegion(birds[bird_anime], 400, 400);
             batch.draw(bird_region, birdx, birdy,0, 0, 250, 250, 1, 1, (birdy-height/2)/5);
@@ -187,25 +189,25 @@ public class GameMenu extends Openable implements Screen{
         }else{
             play= go;
         }
-        batch.draw(close, 50, 0, 500, 250);
-        batch.draw(play, width-550, 0, 500, 250);
-        batch.draw(workspace, 620, height-200, 400, 200);
-        batch.draw(music, 1020, height-100, 100, 100);
-        batch.draw(frame, 10, height-120, 120, 120);
-        batch.draw(frame, 130, height-120, 120, 120);
-        batch.draw(frame, 250, height-120, 120, 120);
-        batch.draw(frame, 370, height-120, 120, 120);
-        batch.draw(metall, 10, height-120, 120, 120);
-        batch.draw(gear, 130, height-120, 120, 120);
-        batch.draw(chip, 250, height-120, 120, 120);
-        batch.draw(bulb, 370, height-120, 120, 120);
-        item_font.draw(batch, Integer.toString(game.robot.metal), 20, height-80);
-        item_font.draw(batch, Integer.toString(game.robot.gears), 140, height-80);
-        item_font.draw(batch, Integer.toString(game.robot.microchips), 260, height-80);
-        item_font.draw(batch, Integer.toString(game.robot.lamps), 380, height-80);
-        batch.draw(smoke[smoke_anime], width/2-125, 400, 175, 175);
-        CheckClose(batch);
-        CheckOpen(batch);
+        drawer.draw(close, 50, 0, 500, 250);
+        drawer.draw(play, width-550, 0, 500, 250);
+        drawer.draw(workspace, 620, height-200, 400, 200);
+        drawer.draw(music, 1020, height-100, 100, 100);
+        drawer.draw(frame, 10, height-120, 120, 120);
+        drawer.draw(frame, 130, height-120, 120, 120);
+        drawer.draw(frame, 250, height-120, 120, 120);
+        drawer.draw(frame, 370, height-120, 120, 120);
+        drawer.draw(metall, 10, height-120, 120, 120);
+        drawer.draw(gear, 130, height-120, 120, 120);
+        drawer.draw(chip, 250, height-120, 120, 120);
+        drawer.draw(bulb, 370, height-120, 120, 120);
+        item_font.draw(batch, Integer.toString(Gdx.graphics.getWidth()), (int)(20.0*wpw), (int)((height-80)*hph));
+        item_font.draw(batch, Integer.toString(Gdx.graphics.getHeight()), (int)(140.0*wpw), (int)((height-80)*hph));
+        item_font.draw(batch, Integer.toString(game.robot.microchips), (int)(260.0*wpw), (int)((height-80)*hph));
+        item_font.draw(batch, Integer.toString(game.robot.lamps), (int)(380.0*wpw), (int)((height-80)*hph));
+        drawer.draw(smoke[smoke_anime], width/2-125, 400, 175, 175);
+        CheckClose(drawer);
+        CheckOpen(drawer);
         batch.end();
         if(closed){
             if(type_close == 1) {
@@ -355,7 +357,6 @@ public class GameMenu extends Openable implements Screen{
         white.dispose();
         work.dispose();
         camp.dispose();
-        batch.dispose();
         door_left.dispose();
         door_right.dispose();
         play.dispose();

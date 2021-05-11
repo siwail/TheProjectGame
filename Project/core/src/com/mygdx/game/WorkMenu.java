@@ -1,12 +1,15 @@
 package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class WorkMenu extends Openable implements Screen {
     SpriteBatch batch = new SpriteBatch();
+    Sound upgrade;
     Thread anime;
     Thread anime_hand;
     Texture frame;
@@ -35,13 +38,14 @@ public class WorkMenu extends Openable implements Screen {
         game.robot.SetWorkMenuTextures();
         Gdx.input.setInputProcessor(new WorkMenuTouch(game, this));
         Start();
+        upgrade = Gdx.audio.newSound(Gdx.files.internal("Sound/upgrade.wav"));
         x = width/2-400;
-        lampt = new Texture("lamp_full.png");
+        lampt = new Texture("Interface/lamp_full.png");
         lamp = new TextureRegion(lampt, 1280, 720);
-        frame = new Texture("frame.png");
-        background = new Texture("back.png");
-        red = new Texture("button_red.png");
-        metal = new Texture("metalic.png");
+        frame = new Texture("Interface/frame.png");
+        background = new Texture("Interface/back.png");
+        red = new Texture("Button/button_red.png");
+        metal = new Texture("Interface/metalic.png");
         open_x = 0;
         anime  = new Thread(){
             @Override
@@ -101,6 +105,7 @@ public class WorkMenu extends Openable implements Screen {
                 }
             }
         };
+        drawer = new SpriteBatchRubber(this, batch);
         anime_hand.start();
         anime.start();
         DoorOpen();
@@ -110,22 +115,22 @@ public class WorkMenu extends Openable implements Screen {
         Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
         batch.begin();
         if(light_anime<3) {
-            lightt = new Texture("light" + light_anime + ".png");
+            lightt = new Texture("Interface/light" + light_anime + ".png");
         }
         light = new TextureRegion(lightt, 1280, 720);
-        batch.draw(background, 0, 0, width, height);
-        batch.draw(red, 10, height-150, 150, 150);
-        batch.draw(frame, 10, height-350, 150, 150);
-        batch.draw(frame, 10, height-500, 150, 150);
-        batch.draw(frame, 10, height-650, 150, 150);
-        batch.draw(frame, 10, height-800, 150, 150);
-        batch.draw(metal, width/2+250, 25, width/2-300, height-50);
-        DrawRobot(batch, (int)x, y, scale, rothand, rothead, rotleg, rot, false, false, false, 90);
-        DrawSelect(batch, (int)x, y, scale, rothand, rothead, rotleg, rot, which_select);
-        batch.draw(light, -200.0f, -200, (float)(width/2-100), height+350.0f, (float) (width), (float) (height+300), 1, 1, rotlamp);
-        batch.draw(lamp, -200.0f, -250, (float)(width/2-100), height+350.0f, (float) (width), (float) (height+300), 1, 1, rotlamp);
-        CheckOpen(batch);
-        CheckClose(batch);
+        drawer.draw(background, 0, 0, width, height);
+        drawer.draw(red, 10, height-150, 150, 150);
+        drawer.draw(frame, 10, height-350, 150, 150);
+        drawer.draw(frame, 10, height-500, 150, 150);
+        drawer.draw(frame, 10, height-650, 150, 150);
+        drawer.draw(frame, 10, height-800, 150, 150);
+        drawer.draw(metal, width/2+250, 25, width/2-300, height-50);
+        DrawRobot(drawer, (int)x, y, scale, rothand, rothead, rotleg, rot, false, false, false, 90);
+        DrawSelect(drawer, (int)x, y, scale, rothand, rothead, rotleg, rot, which_select);
+        drawer.draw(light, -200.0f, -200, (float)(width/2-100), height+350.0f, (float) (width), (float) (height+300), 1, 1, rotlamp);
+        drawer.draw(lamp, -200.0f, -250, (float)(width/2-100), height+350.0f, (float) (width), (float) (height+300), 1, 1, rotlamp);
+        CheckOpen(drawer);
+        CheckClose(drawer);
         batch.end();
         lightt.dispose();
         if(closed){
@@ -142,6 +147,8 @@ public class WorkMenu extends Openable implements Screen {
     public void hide() { }
     @Override
     public void dispose() {
+        upgrade.dispose();
+        batch.dispose();
         game.robot.DisposeWorkMenuTextures();
         lightt.dispose();
         lampt.dispose();

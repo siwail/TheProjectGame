@@ -1,6 +1,7 @@
 package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,6 +9,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class GamePlay extends Openable implements Screen{
     SpriteBatch batch;
+    Sound[] blaster;
+    Sound[] hit;
+    Sound[] move;
+    Sound death;
+    Sound siren;
     Thread anime;//Анимации перса
     Thread Eanime;//Анимации Врага
     Thread EnergyAdd;
@@ -118,31 +124,45 @@ public class GamePlay extends Openable implements Screen{
     public void show() {
         game.robot.SetGamePlayTextures();
         energy = game.robot.energy;
-        Frontground = new Texture("frontground.png");
-        Openlevel_1 = new Texture("openlevel_1.png");
-        Openlevel_2 = new Texture("openlevel_2.png");
-        Splash = new Texture("splash.png");
-        Fire = new Texture("fire.png");
-        Meteort = new Texture("meteor_" + game.robot.level + ".png");
+        Frontground = new Texture("Interface/frontground.png");
+        Openlevel_1 = new Texture("Interface/openlevel_1.png");
+        Openlevel_2 = new Texture("Interface/openlevel_2.png");
+        Splash = new Texture("Object/splash.png");
+        Fire = new Texture("Object/fire.png");
+        Meteort = new Texture("Location/meteor_" + game.robot.level + ".png");
         Meteor = new TextureRegion(Meteort, 300, 300);
-        grass = new Texture("grass_" + game.robot.level + ".png");
-        up_1 = new Texture("button_up_-1.png");
-        down_1 = new Texture("button_down_-1.png");
-        up_2 = new Texture("button_up_1.png");
-        down_2 = new Texture("button_down_1.png");
-        redir = new Texture("button_redir.png");
-        fire = new Texture("button_fire.png");
-        jump = new Texture("button_jump.png");
-        up_1_touched = new Texture("button_up_-1_touched.png");
-        down_1_touched = new Texture("button_down_-1_touched.png");
-        up_2_touched = new Texture("button_up_1_touched.png");
-        down_2_touched = new Texture("button_down_1_touched.png");
-        redir_touched = new Texture("button_redir_touched.png");
-        fire_touched = new Texture("button_fire_touched.png");
-        jump_touched = new Texture("button_jump_touched.png");
+        grass = new Texture("Location/grass_" + game.robot.level + ".png");
+        up_1 = new Texture("Button/button_up_-1.png");
+        down_1 = new Texture("Button/button_down_-1.png");
+        up_2 = new Texture("Button/button_up_1.png");
+        down_2 = new Texture("Button/button_down_1.png");
+        redir = new Texture("Button/button_redir.png");
+        fire = new Texture("Button/button_fire.png");
+        jump = new Texture("Button/button_jump.png");
+        up_1_touched = new Texture("Button/button_up_-1_touched.png");
+        down_1_touched = new Texture("Button/button_down_-1_touched.png");
+        up_2_touched = new Texture("Button/button_up_1_touched.png");
+        down_2_touched = new Texture("Button/button_down_1_touched.png");
+        redir_touched = new Texture("Button/button_redir_touched.png");
+        fire_touched = new Texture("Button/button_fire_touched.png");
+        jump_touched = new Texture("Button/button_jump_touched.png");
         Gdx.input.setInputProcessor(new GamePlayTouch(game, this));
         Start();
-        parameter.size = 250;
+        blaster = new Sound[3];
+        blaster[0] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_1.wav"));
+        blaster[1] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_2.wav"));
+        blaster[2] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_3.wav"));
+        hit = new Sound[3];
+        hit[0] = Gdx.audio.newSound(Gdx.files.internal("Sound/hit_1.wav"));
+        hit[1] = Gdx.audio.newSound(Gdx.files.internal("Sound/hit_2.wav"));
+        hit[2] = Gdx.audio.newSound(Gdx.files.internal("Sound/hit_3.wav"));
+        move = new Sound[3];
+        move[0] = Gdx.audio.newSound(Gdx.files.internal("Sound/move_1.wav"));
+        move[1] = Gdx.audio.newSound(Gdx.files.internal("Sound/move_2.wav"));
+        move[2] = Gdx.audio.newSound(Gdx.files.internal("Sound/move_3.wav"));
+        death = Gdx.audio.newSound(Gdx.files.internal("Sound/dead.wav"));
+        siren = Gdx.audio.newSound(Gdx.files.internal("Sound/siren.wav"));
+        parameter.size = (int)(200.0*wpw);
         item_font = generator.generateFont(parameter);
         item_font.setColor(Color.GREEN);
         int i = 0;                                                 //Стандартная переменная, которая, почему-то, используется везде. Зачем я вообще написал этот комментарий?
@@ -164,8 +184,8 @@ public class GamePlay extends Openable implements Screen{
         Ehealth = game.robot.Ehealth;
         y = game.random.nextInt(3)+1;
         Ey = game.random.nextInt(3)+1;
-        background = new Texture("background_" + game.robot.level + ".png");
-        floor = new Texture("grass_alpha_" + game.robot.level + ".png");
+        background = new Texture("Location/background_" + game.robot.level + ".png");
+        floor = new Texture("Location/grass_alpha_" + game.robot.level + ".png");
         open_x = 0;
         batch = new SpriteBatch();
         StartLevel = new Thread(){
@@ -383,6 +403,7 @@ public class GamePlay extends Openable implements Screen{
                 }
             }
         };
+        drawer = new SpriteBatchRubber(this, batch);
         StartLevel.start();
         CrossAdd.start();
         EnemyBrine.start();
@@ -396,154 +417,154 @@ public class GamePlay extends Openable implements Screen{
     public void render(float delta) {
         Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         batch.begin();
-        batch.draw(background, 0, 0, width, height);
+        drawer.draw(background, 0, 0, width, height);
         int i = 0;
         while(i!=5){
-            batch.draw(grass, grass_3[i]*(width/10), (height/5)*3-70-15*3, 150, (int)(150+anime_grass));
+            drawer.draw(grass, grass_3[i]*(width/10), (height/5)*3-70-15*3, 150, (int)(150+anime_grass));
             i++;
         }
         if(will_meteor_y == 3 && meteor_run){
             if(!meteor_splash) {
-                batch.draw(Fire, meteor_x-12, meteor_y, 175.0f, 200.0f+(meteor_rot)/4);
-                batch.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1,1, meteor_rot);
+                drawer.draw(Fire, meteor_x-12, meteor_y, 175.0f, 200.0f+(meteor_rot)/4);
+                drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1,1, meteor_rot);
             }else{
-                batch.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
+                drawer.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
             }
         }
-        batch.draw(floor, 0, height/5*2-80, width, height/5);
+        drawer.draw(floor, 0, height/5*2-80, width, height/5);
         if(meteor_run && will_meteor_y == 3) {
-            batch.draw(game.robot.Cross, meteor_x + (150-cross_size)/2, will_meteor_y * (height / 5) - 60 - 10 * will_meteor_y, cross_size, cross_size);
+            drawer.draw(game.robot.Cross, meteor_x + (150-cross_size)/2, will_meteor_y * (height / 5) - 60 - 10 * will_meteor_y, cross_size, cross_size);
         }
         i = 0;
         while(i!=5){
-            batch.draw(grass, grass_2[i]*(width/10), (height/5)*2-105, 150, (int)(150+anime_grass));
+            drawer.draw(grass, grass_2[i]*(width/10), (height/5)*2-105, 150, (int)(150+anime_grass));
             i++;
         }
         if(will_meteor_y == 2 && meteor_run){
             if(!meteor_splash) {
-                batch.draw(Fire, meteor_x-12, meteor_y, 175.0f, 200.0f+(meteor_rot)/4);
-                batch.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1,1, meteor_rot);
+                drawer.draw(Fire, meteor_x-12, meteor_y, 175.0f, 200.0f+(meteor_rot)/4);
+                drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1,1, meteor_rot);
             }else{
-                batch.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
+                drawer.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
             }
         }
-        batch.draw(floor, 0, height/5-70, width, height/5);
+        drawer.draw(floor, 0, height/5-70, width, height/5);
         if(meteor_run && will_meteor_y == 2) {
-            batch.draw(game.robot.Cross, meteor_x + (150-cross_size)/2, will_meteor_y * (height / 5) - 60 - 10 * will_meteor_y, cross_size, cross_size);
+            drawer.draw(game.robot.Cross, meteor_x + (150-cross_size)/2, will_meteor_y * (height / 5) - 60 - 10 * will_meteor_y, cross_size, cross_size);
         }
         i = 0;
         while(i!=5){
-            batch.draw(grass, grass_1[i]*(width/10), (height/5)-70-15, 150, (int)(150+anime_grass));
+            drawer.draw(grass, grass_1[i]*(width/10), (height/5)-70-15, 150, (int)(150+anime_grass));
             i++;
         }
         if(will_meteor_y == 1 && meteor_run){
             if(!meteor_splash) {
-                batch.draw(Fire, meteor_x-12, meteor_y, 175.0f, 200.0f+(meteor_rot)/4);
-                batch.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1,1, meteor_rot);
+                drawer.draw(Fire, meteor_x-12, meteor_y, 175.0f, 200.0f+(meteor_rot)/4);
+                drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1,1, meteor_rot);
             }else{
-                batch.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
+                drawer.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
             }
         }
-        batch.draw(floor, 0, -60, width, height/5);
+        drawer.draw(floor, 0, -60, width, height/5);
         if(meteor_run && will_meteor_y == 1) {
-            batch.draw(game.robot.Cross, meteor_x + (150-cross_size)/2, will_meteor_y * (height / 5) - 60 - 10 * will_meteor_y, cross_size, cross_size);
+            drawer.draw(game.robot.Cross, meteor_x + (150-cross_size)/2, will_meteor_y * (height / 5) - 60 - 10 * will_meteor_y, cross_size, cross_size);
         }
         int index = 0;
         if(bullets>0) {
             while (index < 40) {
                 if (bullets_dir[index] != 0 && Math.floor(bullets_y[index]) == 3.0) {
-                    DrawBullet(batch, (bullets_x[index] + 135 * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+190), bullets_type[index]);
+                    DrawBullet(drawer, (bullets_x[index] + 135 * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+190), bullets_type[index]);
                 }
                 index++;
             }
         }
         if(Ey == 3){
-            DrawEnemy(batch, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale*(1.0f-0.03f*Ey), Erothand+90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
+            DrawEnemy(drawer, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale*(1.0f-0.03f*Ey), Erothand+90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
         }
         if(y == 3){
-            DrawRobot(batch, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead, 0);
+            DrawRobot(drawer, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead, 0);
         }
 
         index = 0;
         if(bullets>0) {
             while (index < 40) {
                 if (bullets_dir[index] != 0 && Math.floor(bullets_y[index]) == 2.0) {
-                    DrawBullet(batch, (bullets_x[index] + 135  * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+190), bullets_type[index]);
+                    DrawBullet(drawer, (bullets_x[index] + 135  * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+190), bullets_type[index]);
                 }
                 index++;
             }
         }
         if(Ey == 2){
-            DrawEnemy(batch, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale*(1.0f-0.03f*Ey), Erothand+90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
+            DrawEnemy(drawer, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale*(1.0f-0.03f*Ey), Erothand+90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
         }
         if(y == 2){
-            DrawRobot(batch, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead, 0);
+            DrawRobot(drawer, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead, 0);
         }
         index = 0;
         if(bullets>0) {
             while (index < 40) {
                 if (bullets_dir[index] != 0 && Math.floor(bullets_y[index]) == 1.0) {
-                    DrawBullet(batch, (bullets_x[index] + 135 * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+190), bullets_type[index]);
+                    DrawBullet(drawer, (bullets_x[index] + 135 * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+190), bullets_type[index]);
                 }
                 index++;
             }
         }
         if(Ey == 1){
-            DrawEnemy(batch, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale*(1.0f-0.03f*Ey), Erothand+90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
+            DrawEnemy(drawer, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale*(1.0f-0.03f*Ey), Erothand+90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
         }
         if(y == 1){
-            DrawRobot(batch, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead, 0);
+            DrawRobot(drawer, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead, 0);
         }
-        DrawEnemyIcon(batch, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale, Ehealth);
-        DrawRobotIcon(batch, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale, health);
+        DrawEnemyIcon(drawer, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale, Ehealth);
+        DrawRobotIcon(drawer, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale, health);
         if(fire_touch) {                //Так как eval из JavaScript в Java не присутствует, и даже его более или менее адекватной замены я не встретил, приходится 7овнокодить...
-            batch.draw(fire_touched, (int) (width - 275 * scale_inteface), -pos_interface, (int) (250 * scale_inteface), (int) (250 * scale_inteface));
+            drawer.draw(fire_touched, (int) (width - 275 * scale_inteface), -pos_interface, (int) (250 * scale_inteface), (int) (250 * scale_inteface));
         }else{
-            batch.draw(fire, (int) (width - 275 * scale_inteface), -pos_interface, (int) (250 * scale_inteface), (int) (250 * scale_inteface));
+            drawer.draw(fire, (int) (width - 275 * scale_inteface), -pos_interface, (int) (250 * scale_inteface), (int) (250 * scale_inteface));
         }
         if(dir == 1) {
 
             if (up_touch) {
-                batch.draw(up_2_touched, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+                drawer.draw(up_2_touched, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
             } else {
-                batch.draw(up_2, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+                drawer.draw(up_2, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
             }
             if (down_touch) {
-                batch.draw(down_2_touched, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+                drawer.draw(down_2_touched, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
             } else {
-                batch.draw(down_2, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+                drawer.draw(down_2, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
             }
         }else{
             if (up_touch) {
-                batch.draw(up_1_touched, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+                drawer.draw(up_1_touched, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
             } else {
-                batch.draw(up_1, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+                drawer.draw(up_1, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
             }
             if (down_touch) {
-                batch.draw(down_1_touched, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+                drawer.draw(down_1_touched, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
             } else {
-                batch.draw(down_1, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+                drawer.draw(down_1, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
             }
         }
         if(redir_touch) {
-            batch.draw(redir_touched, (int)(200*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
+            drawer.draw(redir_touched, (int)(200*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
         }else{
-            batch.draw(redir, (int)(200*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
+            drawer.draw(redir, (int)(200*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
         }
         if(jump_touch) {
-            batch.draw(jump_touched, (int)(width-400*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
+            drawer.draw(jump_touched, (int)(width-400*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
         }else{
-            batch.draw(jump, (int)(width-400*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
+            drawer.draw(jump, (int)(width-400*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
         }
-        DrawEnergy(batch, (int)(400*(scale_inteface-0.1)), (int)(-50*(scale_inteface-0.1)), 1.3*(scale_inteface-0.1), energy, warning);
-        batch.draw(Frontground, 0, 0, width, height);
+        DrawEnergy(drawer, (int)(400*(scale_inteface-0.1)), (int)(-50*(scale_inteface-0.1)), 1.3*(scale_inteface-0.1), energy, warning);
+        drawer.draw(Frontground, 0, 0, width, height);
         if(pause){
-            batch.draw(Openlevel_1, openlevel_x-width-10, 0, width, height);
-            batch.draw(Openlevel_2, width-openlevel_x+10, 0, width, height);
-            item_font.draw(batch, Integer.toString(game.robot.level), width/2-150, (int)((double)height/(double)width*(double)openlevel_x/2.0)+100);
+            drawer.draw(Openlevel_1, openlevel_x-width-10, 0, width, height);
+            drawer.draw(Openlevel_2, width-openlevel_x+10, 0, width, height);
+            item_font.draw(batch, game.robot.level + " УРОВЕНЬ", width/2-(int)(550.0*wpw), (int)((double)height/(double)width*(double)openlevel_x/2.0*hph));
         }
-        CheckClose(batch);
-        CheckOpen(batch);
+        CheckClose(drawer);
+        CheckOpen(drawer);
         batch.end();
         if(closed){
             if(type_close == 1) {
@@ -666,6 +687,7 @@ public class GamePlay extends Openable implements Screen{
                     if(Ehealth <= 0) {
                         Ehealth = 0;
                     }
+                    RandomHitSound();
                     Thread anime = new Thread() {
                         @Override
                         public void run() {
@@ -707,6 +729,7 @@ public class GamePlay extends Openable implements Screen{
                 if(health <= 0) {
                     health = 0;
                 }
+                RandomHitSound();
                 Thread anime = new Thread() {
                     @Override
                     public void run() {
@@ -747,6 +770,7 @@ public class GamePlay extends Openable implements Screen{
             Thread anime = new Thread() {
                 @Override
                 public void run() {
+                    death.play(0.8f);
                     Sleep(  200);
                     while (pos_interface<500) {
                         scale_inteface-=0.0002;
@@ -772,6 +796,7 @@ public class GamePlay extends Openable implements Screen{
                 will_meteor_x = x;
                 will_meteor_y = y;
             }
+            siren.play(0.2f);
             meteor_y = height;
             meteor_x = will_meteor_x*width/10;
             Thread anime = new Thread() {
@@ -835,6 +860,7 @@ public class GamePlay extends Openable implements Screen{
             Thread anime = new Thread() {
                 @Override
                 public void run() {
+                    death.play(0.8f);
                     Sleep(  200);
                     while (pos_interface<500) {
                         scale_inteface-=0.0002;
@@ -847,6 +873,7 @@ public class GamePlay extends Openable implements Screen{
                     DoorClose(1);
                 }
             };
+
             anime.start();
         }
     }
@@ -862,6 +889,7 @@ public class GamePlay extends Openable implements Screen{
                         float lastrot = Erothand;
                         double rot = 0;
                         int rotdir = 1;
+                        RandomFireSound();
                         while (true) {
                             if (rotdir == 1) {
                                 rot += Edir;
@@ -899,6 +927,7 @@ public class GamePlay extends Openable implements Screen{
                         float lastrot = rothand;
                         double rot = 0;
                         int rotdir = 1;
+                        RandomFireSound();
                         while (true) {
                             if (rotdir == 1) {
                                 rot += dir;
@@ -926,6 +955,18 @@ public class GamePlay extends Openable implements Screen{
                 anime.start();//Огонь!
             }
         }
+    }
+    public void RandomFireSound(){
+        int random = game.random.nextInt(3);
+        blaster[random].play(0.8f-((float)game.random.nextInt(3)*0.1f));
+    }
+    public void RandomHitSound(){
+        int random = game.random.nextInt(3);
+        hit[random].play(0.8f-((float)game.random.nextInt(3)*0.1f));
+    }
+    public void RandomMoveSound(){
+        int random = game.random.nextInt(3);
+        move[random].play(0.6f-((float)game.random.nextInt(3)*0.1f));
     }
     public void EEnergyUse(int en){
         Eenergy-=en;
@@ -981,6 +1022,7 @@ public class GamePlay extends Openable implements Screen{
                         int rotdir = 1;
                         boolean acess_x = false;
                         boolean acess_y = false;
+                        RandomMoveSound();
                         while (true) {
                             if (Erobot_y < (height / 5)) {
                                 Erobot_y += 2;
@@ -1037,6 +1079,7 @@ public class GamePlay extends Openable implements Screen{
                         int rotdir = 1;
                         boolean acess_x = false;
                         boolean acess_y = false;
+                        RandomMoveSound();
                         while (true) {
                             if (Erobot_y > -(height / 5)) {
                                 Erobot_y -= 2;
@@ -1093,6 +1136,7 @@ public class GamePlay extends Openable implements Screen{
                         int rotdir = 1;
                         boolean acess_x = false;
                         boolean acess_y = false;
+                        RandomMoveSound();
                         while (true) {
                             if (robot_y < (height / 5)) {
                                 robot_y += 2;
@@ -1149,6 +1193,7 @@ public class GamePlay extends Openable implements Screen{
                         int rotdir = 1;
                         boolean acess_x = false;
                         boolean acess_y = false;
+                        RandomMoveSound();
                         while (true) {
                             if (robot_y > -(height / 5)) {
                                 robot_y -= 2;
@@ -1265,6 +1310,7 @@ public class GamePlay extends Openable implements Screen{
                     @Override
                     public void run() {
                         Eswap = true;
+                        move[0].play();
                         while (true) {
                             Escale -= 0.02f;
                             Erobot_y += 5;
@@ -1308,6 +1354,7 @@ public class GamePlay extends Openable implements Screen{
                     @Override
                     public void run() {
                         swap = true;
+                        move[0].play();
                         while (true) {
                             scale -= 0.02f;
                             scale_inteface-=0.003;
@@ -1324,6 +1371,7 @@ public class GamePlay extends Openable implements Screen{
                         if (x > 8) {
                             x = 8;
                         }
+
                         while (true) {
                             scale += 0.02f;
                             scale_inteface+=0.003;
@@ -1346,6 +1394,16 @@ public class GamePlay extends Openable implements Screen{
     }
     @Override
     public void dispose (){
+        blaster[0].dispose();
+        blaster[1].dispose();
+        blaster[2].dispose();
+        hit[0].dispose();
+        hit[1].dispose();
+        hit[2].dispose();
+        move[0].dispose();
+        move[1].dispose();
+        move[2].dispose();
+        death.dispose();
         game.robot.DisposeGamePlayTextures();
         Frontground.dispose();
         Openlevel_1.dispose();

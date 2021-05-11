@@ -15,19 +15,20 @@ public class GamePlayTouch implements InputProcessor {
     public boolean keyTyped(char character) { return false; }
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if(screenX >= gamePlay.width-275*gamePlay.scale_inteface && screenX <= gamePlay.width-25*gamePlay.scale_inteface && screenY >= gamePlay.height-250*gamePlay.scale_inteface && screenY <= gamePlay.height){
+        game.click.play(0.1f);
+        if(screenX >= SX(gamePlay.width-275*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-25*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-250*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.fire_touch = true;
         }
-        if(screenX >= 50*gamePlay.scale_inteface && screenX <= 200*gamePlay.scale_inteface && screenY >= gamePlay.height-275*gamePlay.scale_inteface && screenY < gamePlay.height-125){
+        if(screenX >= SX(50*gamePlay.scale_inteface) && screenX <= SX(200*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-275*gamePlay.scale_inteface) && screenY < SY(gamePlay.height-125)){
             gamePlay.up_touch = true;
         }
-        if(screenX >= 50*gamePlay.scale_inteface && screenX <= 200*gamePlay.scale_inteface && screenY > gamePlay.height-125*gamePlay.scale_inteface && screenY <= gamePlay.height){
+        if(screenX >= SX(50*gamePlay.scale_inteface) && screenX <= SX(200*gamePlay.scale_inteface) && screenY > SY(gamePlay.height-125*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.down_touch = true;
         }
-        if(screenX >= 200*gamePlay.scale_inteface && screenX <= 350*gamePlay.scale_inteface && screenY >= gamePlay.height-150*gamePlay.scale_inteface && screenY <= gamePlay.height){
+        if(screenX >= SX(200*gamePlay.scale_inteface) && screenX <= SX(350*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.redir_touch = true;
         }
-        if(screenX >= gamePlay.width-400*gamePlay.scale_inteface && screenX <= gamePlay.width-250*gamePlay.scale_inteface && screenY >= gamePlay.height-150*gamePlay.scale_inteface && screenY <= gamePlay.height){
+        if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.jump_touch = true;
         }
         return false;
@@ -39,22 +40,28 @@ public class GamePlayTouch implements InputProcessor {
         gamePlay.redir_touch = false;
         gamePlay.fire_touch = false;
         gamePlay.jump_touch = false;
-        if(screenX >= gamePlay.width-275*gamePlay.scale_inteface && screenX <= gamePlay.width-25*gamePlay.scale_inteface && screenY >= gamePlay.height-250*gamePlay.scale_inteface && screenY <= gamePlay.height){
+        if(screenX >= SX(gamePlay.width-275*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-25*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-250*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.Fire();
         }
-        if(screenX >= 50*gamePlay.scale_inteface && screenX <= 200*gamePlay.scale_inteface && screenY >= gamePlay.height-275*gamePlay.scale_inteface && screenY < gamePlay.height-125){
+        if(screenX >= SX(50*gamePlay.scale_inteface) && screenX <= SX(200*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-275*gamePlay.scale_inteface) && screenY < SY(gamePlay.height-125)){
             gamePlay.Up();
         }
-        if(screenX >= 50*gamePlay.scale_inteface && screenX <= 200*gamePlay.scale_inteface && screenY > gamePlay.height-125*gamePlay.scale_inteface && screenY <= gamePlay.height){
+        if(screenX >= SX(50*gamePlay.scale_inteface) && screenX <= SX(200*gamePlay.scale_inteface) && screenY > SY(gamePlay.height-125*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.Down();
         }
-        if(screenX >= 200*gamePlay.scale_inteface && screenX <= 350*gamePlay.scale_inteface && screenY >= gamePlay.height-150*gamePlay.scale_inteface && screenY <= gamePlay.height){
+        if(screenX >= SX(200*gamePlay.scale_inteface) && screenX <= SX(350*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.Redir();
         }
-        if(screenX >= gamePlay.width-400*gamePlay.scale_inteface && screenX <= gamePlay.width-250*gamePlay.scale_inteface && screenY >= gamePlay.height-150*gamePlay.scale_inteface && screenY <= gamePlay.height){
+        if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.Jump();
         }
         return false;
+    }
+    public int SX(double x){
+        return (int)((double)x*gamePlay.wpw);
+    }
+    public int SY(double y){
+        return (int)((double)y*gamePlay.hph);
     }
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }

@@ -3,9 +3,13 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
+
 public class FirstMenuTouch implements InputProcessor {
     MainGame game;
     FirstMenu firstMenu;
+
+
     public FirstMenuTouch(MainGame game, FirstMenu firstMenu){
         this.game = game;
         this.firstMenu = firstMenu;
@@ -18,11 +22,14 @@ public class FirstMenuTouch implements InputProcessor {
     public boolean keyTyped(char character) { return false; }
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (screenX >= 100 && screenX <= 600 && screenY >= Gdx.graphics.getHeight()/2-350 && screenY <= Gdx.graphics.getHeight()/2-100){
+        game.click.play(0.5f);
+        if (screenX >= (int)(100.0*firstMenu.wpw) && screenX <= (int)(600*firstMenu.wpw) && screenY >= (int)((Gdx.graphics.getHeight()/2-350)*firstMenu.hph) && screenY <= (int)((Gdx.graphics.getHeight()/2-100)*firstMenu.hph)){
             firstMenu.close_touch = true;
+
         }
-        if (screenX >= Gdx.graphics.getWidth()/2+300 && screenX <= Gdx.graphics.getWidth()/2+800 && screenY >= Gdx.graphics.getHeight()/2-350 && screenY <= Gdx.graphics.getHeight()/2-100){
+        if (screenX >= (int)((Gdx.graphics.getWidth()/2+300)*firstMenu.wpw) && screenX <= (int)((Gdx.graphics.getWidth()/2+800)*firstMenu.wpw) && screenY >= (int)((Gdx.graphics.getHeight()/2-350)*firstMenu.hph)  && screenY <= (int)((Gdx.graphics.getHeight()/2-100)*firstMenu.hph) ){
             firstMenu.play_touch = true;
+
         }
         return false;
     }
@@ -30,11 +37,11 @@ public class FirstMenuTouch implements InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         firstMenu.play_touch = false;
         firstMenu.close_touch = false;
-        if (screenX >= 100 && screenX <= 600 && screenY >= Gdx.graphics.getHeight()/2-350 && screenY <= Gdx.graphics.getHeight()/2-100){
+        if (screenX >= (int)(100.0*firstMenu.wpw) && screenX <= (int)(600*firstMenu.wpw) && screenY >= (int)((Gdx.graphics.getHeight()/2-350)*firstMenu.hph) && screenY <= (int)((Gdx.graphics.getHeight()/2-100)*firstMenu.hph)){
             Gdx.app.exit();
         }
-        if (screenX >= Gdx.graphics.getWidth()/2+300 && screenX <= Gdx.graphics.getWidth()/2+800 && screenY >= Gdx.graphics.getHeight()/2-350 && screenY <= Gdx.graphics.getHeight()/2-100){
-           firstMenu.DoorClose(1);
+        if (screenX >= (int)((Gdx.graphics.getWidth()/2+300)*firstMenu.wpw) && screenX <= (int)((Gdx.graphics.getWidth()/2+800)*firstMenu.wpw) && screenY >= (int)((Gdx.graphics.getHeight()/2-350)*firstMenu.hph)  && screenY <= (int)((Gdx.graphics.getHeight()/2-100)*firstMenu.hph) ){
+            firstMenu.DoorClose(1);
         }
         return false;
     }

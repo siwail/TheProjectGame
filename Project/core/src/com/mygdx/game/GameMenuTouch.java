@@ -22,15 +22,16 @@ public class GameMenuTouch implements InputProcessor {
     }
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (screenX >= 50 && screenX <= 550 && screenY <= Gdx.graphics.getHeight() && screenY >= Gdx.graphics.getHeight()-250){
+        game.click.play(0.5f);
+        if (screenX >= SX(50) && screenX <= SX(550) && screenY <= SY(Gdx.graphics.getHeight()) && screenY >= SY(Gdx.graphics.getHeight()-250)){
             gameMenu.close_touch = true;
         }
-        if (screenX >= 620 && screenX <= 1020 && screenY <= 200 && screenY >= 0){
+        if (screenX >= SX(620) && screenX <= SX(1020) && screenY <= SY(200) && screenY >= SY(0)){
             if(gameMenu.isOpen) {
                 gameMenu.work_touch = true;
             }
         }
-        if (screenX >= gameMenu.width-550 && screenX <= gameMenu.width-50 && screenY >= gameMenu.height-250 && screenY <= gameMenu.height){
+        if (screenX >= SX(gameMenu.width-550) && screenX <= SX(gameMenu.width-50) && screenY >= SY(gameMenu.height-250) && screenY <= SY(gameMenu.height)){
             if(gameMenu.isOpen) {
                 gameMenu.play_touch = true;
             }
@@ -42,20 +43,26 @@ public class GameMenuTouch implements InputProcessor {
         gameMenu.close_touch = false;
         gameMenu.work_touch = false;
         gameMenu.play_touch = false;
-        if (screenX >= 50 && screenX <= 550 && screenY <= Gdx.graphics.getHeight() && screenY >= Gdx.graphics.getHeight()-250){
+        if (screenX >= SX(50) && screenX <= SX(550) && screenY <= SY(Gdx.graphics.getHeight()) && screenY >= SY(Gdx.graphics.getHeight()-250)){
             Gdx.app.exit();
         }
-        if (screenX >= 620 && screenX <= 1020 && screenY <= 200 && screenY >= 0){
+        if (screenX >= SX(620) && screenX <= SX(1020) && screenY <= SY(200) && screenY >= SY(0)){
             if(gameMenu.isOpen) {
                 gameMenu.DoorClose(1);
             }
         }
-        if (screenX >= gameMenu.width-550 && screenX <= gameMenu.width-50 && screenY >= gameMenu.height-250 && screenY <= gameMenu.height){
+        if (screenX >= SX(gameMenu.width-550) && screenX <= SX(gameMenu.width-50) && screenY >= SY(gameMenu.height-250) && screenY <= SY(gameMenu.height)){
             if(gameMenu.isOpen) {
                 gameMenu.DoorClose(2);
             }
         }
         return false;
+    }
+    public int SX(int x){
+        return (int)((double)x*gameMenu.wpw);
+    }
+    public int SY(int y){
+        return (int)((double)y*gameMenu.hph);
     }
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {

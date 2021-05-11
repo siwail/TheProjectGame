@@ -2,6 +2,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,7 +14,8 @@ public class Openable implements Screen{
     Texture door_left;
     Texture door_right;
     Thread door;
-    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("main_font.ttf"));
+    SpriteBatchRubber drawer;
+    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Decoration/main_font.ttf"));
     FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
     public static final String FONT_CHARACTERS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyzАБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;,{}\"´`'<>";
     boolean closed = false;
@@ -22,19 +24,23 @@ public class Openable implements Screen{
     int type_close = 0;
     int width;
     int height;
+    double wpw;
+    double hph;
     int open_x = 0;
     public void Start(){
-        parameter.size = 35;
+        door_left =  new Texture("Interface/door_1.png");
+        door_right=  new Texture("Interface/door_2.png");
+        width = 1741;
+        height = 810;
+        open_x = width/2;
+        wpw = (double)Gdx.graphics.getWidth()/(double)width;
+        hph = (double)Gdx.graphics.getHeight()/(double)height;
+        parameter.size = (int)(35.0*wpw);
         parameter.characters = FONT_CHARACTERS;
         item_font = generator.generateFont(parameter);
         item_font.setColor(Color.WHITE);
-        door_left =  new Texture("door_1.png");
-        door_right=  new Texture("door_2.png");
-        width = Gdx.graphics.getWidth();
-        height = Gdx.graphics.getHeight();
-        open_x = width/2;
     }
-    public void DrawBullet(SpriteBatch drawer, int x, int y, int type) {
+    public void DrawBullet(SpriteBatchRubber drawer, int x, int y, int type) {
         if(type == 1) {
             drawer.draw(game.robot.Bullet, x, y, 25, 20);
             drawer.draw(game.robot.Select, x, y, 25, 20);
@@ -43,7 +49,7 @@ public class Openable implements Screen{
             drawer.draw(game.robot.ESelect, x, y, 25, 20);
         }
     }
-    public void DrawEnergy(SpriteBatch drawer, int x, int y, double scale, int energy, int energy_warning) {
+    public void DrawEnergy(SpriteBatchRubber drawer, int x, int y, double scale, int energy, int energy_warning) {
         Texture front = game.robot.EnergyFront;
         if(energy_warning == 1){
             front = game.robot.EnergyWarning1;
@@ -55,7 +61,7 @@ public class Openable implements Screen{
         drawer.draw(game.robot.Energy, x+(game.robot.energy-energy)/3, y, (int)(200*((double)energy/(double)game.robot.energy)*scale), (int)(200*scale));
         drawer.draw(front, x, y, (int)(200*scale), (int)(200*scale));
     }
-    public void DrawSelect(SpriteBatch drawer, int x, int y, double scale, float rothand, float rothead, float rotleg, float rot, int which_select) {
+    public void DrawSelect(SpriteBatchRubber drawer, int x, int y, double scale, float rothand, float rothead, float rotleg, float rot, int which_select) {
         TextureRegion Head = game.robot.Hide;
         TextureRegion Body = game.robot.Hide;
         TextureRegion LeftLeg = game.robot.Hide;
@@ -87,7 +93,7 @@ public class Openable implements Screen{
         drawer.draw(LeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothand);
         drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothand);
     }
-    public void DrawRobot(SpriteBatch drawer, int x, int y, double scale, float rothand, float rothead, float rotleg, float rot, boolean swap, boolean hurt, boolean dead, int rotate) {
+    public void DrawRobot(SpriteBatchRubber drawer, int x, int y, double scale, float rothand, float rothead, float rotleg, float rot, boolean swap, boolean hurt, boolean dead, int rotate) {
         TextureRegion Head = game.robot.H;
         TextureRegion Body = game.robot.B;
         TextureRegion LeftLeg = game.robot.LL;
@@ -126,7 +132,7 @@ public class Openable implements Screen{
         drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothand - 90 + rotate);
 
     }
-    public void DrawEnemy(SpriteBatch drawer, int x, int y, double scale, float rothand, float rothead, float rotleg, float rot, boolean swap, boolean hurt, boolean dead) {
+    public void DrawEnemy(SpriteBatchRubber drawer, int x, int y, double scale, float rothand, float rothead, float rotleg, float rot, boolean swap, boolean hurt, boolean dead) {
         TextureRegion Head = game.robot.EH;
         TextureRegion Body = game.robot.EB;
         TextureRegion LeftLeg = game.robot.ELL;
@@ -164,7 +170,7 @@ public class Openable implements Screen{
         drawer.draw(LeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothand);
         drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, (float) rothand - 90);
     }
-    public void DrawRobotIcon(SpriteBatch drawer, int x, int y, double scale, int health) {
+    public void DrawRobotIcon(SpriteBatchRubber drawer, int x, int y, double scale, int health) {
         if(y+510*scale>=height-70*scale){
             drawer.draw(game.robot.BackHealth, x, (float) (height-45*scale), (float) (200 * scale), (float) (70 * scale));
             drawer.draw(game.robot.RobotHealth, x, (float) (height-45*scale), (float) (200 * scale * ((double)health / (double)game.robot.health)), (float) (70 * scale));
@@ -175,7 +181,7 @@ public class Openable implements Screen{
             drawer.draw(game.robot.RobotIcon, x, (float) (y + 510 * scale), (float) (200 * scale), (float) (70 * scale));
         }
     }
-    public void DrawEnemyIcon(SpriteBatch drawer, int x, int y, double scale, int health) {
+    public void DrawEnemyIcon(SpriteBatchRubber drawer, int x, int y, double scale, int health) {
         if(y+510*scale>=height-70*scale){
             drawer.draw(game.robot.BackHealth, x, (float) (height-45*scale), (float) (200 * scale), (float) (70 * scale));
             drawer.draw(game.robot.EnemyHealth, x, (float) (height-45*scale), (float) (200 * scale * ((double)health / (double)game.robot.Ehealth)), (float) (70 * scale));
@@ -198,6 +204,7 @@ public class Openable implements Screen{
                 isOpen = true;
             }
         };
+        game.opened.play(0.5f);
         door.start();
     }
     public void DoorClose(int type_close){
@@ -215,16 +222,17 @@ public class Openable implements Screen{
                     closed = true;
                 }
             };
+            game.closed.play(0.5f);
             door.start();
         }
     }
-    public void CheckOpen(SpriteBatch drawer){
+    public void CheckOpen(SpriteBatchRubber drawer){
         if(!isOpen) {
             drawer.draw(door_right, open_x, 0, width, height);
             drawer.draw(door_left, -open_x, 0, width, height);
         }
     }
-    public void CheckClose(SpriteBatch drawer){
+    public void CheckClose(SpriteBatchRubber drawer){
         if (willClose) {
             drawer.draw(door_left, -open_x, 0, width, height);
             drawer.draw(door_right, open_x, 0, width, height);

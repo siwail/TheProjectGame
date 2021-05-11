@@ -27,6 +27,7 @@ public WorkMenuTouch(MainGame game, WorkMenu workMenu){
     }
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        game.click.play(0.5f);
         return false;
     }
     @Override

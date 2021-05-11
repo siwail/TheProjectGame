@@ -109,13 +109,13 @@ public class RoboStructure {
         Bt.dispose();
     }*/
     public void SetWorkMenuTextures(){
-        Hidet = new Texture("hide.png");
-        HeadSelectt = new Texture("head_select.png");
-        BodySelectt = new Texture("body_select.png");
-        LeftLegSelectt = new Texture("leg_select.png");
-        RightLegSelectt = new Texture("leg_select.png");
-        LeftHandSelectt = new Texture("hand_select.png");
-        RightHandSelectt = new Texture("hand_select.png");
+        Hidet = new Texture("Interface/hide.png");
+        HeadSelectt = new Texture("Robot/head_select.png");
+        BodySelectt = new Texture("Robot/body_select.png");
+        LeftLegSelectt = new Texture("Robot/leg_select.png");
+        RightLegSelectt = new Texture("Robot/leg_select.png");
+        LeftHandSelectt = new Texture("Robot/hand_select.png");
+        RightHandSelectt = new Texture("Robot/hand_select.png");
         Hide =  new TextureRegion(Hidet, 300, 300);
     }
     public void DisposeWorkMenuTextures(){
@@ -128,41 +128,41 @@ public class RoboStructure {
         RightHandSelectt.dispose();
     }
     public void SetGamePlayTextures(){
-        Cross = new Texture("aim.png");
-        Energy = new Texture("energy.png");
-        EnergyBack = new Texture("back_energy.png");
-        EnergyFront = new Texture("front_energy.png");
-        EnergyWarning1 = new Texture("front_energy_w1.png");
-        EnergyWarning2 = new Texture("front_energy_w2.png");
-        EBullet = new Texture("bullet.png");
-        Bullet = new Texture("bullet2.png");
-        ESelect = new Texture("select.png");
-        Select = new Texture("select2.png");
-        BackHealth = new Texture("back_health.png");
-        RobotIcon = new Texture("friend.png");
-        EnemyIcon = new Texture("enemy.png");
-        RobotHealth = new Texture("friend_health.png");
-        EnemyHealth = new Texture("enemy_health.png");
-        RobotDetect = new Texture("friend_detect.png");
-        EnemyDetect = new Texture("enemy_detect.png");
-        HeadSwapt = new Texture("head_swap.png");
-        BodySwapt = new Texture("body_swap.png");
-        LeftLegSwapt = new Texture("leg_swap.png");
-        RightLegSwapt = new Texture("leg_swap.png");
-        LeftHandSwapt = new Texture("hand_swap.png");
-        RightHandSwapt = new Texture("hand_swap.png");
-        HeadHurtt = new Texture("head_hurt.png");
-        BodyHurtt = new Texture("body_hurt.png");
-        LeftLegHurtt = new Texture("leg_hurt.png");
-        RightLegHurtt = new Texture("leg_hurt.png");
-        LeftHandHurtt = new Texture("hand_hurt.png");
-        RightHandHurtt = new Texture("hand_hurt.png");
-        HeadDeadt = new Texture("head_dead.png");
-        BodyDeadt = new Texture("body_dead.png");
-        LeftLegDeadt = new Texture("leg_dead.png");
-        RightLegDeadt = new Texture("leg_dead.png");
-        LeftHandDeadt = new Texture("hand_dead.png");
-        RightHandDeadt = new Texture("hand_dead.png");
+        Cross = new Texture("Object/aim.png");
+        Energy = new Texture("Interface/energy.png");
+        EnergyBack = new Texture("Interface/back_energy.png");
+        EnergyFront = new Texture("Interface/front_energy.png");
+        EnergyWarning1 = new Texture("Interface/front_energy_w1.png");
+        EnergyWarning2 = new Texture("Interface/front_energy_w2.png");
+        EBullet = new Texture("Object/bullet.png");
+        Bullet = new Texture("Object/bullet2.png");
+        ESelect = new Texture("Interface/select.png");
+        Select = new Texture("Interface/select2.png");
+        BackHealth = new Texture("Interface/back_health.png");
+        RobotIcon = new Texture("Interface/friend.png");
+        EnemyIcon = new Texture("Interface/enemy.png");
+        RobotHealth = new Texture("Interface/friend_health.png");
+        EnemyHealth = new Texture("Interface/enemy_health.png");
+        RobotDetect = new Texture("Interface/friend_detect.png");
+        EnemyDetect = new Texture("Interface/enemy_detect.png");
+        HeadSwapt = new Texture("Robot/head_swap.png");
+        BodySwapt = new Texture("Robot/body_swap.png");
+        LeftLegSwapt = new Texture("Robot/leg_swap.png");
+        RightLegSwapt = new Texture("Robot/leg_swap.png");
+        LeftHandSwapt = new Texture("Robot/hand_swap.png");
+        RightHandSwapt = new Texture("Robot/hand_swap.png");
+        HeadHurtt = new Texture("Robot/head_hurt.png");
+        BodyHurtt = new Texture("Robot/body_hurt.png");
+        LeftLegHurtt = new Texture("Robot/leg_hurt.png");
+        RightLegHurtt = new Texture("Robot/leg_hurt.png");
+        LeftHandHurtt = new Texture("Robot/hand_hurt.png");
+        RightHandHurtt = new Texture("Robot/hand_hurt.png");
+        HeadDeadt = new Texture("Robot/head_dead.png");
+        BodyDeadt = new Texture("Robot/body_dead.png");
+        LeftLegDeadt = new Texture("Robot/leg_dead.png");
+        RightLegDeadt = new Texture("Robot/leg_dead.png");
+        LeftHandDeadt = new Texture("Robot/hand_dead.png");
+        RightHandDeadt = new Texture("Robot/hand_dead.png");
     }
     public void DisposeGamePlayTextures(){
         Cross.dispose();
@@ -225,24 +225,24 @@ public class RoboStructure {
         level = game.random.nextInt(4)+1;
     }
     public void UpdateTextures(){
-        RHt =  new Texture("hand_" + RHid + ".png");
-        LHt = new Texture("hand_" + LHid + ".png");
-        RLt = new Texture("leg_" + RLid + ".png");
-        LLt = new Texture("leg_" + LLid + ".png");
-        Ht = new Texture("head_" + Hid + ".png");
-        Bt = new Texture("body_" + Bid + ".png");
+        RHt =  new Texture("Robot/hand_" + RHid + ".png");
+        LHt = new Texture("Robot/hand_" + LHid + ".png");
+        RLt = new Texture("Robot/leg_" + RLid + ".png");
+        LLt = new Texture("Robot/leg_" + LLid + ".png");
+        Ht = new Texture("Robot/head_" + Hid + ".png");
+        Bt = new Texture("Robot/body_" + Bid + ".png");
         RH =  new TextureRegion(RHt, 300, 300);
         LH =  new TextureRegion(LHt, 300, 300);
         RL =  new TextureRegion(RLt, 300, 300);
         LL =  new TextureRegion(LLt, 300, 300);
         H =  new TextureRegion(Ht, 300, 300);
         B =  new TextureRegion(Bt, 300, 300);
-        ERHt =  new Texture("hand_" + ERHid + ".png");
-        ELHt = new Texture("hand_" + ELHid + ".png");
-        ERLt = new Texture("leg_" + ERLid + ".png");
-        ELLt = new Texture("leg_" + ELLid + ".png");
-        EHt = new Texture("head_" + EHid + ".png");
-        EBt = new Texture("body_" + EBid + ".png");
+        ERHt =  new Texture("Robot/hand_" + ERHid + ".png");
+        ELHt = new Texture("Robot/hand_" + ELHid + ".png");
+        ERLt = new Texture("Robot/leg_" + ERLid + ".png");
+        ELLt = new Texture("Robot/leg_" + ELLid + ".png");
+        EHt = new Texture("Robot/head_" + EHid + ".png");
+        EBt = new Texture("Robot/body_" + EBid + ".png");
         ERH =  new TextureRegion(ERHt, 300, 300);
         ELH =  new TextureRegion(ELHt, 300, 300);
         ERL =  new TextureRegion(ERLt, 300, 300);
