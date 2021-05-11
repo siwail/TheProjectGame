@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.robotlegend;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 public class GamePlay extends Openable implements Screen{
     SpriteBatch batch;
     Sound[] blaster;
@@ -94,7 +95,6 @@ public class GamePlay extends Openable implements Screen{
     float Erot = 0;
     float Escale = 0.8f;
     float meteor_rot = 0.0f;
-    boolean pause = true;
     boolean meteor_splash = false;
     boolean meteor_run = false;
     boolean dead = false;
@@ -561,7 +561,7 @@ public class GamePlay extends Openable implements Screen{
         if(pause){
             drawer.draw(Openlevel_1, openlevel_x-width-10, 0, width, height);
             drawer.draw(Openlevel_2, width-openlevel_x+10, 0, width, height);
-            item_font.draw(batch, game.robot.level + " УРОВЕНЬ", width/2-(int)(550.0*wpw), (int)((double)height/(double)width*(double)openlevel_x/2.0*hph));
+            item_font.draw(batch, game.robot.level + " УРОВЕНЬ", (int)((double)(width/2.0-550.0)*wpw), (int)((double)height/(double)width*(double)openlevel_x/2.0*hph));
         }
         CheckClose(drawer);
         CheckOpen(drawer);
@@ -846,7 +846,7 @@ public class GamePlay extends Openable implements Screen{
                     meteor_x = 0;
                     will_meteor_y = 0;
                     will_meteor_x = 0;
-                    cross_size= 200;
+                    cross_size=0;
                     meteor_splash=false;
                     meteor_run = false;
                 }

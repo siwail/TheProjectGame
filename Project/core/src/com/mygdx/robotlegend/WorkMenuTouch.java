@@ -1,9 +1,10 @@
-package com.mygdx.game;
+package com.mygdx.robotlegend;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+
 public class WorkMenuTouch implements InputProcessor {
-    MainGame game;
-    WorkMenu workMenu;
+    com.mygdx.robotlegend.MainGame game;
+    com.mygdx.robotlegend.WorkMenu workMenu;
     double x = 0;
     int y = 0;
     double scale = 0;

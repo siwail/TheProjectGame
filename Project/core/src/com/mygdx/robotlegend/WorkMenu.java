@@ -1,12 +1,12 @@
-package com.mygdx.game;
+package com.mygdx.robotlegend;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 public class WorkMenu extends Openable implements Screen {
     SpriteBatch batch = new SpriteBatch();
     Sound upgrade;

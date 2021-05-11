@@ -1,8 +1,7 @@
-package com.mygdx.game;
+package com.mygdx.robotlegend;
 
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
-import com.mygdx.game.MyGdxGame;
 
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.uikit.UIApplication;

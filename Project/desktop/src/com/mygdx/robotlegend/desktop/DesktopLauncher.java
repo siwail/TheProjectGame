@@ -1,10 +1,9 @@
-package com.mygdx.game.desktop;
+package com.mygdx.robotlegend.desktop;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.mygdx.game.FirstMenu;
-import com.mygdx.game.FirstMenu;
+import com.mygdx.robotlegend.FirstMenu;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

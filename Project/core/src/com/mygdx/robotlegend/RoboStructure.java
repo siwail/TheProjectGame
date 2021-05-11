@@ -1,8 +1,9 @@
-package com.mygdx.game;
+package com.mygdx.robotlegend;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 public class RoboStructure {
-    MainGame game;
+    com.mygdx.robotlegend.MainGame game;
     public RoboStructure(MainGame game){ this.game = game; }
     int level = 0;
     int gears = 0;

@@ -1,13 +1,12 @@
-package com.mygdx.game;
+package com.mygdx.robotlegend;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+
 public class Openable implements Screen{
     MainGame game;
     BitmapFont item_font;
@@ -21,6 +20,7 @@ public class Openable implements Screen{
     boolean closed = false;
     boolean willClose = false;
     boolean isOpen = false;
+    boolean pause = true;
     int type_close = 0;
     int width;
     int height;
@@ -196,7 +196,9 @@ public class Openable implements Screen{
         door = new Thread(){
             @Override
             public void run(){
-                Sleep( 1000);
+                Sleep( 800);
+                game.opened.play(0.5f);
+                Sleep(100);
                 while(open_x < width/2) {
                     open_x += 5;
                     Sleep( 5);
@@ -204,7 +206,6 @@ public class Openable implements Screen{
                 isOpen = true;
             }
         };
-        game.opened.play(0.5f);
         door.start();
     }
     public void DoorClose(int type_close){
@@ -214,6 +215,8 @@ public class Openable implements Screen{
             door = new Thread() {
                 @Override
                 public void run() {
+                    game.closed.play(0.5f);
+                    Sleep(1050);
                     while (open_x > 0) {
                         open_x -= 5;
                         Sleep( 5);
@@ -222,7 +225,7 @@ public class Openable implements Screen{
                     closed = true;
                 }
             };
-            game.closed.play(0.5f);
+
             door.start();
         }
     }
@@ -250,9 +253,13 @@ public class Openable implements Screen{
     @Override
     public void resize(int width, int height) { }
     @Override
-    public void pause() { }
+    public void pause() {
+        pause=true;
+    }
     @Override
-    public void resume() { }
+    public void resume() {
+        pause=false;
+    }
     @Override
     public void hide() { }
     @Override

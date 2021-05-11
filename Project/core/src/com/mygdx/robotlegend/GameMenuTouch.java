@@ -1,9 +1,10 @@
-package com.mygdx.game;
+package com.mygdx.robotlegend;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+
 public class GameMenuTouch implements InputProcessor {
-    MainGame game;
-    GameMenu gameMenu;
+    com.mygdx.robotlegend.MainGame game;
+    com.mygdx.robotlegend.GameMenu gameMenu;
     public GameMenuTouch(MainGame game, GameMenu gameMenu){
         this.game = game;
         this.gameMenu = gameMenu;
@@ -23,7 +24,7 @@ public class GameMenuTouch implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         game.click.play(0.5f);
-        if (screenX >= SX(50) && screenX <= SX(550) && screenY <= SY(Gdx.graphics.getHeight()) && screenY >= SY(Gdx.graphics.getHeight()-250)){
+        if (screenX >= SX(50) && screenX <= SX(550) && screenY <= SY(gameMenu.height) && screenY >= SY(gameMenu.height-250)){
             gameMenu.close_touch = true;
         }
         if (screenX >= SX(620) && screenX <= SX(1020) && screenY <= SY(200) && screenY >= SY(0)){
@@ -43,7 +44,7 @@ public class GameMenuTouch implements InputProcessor {
         gameMenu.close_touch = false;
         gameMenu.work_touch = false;
         gameMenu.play_touch = false;
-        if (screenX >= SX(50) && screenX <= SX(550) && screenY <= SY(Gdx.graphics.getHeight()) && screenY >= SY(Gdx.graphics.getHeight()-250)){
+        if (screenX >= SX(50) && screenX <= SX(550) && screenY <= SY(gameMenu.height) && screenY >= SY(gameMenu.height-250)){
             Gdx.app.exit();
         }
         if (screenX >= SX(620) && screenX <= SX(1020) && screenY <= SY(200) && screenY >= SY(0)){

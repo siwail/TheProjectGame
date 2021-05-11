@@ -1,10 +1,9 @@
-package com.mygdx.game.client;
+package com.mygdx.robotlegend.client;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.mygdx.game.FirstMenu;
-import com.mygdx.game.FirstMenu;
+import com.mygdx.robotlegend.FirstMenu;
 
 public class HtmlLauncher extends GwtApplication {
 

@@ -1,8 +1,9 @@
-package com.mygdx.game;
+package com.mygdx.robotlegend;
 import com.badlogic.gdx.InputProcessor;
+
 public class GamePlayTouch implements InputProcessor {
-    MainGame game;
-    GamePlay gamePlay;
+    com.mygdx.robotlegend.MainGame game;
+    com.mygdx.robotlegend.GamePlay gamePlay;
     public GamePlayTouch(MainGame game, GamePlay gamePlay){
         this.game = game;
         this.gamePlay = gamePlay;

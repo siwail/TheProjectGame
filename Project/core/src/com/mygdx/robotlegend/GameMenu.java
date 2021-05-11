@@ -1,11 +1,11 @@
-package com.mygdx.game;
+package com.mygdx.robotlegend;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 public class GameMenu extends Openable implements Screen{
     SpriteBatch batch;
     Thread anime_smoke;
@@ -172,7 +172,7 @@ public class GameMenu extends Openable implements Screen{
         DrawRobot(drawer, (int)robot_x, robot_y, scale, rotation_hand+90, rotation_head, rotation_leg, 0 , false, false, false, 0);
         if (BirdFly) {
             TextureRegion bird_region = new TextureRegion(birds[bird_anime], 400, 400);
-            batch.draw(bird_region, birdx, birdy,0, 0, 250, 250, 1, 1, (birdy-height/2)/5);
+            drawer.draw(bird_region, birdx, birdy,0, 0, 250, 250, 1, 1, (birdy-height/2)/5);
         }
         if(close_touch){
             close = white;
