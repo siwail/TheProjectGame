@@ -62,7 +62,7 @@ public WorkMenuTouch(MainGame game, WorkMenu workMenu){
         return false;
     }
     public int RY(int y){
-        return Gdx.graphics.getHeight()-y;
+        return workMenu.height-y;
     }
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }

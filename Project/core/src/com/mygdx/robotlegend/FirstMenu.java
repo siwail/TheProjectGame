@@ -7,11 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class FirstMenu  extends Openable implements Screen{
 	SpriteBatch batch;
-
-
 	Texture[] backs = new Texture[5];
 	Texture button_play;
-	Texture head;
+	Texture[] head = new Texture[3];
 	Texture button_exit;
 	Texture robo_texture;
 	Texture white;
@@ -22,18 +20,16 @@ public class FirstMenu  extends Openable implements Screen{
 	Thread leg;
 	boolean close_touch = false;
 	boolean play_touch = false;
-	float r = 0;
+	float rotate = 0;
 	int a = 0;
-	int dir_r = 0;
-	int h = 1;
+	int dir_rotate = 0;
+	int h = 1; //Анимация головы
 	public FirstMenu(MainGame game){
 		this.game = game;
 	}
 	@Override
 	public void render(float delta) {
-		if (!closed) {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-			head = new Texture(Gdx.files.internal("Object/logo_" + (1 + h) + ".png"));
 			if(close_touch){
 				button_exit = white;
 			}else{
@@ -46,17 +42,15 @@ public class FirstMenu  extends Openable implements Screen{
 			}
 			batch.begin();
 			drawer.draw(backs[a-1], 0, 0, width, height);
-			drawer.draw(head, ((float) width - 500), 50, 500, 500);
+			drawer.draw(head[h], ((float) width - 500), 50, 500, 500);
 			drawer.draw(button_exit, 100.0f, ((float) height / 2 + 100), 500, 250);
-			drawer.draw(robo, -150, -150, 100, 100, 750, 750, 1, 1, r - 30);
+			drawer.draw(robo, -150, -150, 100, 100, 750, 750, 1, 1, rotate - 30);
 			drawer.draw(button_play, ((float) width / 2 + 300), ((float) height / 2 + 100), 500, 250);
-			head.dispose();
 			CheckClose(drawer);
 			batch.end();
 			if(closed){
 				game.setGameMenu();
 			}
-		}
 	}
 	@Override
 	public void show() {
@@ -68,6 +62,9 @@ public class FirstMenu  extends Openable implements Screen{
 		for(int i=0;i<5;i++){
 			backs[i] = new Texture("Interface/back" + (i+1) + ".png");
 		}
+		head[0] = new Texture("Object/logo_2.png");
+		head[1] = new Texture("Object/logo_3.png");
+		head[2] = new Texture("Object/logo_4.png");
 		robo = new TextureRegion(robo_texture, 500, 500);
 		Gdx.input.setInputProcessor(new FirstMenuTouch(game, this));
 		anime = new Thread() {
@@ -75,8 +72,8 @@ public class FirstMenu  extends Openable implements Screen{
 			public void run() {
 				while (true) {
 					h++;
-					if (h > 3) {
-						h = 1;
+					if (h > 2) {
+						h = 0;
 					}
 					if(a<5){
 						a++;
@@ -95,13 +92,13 @@ public class FirstMenu  extends Openable implements Screen{
 		@Override
 		public void run(){
 			while(true){
-				if (dir_r == 0) {
-					r += 0.5f;
+				if (dir_rotate == 0) {
+					rotate += 0.5f;
 				} else {
-					r -= 0.5f;
+					rotate -= 0.5f;
 				}
-				if (r >= 30 | r <= 0) {
-					dir_r = 1 - dir_r;
+				if (rotate >= 30 | rotate <= 0) {
+					dir_rotate = 1 - dir_rotate;
 				}
 				if(closed){
 					break;
@@ -116,11 +113,12 @@ public class FirstMenu  extends Openable implements Screen{
 }
 	@Override
 	public void dispose () {
+		batch.dispose();
 		play.dispose();
 		white.dispose();
 		robo_texture.dispose();
-		batch.dispose();
-		for(Texture t: backs){ t.dispose(); }
+		for(Texture texture: backs){ texture.dispose(); }
+		for(Texture texture: head){ texture.dispose(); }
 		button_play.dispose();
 		button_exit.dispose();
 		door_right.dispose();

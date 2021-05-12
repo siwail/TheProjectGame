@@ -15,8 +15,8 @@ public class GameMenu extends Openable implements Screen{
     Texture play;
     Texture close;
     Texture music;
+    Texture music_stop;
     Texture workspace;
-    Texture frame;
     Texture grass;
     Texture gear;
     Texture chip;
@@ -68,8 +68,8 @@ public class GameMenu extends Openable implements Screen{
         bulb = new Texture("Item/bulb.png");
         gear = new Texture("Item/gear.png");
         Gdx.input.setInputProcessor(new GameMenuTouch(game, this));
-        frame = new Texture("Interface/frame.png");
         music =  new Texture("Button/music_1.png");
+        music_stop =  new Texture("Button/music_2.png");
         camp = new Texture("Interface/camp_2.png");
         Start();
         robot_x = width-400;
@@ -192,19 +192,19 @@ public class GameMenu extends Openable implements Screen{
         drawer.draw(close, 50, 0, 500, 250);
         drawer.draw(play, width-550, 0, 500, 250);
         drawer.draw(workspace, 620, height-200, 400, 200);
-        drawer.draw(music, 1020, height-100, 100, 100);
-        drawer.draw(frame, 10, height-120, 120, 120);
-        drawer.draw(frame, 130, height-120, 120, 120);
-        drawer.draw(frame, 250, height-120, 120, 120);
-        drawer.draw(frame, 370, height-120, 120, 120);
+        if(game.music_play) {
+            drawer.draw(music, 1020, height - 100, 100, 100);
+        }else{
+            drawer.draw(music_stop, 1020, height - 100, 100, 100);
+        }
         drawer.draw(metall, 10, height-120, 120, 120);
         drawer.draw(gear, 130, height-120, 120, 120);
         drawer.draw(chip, 250, height-120, 120, 120);
         drawer.draw(bulb, 370, height-120, 120, 120);
-        item_font.draw(batch, Integer.toString(Gdx.graphics.getWidth()), (int)(20.0*wpw), (int)((height-80)*hph));
-        item_font.draw(batch, Integer.toString(Gdx.graphics.getHeight()), (int)(140.0*wpw), (int)((height-80)*hph));
-        item_font.draw(batch, Integer.toString(game.robot.microchips), (int)(260.0*wpw), (int)((height-80)*hph));
-        item_font.draw(batch, Integer.toString(game.robot.lamps), (int)(380.0*wpw), (int)((height-80)*hph));
+        item_font.draw(batch, Integer.toString(game.robot.metal), (int)(25.0*wpw), (int)((height-130)*hph));
+        item_font.draw(batch, Integer.toString(game.robot.gears), (int)(145.0*wpw), (int)((height-130)*hph));
+        item_font.draw(batch, Integer.toString(game.robot.microchips), (int)(275.0*wpw), (int)((height-130)*hph));
+        item_font.draw(batch, Integer.toString(game.robot.lamps), (int)(405.0*wpw), (int)((height-130)*hph));
         drawer.draw(smoke[smoke_anime], width/2-125, 400, 175, 175);
         CheckClose(drawer);
         CheckOpen(drawer);
@@ -362,5 +362,11 @@ public class GameMenu extends Openable implements Screen{
         play.dispose();
         workspace.dispose();
         music.dispose();
+        music_stop.dispose();
+        bulb.dispose();
+        gear.dispose();
+        metall.dispose();
+        chip.dispose();
+
     }
 }

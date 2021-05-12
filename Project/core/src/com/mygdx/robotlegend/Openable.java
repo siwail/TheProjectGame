@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 public class Openable implements Screen{
     MainGame game;
     BitmapFont item_font;
+    BitmapFont resource_font;
+    BitmapFont button_font;
     Texture door_left;
     Texture door_right;
     Thread door;
@@ -35,10 +37,16 @@ public class Openable implements Screen{
         open_x = width/2;
         wpw = (double)Gdx.graphics.getWidth()/(double)width;
         hph = (double)Gdx.graphics.getHeight()/(double)height;
-        parameter.size = (int)(35.0*wpw);
+        parameter.size = (int)(50.0*wpw);
         parameter.characters = FONT_CHARACTERS;
         item_font = generator.generateFont(parameter);
-        item_font.setColor(Color.WHITE);
+        item_font.setColor(Color.BLACK);
+        parameter.size = (int)(60.0*wpw);
+        button_font = generator.generateFont(parameter);
+        button_font.setColor(Color.WHITE);
+        parameter.size = (int)(150.0*wpw);
+        resource_font = generator.generateFont(parameter);
+        resource_font.setColor(0, 153, 0, 255);
     }
     public void DrawBullet(SpriteBatchRubber drawer, int x, int y, int type) {
         if(type == 1) {

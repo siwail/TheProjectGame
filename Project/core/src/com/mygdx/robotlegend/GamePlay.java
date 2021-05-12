@@ -43,9 +43,22 @@ public class GamePlay extends Openable implements Screen{
     Texture Splash;
     Texture Fire;
     Texture Frontground;
+    Texture Wineffect;
+    Texture Darkeffect;
     Texture Openlevel_1;
     Texture Openlevel_2;
+    Texture gear;
+    Texture chip;
+    Texture metall;
+    Texture bulb;
     TextureRegion Meteor;
+    TextureRegion Effect;
+    int win_y = 0;
+    float win_rot = 0.0f;
+    int win_scale = 0;
+    int win = 0;
+    int win_type = 0;
+    int win_num = 0;
     int meteor_splash_size = 0;
     int cross_size= 0;
     int meteor_x = 0;
@@ -119,11 +132,20 @@ public class GamePlay extends Openable implements Screen{
     boolean redir_touch = false;
     boolean fire_touch = false;
     boolean jump_touch = false;
+    boolean end = false;
+    boolean ending = false;
     public GamePlay(MainGame game) { this.game = game; }
     @Override
     public void show() {
         game.robot.SetGamePlayTextures();
+        metall = new Texture("Item/metall.png");
+        chip = new Texture("Item/chip.png");
+        bulb = new Texture("Item/bulb.png");
+        gear = new Texture("Item/gear.png");
         energy = game.robot.energy;
+        Darkeffect = new Texture("Interface/dark.png");
+        Wineffect = new Texture("Interface/gameplay_effect_1.png");
+        Effect = new TextureRegion(Wineffect, 300, 300);
         Frontground = new Texture("Interface/frontground.png");
         Openlevel_1 = new Texture("Interface/openlevel_1.png");
         Openlevel_2 = new Texture("Interface/openlevel_2.png");
@@ -162,7 +184,7 @@ public class GamePlay extends Openable implements Screen{
         move[2] = Gdx.audio.newSound(Gdx.files.internal("Sound/move_3.wav"));
         death = Gdx.audio.newSound(Gdx.files.internal("Sound/dead.wav"));
         siren = Gdx.audio.newSound(Gdx.files.internal("Sound/siren.wav"));
-        parameter.size = (int)(200.0*wpw);
+        parameter.size = (int)(150.0*wpw);
         item_font = generator.generateFont(parameter);
         item_font.setColor(Color.GREEN);
         int i = 0;                                                 //Стандартная переменная, которая, почему-то, используется везде. Зачем я вообще написал этот комментарий?
@@ -523,7 +545,6 @@ public class GamePlay extends Openable implements Screen{
             drawer.draw(fire, (int) (width - 275 * scale_inteface), -pos_interface, (int) (250 * scale_inteface), (int) (250 * scale_inteface));
         }
         if(dir == 1) {
-
             if (up_touch) {
                 drawer.draw(up_2_touched, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
             } else {
@@ -557,11 +578,29 @@ public class GamePlay extends Openable implements Screen{
             drawer.draw(jump, (int)(width-400*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
         }
         DrawEnergy(drawer, (int)(400*(scale_inteface-0.1)), (int)(-50*(scale_inteface-0.1)), 1.3*(scale_inteface-0.1), energy, warning);
+        if(win != 0){
+            drawer.draw(Darkeffect, 0, 0, width, height);
+            drawer.draw(Effect, (float) (width/2.0-(double)win_scale/2.0), (float) (height/2.0-(double)win_scale/2.0), (float)win_scale/2.0f, (float)win_scale/2.0f, (float)win_scale, (float)win_scale, 1, 1, (float)win_rot);
+            if(win_type == 1) {
+                drawer.draw(chip,  width/2-(int)((double)win_scale*0.70)/2, height/2-(int)((double)win_scale*0.70)/2, (int)((double)win_scale*0.70), (int)((double)win_scale*0.70));
+            }
+            if(win_type == 2) {
+                drawer.draw(bulb,  width/2-(int)((double)win_scale*0.70)/2, height/2-(int)((double)win_scale*0.70)/2, (int)((double)win_scale*0.70), (int)((double)win_scale*0.70));
+            }
+            if(win_type == 3) {
+                drawer.draw(metall,  width/2-(int)((double)win_scale*0.70)/2, height/2-(int)((double)win_scale*0.70)/2, (int)((double)win_scale*0.70), (int)((double)win_scale*0.70));
+            }
+            if(win_type == 4) {
+                drawer.draw(gear,   width/2-(int)((double)win_scale*0.70)/2, height/2-(int)((double)win_scale*0.70)/2, (int)((double)win_scale*0.70), (int)((double)win_scale*0.70));
+            }
+            resource_font.draw(batch, win_num + "", (int)(((double)width/2.0-50)*wpw), (int)(((double)win_y-160.0)*hph));
+            resource_font.draw(batch, "ХЛАМ", (int)(((double)width/2.0-200)*wpw), (int)(((double)height-(double)win_y+260.0)*hph));
+        }
         drawer.draw(Frontground, 0, 0, width, height);
         if(pause){
             drawer.draw(Openlevel_1, openlevel_x-width-10, 0, width, height);
             drawer.draw(Openlevel_2, width-openlevel_x+10, 0, width, height);
-            item_font.draw(batch, game.robot.level + " УРОВЕНЬ", (int)((double)(width/2.0-550.0)*wpw), (int)((double)height/(double)width*(double)openlevel_x/2.0*hph));
+            item_font.draw(batch, game.robot.level + " УРОВЕНЬ", (int)((double)(width/2.0-400.0)*wpw), (int)(((double)height/(double)width*(double)openlevel_x/2.0-50)*hph));
         }
         CheckClose(drawer);
         CheckOpen(drawer);
@@ -570,6 +609,10 @@ public class GamePlay extends Openable implements Screen{
             if(type_close == 1) {
                 game.setGameMenu();
             }
+        }
+        if(end && !ending){
+            ending = true;
+            DoorClose(1);
         }
     }
     public boolean CheckBullet(){
@@ -780,15 +823,77 @@ public class GamePlay extends Openable implements Screen{
                         Sleep(  5);
                     }
                     Sleep(  500);
-                    DoorClose(1);
+                    EndGame(1);
                 }
             };
             anime.start();
         }
     }
+    public void EndGame(int win){
+        win_num = game.random.nextInt(7)+1;
+        win_rot = 0.0f;
+        win_type = game.robot.level;
+        this.win = win;
+        game.click.play(0.8f);
+        Thread anime = new Thread() {
+            @Override
+            public void run() {
+                if(win_type == 1){
+                    game.robot.microchips+=win_num;
+                }
+                if(win_type == 2){
+                    game.robot.lamps+=win_num;
+                }
+                if(win_type == 3){
+                    game.robot.metal+=win_num;
+                }
+                if(win_type == 4){
+                    game.robot.gears+=win_num;
+                }
+                int dir_scale = 1;
+                int level_dir = 0;
+                Sleep(  200);
+                while (win_scale<500) {
+                    win_rot+=0.7;
+                    win_scale+=2;
+                    if(win_rot >= 360){
+                        win_rot = 0;
+                    }
+                    Sleep(5);
+                }
+                while (!closed) {
+                    if(win_y<300){
+                        win_y+=4;
+                    }
+                    win_rot+=0.2f;
+                    if(dir_scale==1) {
+                        win_scale+=1;
+                        if (win_scale > 525) {
+                            dir_scale=-1;
+                            level_dir++;
+                        }
+                    }else{
+                        win_scale-=1;
+                        if (win_scale < 500) {
+                            dir_scale=1;
+                            level_dir++;
+                        }
+                    }
+                    if(win_rot >= 360){
+                        win_rot = 0;
+                    }
+                    if(level_dir>4){
+                        end = true;
+                    }
+                    Sleep(20);
+                }
+            }
+        };
+        anime.start();
+    }
     public void SetMeteor(){
         if(meteor_run){
-            int rand = game.random.nextInt(2);
+            int rand = game.random.nextInt(3);
             if(rand == 0) {
                 will_meteor_x = Ex;
                 will_meteor_y = Ey;
@@ -873,7 +978,6 @@ public class GamePlay extends Openable implements Screen{
                     DoorClose(1);
                 }
             };
-
             anime.start();
         }
     }
@@ -1429,5 +1533,11 @@ public class GamePlay extends Openable implements Screen{
         jump_touched.dispose();
         door_left.dispose();
         door_right.dispose();
+        Wineffect.dispose();
+        bulb.dispose();
+        gear.dispose();
+        metall.dispose();
+        chip.dispose();
+        Darkeffect.dispose();
     }
 }

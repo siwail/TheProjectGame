@@ -37,6 +37,7 @@ public class GameMenuTouch implements InputProcessor {
                 gameMenu.play_touch = true;
             }
         }
+
         return false;
     }
     @Override
@@ -56,6 +57,9 @@ public class GameMenuTouch implements InputProcessor {
             if(gameMenu.isOpen) {
                 gameMenu.DoorClose(2);
             }
+        }
+        if (screenX >= SX(1020) && screenX <= SX(1120) && screenY >= SY(0) && screenY <= SY(100)){
+            game.MusicSet();
         }
         return false;
     }
