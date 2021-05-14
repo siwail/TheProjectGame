@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import org.omg.CORBA.WrongTransaction;
+
 public class GamePlay extends Openable implements Screen{
     SpriteBatch batch;
     Sound[] blaster;
@@ -22,6 +24,8 @@ public class GamePlay extends Openable implements Screen{
     Thread EEnergyAdd;
     Thread CrossAdd;
     Thread StartLevel;
+    Thread MedAdd;
+    Texture Rocket;
     Texture floor;
     Texture background;
     Texture grass;
@@ -47,10 +51,13 @@ public class GamePlay extends Openable implements Screen{
     Texture Darkeffect;
     Texture Openlevel_1;
     Texture Openlevel_2;
+    Texture MedSwap;
     Texture gear;
     Texture chip;
     Texture metall;
     Texture bulb;
+    Texture Bluefire;
+    Texture[] med = new Texture[5];
     TextureRegion Meteor;
     TextureRegion Effect;
     int win_y = 0;
@@ -65,6 +72,10 @@ public class GamePlay extends Openable implements Screen{
     int meteor_y = 0;
     int will_meteor_x = 0;
     int will_meteor_y = 0;
+    int med_x = 0;
+    int med_y = 0;
+    int med_scale = 0;
+    int med_anime = 0;
     int[] bullets_x = new int[40];
     double[] bullets_y = new double[40];
     int[] bullets_dir = new int[40];
@@ -108,6 +119,10 @@ public class GamePlay extends Openable implements Screen{
     float Erot = 0;
     float Escale = 0.8f;
     float meteor_rot = 0.0f;
+    boolean meteor_rocket = false;
+    boolean med_used = false;
+    boolean med_is = false;
+    boolean med_swap = false;
     boolean meteor_splash = false;
     boolean meteor_run = false;
     boolean dead = false;
@@ -145,10 +160,13 @@ public class GamePlay extends Openable implements Screen{
         energy = game.robot.energy;
         Darkeffect = new Texture("Interface/dark.png");
         Wineffect = new Texture("Interface/gameplay_effect_1.png");
+        Rocket = new Texture("Object/rocket.png");
         Effect = new TextureRegion(Wineffect, 300, 300);
         Frontground = new Texture("Interface/frontground.png");
         Openlevel_1 = new Texture("Interface/openlevel_1.png");
         Openlevel_2 = new Texture("Interface/openlevel_2.png");
+        Bluefire = new Texture("Object/bluefire.png");
+        MedSwap = new Texture("Object/health_swap.png");
         Splash = new Texture("Object/splash.png");
         Fire = new Texture("Object/fire.png");
         Meteort = new Texture("Location/meteor_" + game.robot.level + ".png");
@@ -170,6 +188,9 @@ public class GamePlay extends Openable implements Screen{
         jump_touched = new Texture("Button/button_jump_touched.png");
         Gdx.input.setInputProcessor(new GamePlayTouch(game, this));
         Start();
+        for(int i=0;i<5;i++){
+            med[i] = new Texture("Object/health_" + (i+1) + ".png");
+        }
         blaster = new Sound[3];
         blaster[0] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_1.wav"));
         blaster[1] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_2.wav"));
@@ -228,6 +249,49 @@ public class GamePlay extends Openable implements Screen{
                 pause=false;
             }
         };
+        MedAdd = new Thread(){
+            @Override
+            public void run(){
+                Sleep(7000);
+                while(!closed){
+                    if(!med_is && !pause) {
+                        med_is = true;
+                        med_x = (game.random.nextInt(7) + 2);
+                        med_y = (game.random.nextInt(3) + 1);
+                        med_scale = 0;
+                        med_swap = true;
+                        med_anime = 0;
+                        move[1].play(0.9f);
+                        while (med_scale<150) {
+                            med_scale+=2;
+                            Sleep(5);
+                        }
+                        med_swap = false;
+                        int med_dir = 1;
+                        while (med_is) {
+                            if(med_dir == 1) {
+                                if (med_anime+1 < 5) {
+                                    med_anime++;
+                                    med_scale-=1;
+                                }else{
+                                    med_dir = 0;
+                                }
+                            }else{
+                                if (med_anime-1 > -1) {
+                                    med_anime--;
+                                    med_scale+=1;
+                                }else{
+                                    med_dir = 1;
+                                }
+                            }
+                            Sleep(70);
+                        }
+
+                    }
+                    Sleep((game.random.nextInt(15) + 5) * 1000);
+                }
+            }
+        };
         anime = new Thread(){
             @Override
             public void run(){
@@ -277,13 +341,15 @@ public class GamePlay extends Openable implements Screen{
                 Sleep( (int)(5000*speed));
                 int random;
                 while(true){
-                    random = game.random.nextInt(5);
-                    if(!meteor_run && random==0){
-                        meteor_run=true;
-                        SetMeteor();
-                    }
-                    if(closed){
-                        break;
+                    if(!pause) {
+                        random = game.random.nextInt(5);
+                        if (!meteor_run && random == 0) {
+                            meteor_run = true;
+                            SetMeteor();
+                        }
+                        if (closed) {
+                            break;
+                        }
                     }
                     Sleep(  (int)(1000*speed));
                 }
@@ -356,6 +422,7 @@ public class GamePlay extends Openable implements Screen{
             public void run(){
                 Sleep(  (int)(5000*speed));
                 while(true) {
+                    if(!pause) {
                     int random_act = game.random.nextInt(26) + 1;
                     if (random_act < 11 && random_act > 0) {
                         if (CheckBullet()) {
@@ -379,29 +446,29 @@ public class GamePlay extends Openable implements Screen{
                     }
                     if (random_act < 13 && random_act > 10) {
                         if (Math.abs((Ex * width / 10 + Erobot_x) - (x * width / 10 + robot_x)) > 75 && ((Edir == -1 && (Ex * width / 10 + Erobot_x) < (x * width / 10 + robot_x)) || (Edir == 1 && (Ex * width / 10 + Erobot_x) > (x * width / 10 + robot_x)))) {
-                                ERedir();
-                            }
+                            ERedir();
+                        }
                     }
                     if (random_act < 16 && random_act > 13) {
-                            int move_dir = game.random.nextInt(2) - 1;
-                            if (Ey - 1 > 0 && move_dir == -1) {
-                                EDown();
-                            }
-                            if (Ey + 1 < 4 && move_dir == 0) {
-                                EUp();
-                            }
+                        int move_dir = game.random.nextInt(2) - 1;
+                        if (Ey - 1 > 0 && move_dir == -1) {
+                            EDown();
+                        }
+                        if (Ey + 1 < 4 && move_dir == 0) {
+                            EUp();
+                        }
                     }
                     if (random_act < 19 && random_act > 16) {
-                            int move_dir = game.random.nextInt(10) + 1;
-                            if (move_dir == 3) {
-                                ERedir();
-                            }
-                            if (move_dir < 3) {
-                                EFire();
-                            }
-                            if (move_dir == 10) {
-                                EJump();
-                            }
+                        int move_dir = game.random.nextInt(10) + 1;
+                        if (move_dir == 3) {
+                            ERedir();
+                        }
+                        if (move_dir < 3) {
+                            EFire();
+                        }
+                        if (move_dir == 10) {
+                            EJump();
+                        }
                     }
                     if (random_act > 20) {
                         if (Ey == y && ((Edir == -1 && (Ex * width / 10 + Erobot_x) > (x * width / 10 + robot_x)) || (Edir == 1 && (Ex * width / 10 + Erobot_x) < (x * width / 10 + robot_x)))) {
@@ -409,7 +476,7 @@ public class GamePlay extends Openable implements Screen{
                         }
                     }
                     if (random_act == 20) {
-                        if (Math.abs((((double)Ex * (double)width / (double)10) + Erobot_x) - (((double)x * (double)width / (double)10) + robot_x)) <= 250.0) {
+                        if (Math.abs((((double) Ex * (double) width / (double) 10) + Erobot_x) - (((double) x * (double) width / (double) 10) + robot_x)) <= 250.0) {
                             int move_dir = game.random.nextInt(3) + 1;
                             if (move_dir == 3) {
                                 if (Eenergy >= 50) {
@@ -418,14 +485,16 @@ public class GamePlay extends Openable implements Screen{
                             }
                         }
                     }
-                    if(closed){
+                    if (closed) {
                         break;
                     }
                     Sleep((int) (50 * speed));
                 }
+                }
             }
         };
         drawer = new SpriteBatchRubber(this, batch);
+        MedAdd.start();
         StartLevel.start();
         CrossAdd.start();
         EnemyBrine.start();
@@ -447,8 +516,13 @@ public class GamePlay extends Openable implements Screen{
         }
         if(will_meteor_y == 3 && meteor_run){
             if(!meteor_splash) {
-                drawer.draw(Fire, meteor_x-12, meteor_y, 175.0f, 200.0f+(meteor_rot)/4);
-                drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1,1, meteor_rot);
+                if(!meteor_rocket) {
+                    drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1, 1, meteor_rot);
+                }else{
+                    drawer.draw(Fire, meteor_x - 12, meteor_y+70, 175.0f, 200.0f + (meteor_rot) / 4);
+                    drawer.draw(Rocket, meteor_x-50, meteor_y-10, 250, 250);
+                }
             }else{
                 drawer.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
             }
@@ -464,8 +538,13 @@ public class GamePlay extends Openable implements Screen{
         }
         if(will_meteor_y == 2 && meteor_run){
             if(!meteor_splash) {
-                drawer.draw(Fire, meteor_x-12, meteor_y, 175.0f, 200.0f+(meteor_rot)/4);
-                drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1,1, meteor_rot);
+                if(!meteor_rocket) {
+                    drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1, 1, meteor_rot);
+                }else{
+                    drawer.draw(Fire, meteor_x - 12, meteor_y+70, 175.0f, 200.0f + (meteor_rot) / 4);
+                    drawer.draw(Rocket, meteor_x-50, meteor_y-10, 250, 250);
+                }
             }else{
                 drawer.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
             }
@@ -481,8 +560,13 @@ public class GamePlay extends Openable implements Screen{
         }
         if(will_meteor_y == 1 && meteor_run){
             if(!meteor_splash) {
-                drawer.draw(Fire, meteor_x-12, meteor_y, 175.0f, 200.0f+(meteor_rot)/4);
-                drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1,1, meteor_rot);
+                if(!meteor_rocket) {
+                    drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1, 1, meteor_rot);
+                }else{
+                    drawer.draw(Fire, meteor_x - 12, meteor_y+70, 175.0f, 200.0f + (meteor_rot) / 4);
+                    drawer.draw(Rocket, meteor_x-50, meteor_y-10, 250, 250);
+                }
             }else{
                 drawer.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
             }
@@ -500,13 +584,23 @@ public class GamePlay extends Openable implements Screen{
                 index++;
             }
         }
+        if(med_is && med_y == 3){
+            if(!med_swap && !med_used) {
+                drawer.draw(med[med_anime], med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60-10*med_y, med_scale, med_scale);
+            }else{
+                if(med_used) {
+                    drawer.draw(Bluefire, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
+                }else{
+                    drawer.draw(MedSwap, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
+                }
+            }
+        }
         if(Ey == 3){
             DrawEnemy(drawer, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale*(1.0f-0.03f*Ey), Erothand+90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
         }
         if(y == 3){
             DrawRobot(drawer, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead, 0);
         }
-
         index = 0;
         if(bullets>0) {
             while (index < 40) {
@@ -514,6 +608,17 @@ public class GamePlay extends Openable implements Screen{
                     DrawBullet(drawer, (bullets_x[index] + 135  * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+190), bullets_type[index]);
                 }
                 index++;
+            }
+        }
+        if(med_is && med_y == 2){
+            if(!med_swap &&  !med_used) {
+                drawer.draw(med[med_anime], med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60-10*med_y, med_scale, med_scale);
+            }else{
+                if(med_used) {
+                    drawer.draw(Bluefire, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
+                }else{
+                    drawer.draw(MedSwap, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
+                }
             }
         }
         if(Ey == 2){
@@ -529,6 +634,17 @@ public class GamePlay extends Openable implements Screen{
                     DrawBullet(drawer, (bullets_x[index] + 135 * bullets_dir[index]), (int)((height/5)*bullets_y[index]-15*bullets_y[index]+190), bullets_type[index]);
                 }
                 index++;
+            }
+        }
+        if(med_is && med_y == 1){
+            if(!med_swap &&  !med_used) {
+                drawer.draw(med[med_anime], med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60-10*med_y, med_scale, med_scale);
+            }else{
+                if(med_used) {
+                    drawer.draw(Bluefire, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
+                }else{
+                    drawer.draw(MedSwap, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
+                }
             }
         }
         if(Ey == 1){
@@ -547,10 +663,10 @@ public class GamePlay extends Openable implements Screen{
         if(dir == 1) {
             if (up_touch) {
                 drawer.draw(up_2_touched, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
-            } else {
+            }else{
                 drawer.draw(up_2, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
             }
-            if (down_touch) {
+            if(down_touch) {
                 drawer.draw(down_2_touched, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
             } else {
                 drawer.draw(down_2, (int) (50 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
@@ -651,7 +767,7 @@ public class GamePlay extends Openable implements Screen{
                     int num = lastnumbullet;                   //Вот, на ней все держится
                     int dir = bullets_dir[num];
                     while(true){
-                        bullets_x[num]+=2*dir;
+                        bullets_x[num] += 2 * dir;
                         bullets_y[num]-=0.0001*randomfire;
                         if(bullets_x[num] > width+100 || bullets_x[num] < -100){
                             break;
@@ -856,6 +972,9 @@ public class GamePlay extends Openable implements Screen{
                 while (win_scale<500) {
                     win_rot+=0.7;
                     win_scale+=2;
+                    if(win_scale%100==0){
+                        move[2].play(0.7f);
+                    }
                     if(win_rot >= 360){
                         win_rot = 0;
                     }
@@ -898,6 +1017,9 @@ public class GamePlay extends Openable implements Screen{
                 will_meteor_x = Ex;
                 will_meteor_y = Ey;
             }else{
+                if(rand == 1){
+                    meteor_rocket = true;
+                }
                 will_meteor_x = x;
                 will_meteor_y = y;
             }
@@ -912,7 +1034,7 @@ public class GamePlay extends Openable implements Screen{
                         cross_size+=1;
                         Sleep(  (int)(5*speed));
                     }
-                    while (meteor_y>will_meteor_y*(height/5)-270) {
+                    while (meteor_y>will_meteor_y*(height/5)-300) {
                         meteor_rot += 0.5f;
                         if(meteor_rot >= 360.0f){
                             meteor_rot = 0.0f;
@@ -952,6 +1074,7 @@ public class GamePlay extends Openable implements Screen{
                     will_meteor_y = 0;
                     will_meteor_x = 0;
                     cross_size=0;
+                    meteor_rocket = false;
                     meteor_splash=false;
                     meteor_run = false;
                 }
@@ -1115,7 +1238,73 @@ public class GamePlay extends Openable implements Screen{
             }
         }
         return this.energy >= energy;
-    }    public void EUp(){
+    }
+
+    public void EUseMed(){
+        if(med_y == Ey && med_x == Ex && !med_used && med_is && !med_swap){
+            move[1].play(0.9f);
+            Ehealth+=20;
+            if(Ehealth > game.robot.Ehealth){
+                Ehealth = game.robot.Ehealth;
+            }
+            med_scale = 10;
+            med_used = true;
+            Thread anime = new Thread() {
+                @Override
+                public void run() {
+                    while (med_scale>10) {
+                        med_scale-=2;
+                        Sleep( 5);
+                    }
+                    while (med_scale<150) {
+                        med_scale+=2;
+                        Sleep( 5);
+                    }
+                    while (med_scale>10) {
+                        med_scale-=2;
+                        Sleep( 5);
+                    }
+                    med_used = false;
+                    med_is = false;
+                    med_scale = 150;
+                }
+            };
+            anime.start();
+        }
+    }
+    public void UseMed(){
+        if(med_y == y && med_x == x && !med_used && med_is && !med_swap){
+            move[1].play(0.9f);
+            health+=20;
+            if(health > game.robot.health){
+                health = game.robot.health;
+            }
+            med_scale = 10;
+            med_used = true;
+            Thread anime = new Thread() {
+                @Override
+                public void run() {
+                    while (med_scale>10) {
+                        med_scale-=2;
+                        Sleep( 5);
+                    }
+                    while (med_scale<150) {
+                        med_scale+=2;
+                        Sleep( 5);
+                    }
+                    while (med_scale>10) {
+                        med_scale-=2;
+                        Sleep( 5);
+                    }
+                    med_used = false;
+                    med_is = false;
+                    med_scale = 150;
+                }
+            };
+            anime.start();
+        }
+    }
+    public void EUp(){
         if(!Eup_clicked && !Edown_clicked && !Efire_clicked && !Edead && !pause) {
             Eup_clicked = true;
             if (Ey < 3) {
@@ -1162,9 +1351,10 @@ public class GamePlay extends Openable implements Screen{
                                 Erotleg = 0;
                                 Erobot_y = 0;
                                 Erobot_x = 0;
+                                EUseMed();
                                 break;
                             }
-                            Sleep(  (int)(game.robot.Emove_speed*speed));
+                                Sleep(  (int)(game.robot.Emove_speed*speed));
                         }
                     }
                 };
@@ -1219,9 +1409,10 @@ public class GamePlay extends Openable implements Screen{
                                 Erotleg = 0;
                                 Erobot_y = 0;
                                 Erobot_x = 0;
+                                EUseMed();
                                 break;
                             }
-                            Sleep(  (int)(game.robot.Emove_speed*speed));
+                                Sleep(  (int)(game.robot.Emove_speed*speed));
                         }
                     }
                 };
@@ -1274,12 +1465,14 @@ public class GamePlay extends Openable implements Screen{
                                 }
                                 break;
                             }
-                            Sleep(  (int)(game.robot.move_speed*speed));
+
+                                Sleep(  (int)(game.robot.move_speed*speed));
                         }
                         up_clicked = false;
                         rotleg = 0;
                         robot_y = 0;
                         robot_x = 0;
+                        UseMed();
                     }
                 };
                 anime.start();
@@ -1331,12 +1524,13 @@ public class GamePlay extends Openable implements Screen{
                                 }
                                 break;
                             }
-                            Sleep(  (int)(game.robot.move_speed*speed));
+                                Sleep(  (int)(game.robot.move_speed*speed));
                         }
                         down_clicked = false;
                         rotleg = 0;
                         robot_y = 0;
                         robot_x = 0;
+                        UseMed();
                     }
                 };
                 anime.start();
@@ -1438,6 +1632,7 @@ public class GamePlay extends Openable implements Screen{
                             }
                             Sleep(  (int)(8*speed));
                         }
+                        EUseMed();
                         Eswap = false;
                         Escale = 0.8f;
                         Erobot_y = 0;
@@ -1475,7 +1670,6 @@ public class GamePlay extends Openable implements Screen{
                         if (x > 8) {
                             x = 8;
                         }
-
                         while (true) {
                             scale += 0.02f;
                             scale_inteface+=0.003;
@@ -1485,6 +1679,7 @@ public class GamePlay extends Openable implements Screen{
                             }
                             Sleep(  (int)(8*speed));
                         }
+                        UseMed();
                         swap = false;
                         scale = 0.8f;
                         robot_y = 0;
@@ -1507,6 +1702,7 @@ public class GamePlay extends Openable implements Screen{
         move[0].dispose();
         move[1].dispose();
         move[2].dispose();
+        for(Texture texture: med){ texture.dispose(); }
         death.dispose();
         game.robot.DisposeGamePlayTextures();
         Frontground.dispose();
@@ -1539,5 +1735,7 @@ public class GamePlay extends Openable implements Screen{
         metall.dispose();
         chip.dispose();
         Darkeffect.dispose();
+        MedSwap.dispose();
+        Bluefire.dispose();
     }
 }

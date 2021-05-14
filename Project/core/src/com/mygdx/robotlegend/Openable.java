@@ -46,7 +46,7 @@ public class Openable implements Screen{
         button_font.setColor(Color.WHITE);
         parameter.size = (int)(150.0*wpw);
         resource_font = generator.generateFont(parameter);
-        resource_font.setColor(0, 153, 0, 255);
+        resource_font.setColor(0, 75, 0, 255);
     }
     public void DrawBullet(SpriteBatchRubber drawer, int x, int y, int type) {
         if(type == 1) {

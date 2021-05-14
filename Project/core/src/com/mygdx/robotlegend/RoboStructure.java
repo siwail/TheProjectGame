@@ -17,7 +17,7 @@ public class RoboStructure {
     int LHid = 1; //Левая рука
     int RLid = 1; //Правая нога
     int LLid = 1; //Левая нога
-    int health = 100;
+    int health = 0;
     int damage = 2;
     int attack_speed;
     int move_speed;
@@ -119,6 +119,32 @@ public class RoboStructure {
         RightHandSelectt = new Texture("Robot/hand_select.png");
         Hide =  new TextureRegion(Hidet, 300, 300);
     }
+    public void UpdateRobotTexture(int which_select){
+        if(which_select == 1){
+            Ht.dispose();
+            Ht = new Texture("Robot/head_" + Hid + ".png");
+        }
+        if(which_select == 2){
+            Bt.dispose();
+            Bt = new Texture("Robot/body_" + Bid + ".png");
+        }
+        if(which_select == 3){
+            RHt.dispose();
+            RHt = new Texture("Robot/hand_" + RHid + ".png");
+        }
+        if(which_select == 4){
+            LHt.dispose();
+            LHt = new Texture("Robot/hand_" + LHid + ".png");
+        }
+        if(which_select == 5){
+            RLt.dispose();
+            RLt = new Texture("Robot/leg_" + RLid + ".png");
+        }
+        if(which_select == 6){
+            LLt.dispose();
+            LLt = new Texture("Robot/leg_" + LLid + ".png");
+        }
+    }
     public void DisposeWorkMenuTextures(){
         Hidet.dispose();
         HeadSelectt.dispose();
@@ -215,15 +241,50 @@ public class RoboStructure {
         ELHid = game.random.nextInt(4)+1; //Левая рука
         ERLid = game.random.nextInt(4)+1; //Правая нога
         ELLid = game.random.nextInt(4)+1; //Левая нога
-        energy_speed = 90-Bid*7;
-        Eenergy_speed = 90-EBid*7;
-        attack_speed = (int)(8.0-((double)RHid/2.0+(double)LHid/2.0));
-        move_speed = (int)(7.0-((double)RLid/2.0+(double)LLid/2.0));
-        Eattack_speed = (int)(8.0-((double)ERHid/2.0+(double)ELHid/2.0));
-        Emove_speed = (int)(7.0-((double)ERLid/2.0+(double)ELLid/2.0));
-        Edamage =(int)((double)ERHid/2.0+(double)ELHid/2.0)*2;
-        damage =(int)((double)RHid/2.0+(double)LHid/2.0)*2;
+
+        gears = TakeSafe("gears");
+        microchips = TakeSafe("microchips");
+        lamps = TakeSafe("lamps");
+        metal = TakeSafe("metal");
+
+        Hid = TakeSafe("H");
+        Bid = TakeSafe("B");
+        RHid = TakeSafe("RH");
+        LHid = TakeSafe("LH");
+        RLid = TakeSafe("RL");
+        LLid = TakeSafe("LL");
+
+        Hid = 1;
+        Bid = 1;
+        RHid = 1;
+        LHid = 1;
+        RLid = 1;
+        LLid = 1;
+
+        energy_speed = 90-Hid*7;
+        Eenergy_speed = 90-EHid*7;
+
+        attack_speed = 8-Bid;
+        Eattack_speed = 8-EBid;
+
+        move_speed = 11-RLid-LLid;
+        Emove_speed = 10-ERLid-ELLid;
+
+        damage = RHid*2+LHid*2;
+        Edamage = ERHid*2+ELHid*2;
+
+        health = Hid*10+Bid*15+RHid*5+LHid*5+RLid*5+LLid*5;
+        Ehealth = EHid*10+EBid*15+ERHid*5+ELHid*5+ERLid*5+ELLid*5;
+
         level = game.random.nextInt(4)+1;
+
+    }
+    public int TakeSafe(String name){
+        if(game.safes.contains(name)) {
+            return game.safes.getInteger(name);
+        }else{
+            return 1;
+        }
     }
     public void UpdateTextures(){
         RHt =  new Texture("Robot/hand_" + RHid + ".png");

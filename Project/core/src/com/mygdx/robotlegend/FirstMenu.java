@@ -56,7 +56,7 @@ public class FirstMenu  extends Openable implements Screen{
 	public void show() {
 		batch = new SpriteBatch();
 		exit = new Texture("Button/exit.png");
-		play = new Texture("Button/button.png");
+		play = new Texture("Button/button2.png");
 		white = new Texture("Button/button_white.png");
 		robo_texture = new Texture("Object/logo_1.png");
 		for(int i=0;i<5;i++){

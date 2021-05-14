@@ -50,6 +50,7 @@ public class GameMenu extends Openable implements Screen{
     public GameMenu(MainGame game) { this.game = game; }
     @Override
     public void show() {
+        Safe();
         smoke[0] = new Texture("Object/smoke1.png");
         smoke[1] = new Texture("Object/smoke2.png");
         smoke[2] = new Texture("Object/smoke3.png");
@@ -217,6 +218,19 @@ public class GameMenu extends Openable implements Screen{
                 game.setGamePlay();
             }
         }
+    }
+    public void Safe(){
+        game.safes.putInteger("H", game.robot.Hid);
+        game.safes.putInteger("B", game.robot.Bid);
+        game.safes.putInteger("RH", game.robot.RHid);
+        game.safes.putInteger("LH", game.robot.LHid);
+        game.safes.putInteger("LL", game.robot.LLid);
+        game.safes.putInteger("RL", game.robot.RLid);
+        game.safes.putInteger("gears", game.robot.gears);
+        game.safes.putInteger("lamps", game.robot.lamps);
+        game.safes.putInteger("microchips", game.robot.microchips);
+        game.safes.putInteger("metal", game.robot.metal);
+        game.safes.flush();
     }
     public void setRandomAnime(){
         Thread rand = new Thread(){

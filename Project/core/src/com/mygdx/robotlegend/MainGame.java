@@ -1,12 +1,14 @@
 package com.mygdx.robotlegend;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
 import java.util.Random;
 public class MainGame extends Game {
+    Preferences safes;
     Music music;
     Random random;
     Sound click;
@@ -16,6 +18,7 @@ public class MainGame extends Game {
     boolean music_play = true;
     @Override
     public void create() {
+        safes = Gdx.app.getPreferences("Save");
         click = Gdx.audio.newSound(Gdx.files.internal("Sound/click.wav"));
         opened = Gdx.audio.newSound(Gdx.files.internal("Sound/opened.wav"));
         closed = Gdx.audio.newSound(Gdx.files.internal("Sound/closed.wav"));
