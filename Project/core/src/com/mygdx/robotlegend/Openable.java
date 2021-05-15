@@ -40,7 +40,7 @@ public class Openable implements Screen{
         parameter.size = (int)(50.0*wpw);
         parameter.characters = FONT_CHARACTERS;
         item_font = generator.generateFont(parameter);
-        item_font.setColor(Color.BLACK);
+        item_font.setColor(Color.WHITE);
         parameter.size = (int)(60.0*wpw);
         button_font = generator.generateFont(parameter);
         button_font.setColor(Color.WHITE);

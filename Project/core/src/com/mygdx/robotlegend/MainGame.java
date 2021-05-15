@@ -10,11 +10,13 @@ import java.util.Random;
 public class MainGame extends Game {
     Preferences safes;
     Music music;
+    Music music_war;
     Random random;
     Sound click;
     Sound opened;
     Sound closed;
     RoboStructure robot = new RoboStructure(this);
+    boolean war = false;
     boolean music_play = true;
     @Override
     public void create() {
@@ -25,11 +27,27 @@ public class MainGame extends Game {
         random = new Random();
         robot.SetFirstChanges();
         robot.UpdateTextures();
+
+        music_war = Gdx.audio.newMusic(Gdx.files.internal("Sound/music.mp3"));
+        music_war.setVolume(0.1f);
+        music_war.setLooping(true);
+
         music = Gdx.audio.newMusic(Gdx.files.internal("Sound/sound.mp3"));
         music.setVolume(0.2f);
         music.setLooping(true);
         music.play();
         setScreen(new FirstMenu(this));
+    }
+    public void MusicSwap(){
+        if(!war){
+            war = true;
+            music.stop();
+            music_war.play();
+        }else{
+            war = false;
+            music_war.stop();
+            music.play();
+        }
     }
     public void MusicSet(){
         if(music_play){

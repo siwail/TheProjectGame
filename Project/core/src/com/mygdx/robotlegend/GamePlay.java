@@ -152,6 +152,7 @@ public class GamePlay extends Openable implements Screen{
     public GamePlay(MainGame game) { this.game = game; }
     @Override
     public void show() {
+        game.MusicSwap();
         game.robot.SetGamePlayTextures();
         metall = new Texture("Item/metall.png");
         chip = new Texture("Item/chip.png");
@@ -191,6 +192,7 @@ public class GamePlay extends Openable implements Screen{
         for(int i=0;i<5;i++){
             med[i] = new Texture("Object/health_" + (i+1) + ".png");
         }
+        game.music_war.setVolume(0.1f);
         blaster = new Sound[3];
         blaster[0] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_1.wav"));
         blaster[1] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_2.wav"));
@@ -236,6 +238,7 @@ public class GamePlay extends Openable implements Screen{
             public void run(){
                 openlevel_x = 0;
                 Sleep(1500);
+                game.music_war.setVolume(0.2f);
                 while(openlevel_x<width){
                     openlevel_x+=2;
                     Sleep(1);
@@ -938,6 +941,7 @@ public class GamePlay extends Openable implements Screen{
                         Escale-=0.0002f;
                         Sleep(  5);
                     }
+
                     Sleep(  500);
                     EndGame(1);
                 }
@@ -945,70 +949,75 @@ public class GamePlay extends Openable implements Screen{
             anime.start();
         }
     }
-    public void EndGame(int win){
-        win_num = game.random.nextInt(7)+1;
-        win_rot = 0.0f;
-        win_type = game.robot.level;
-        this.win = win;
-        game.click.play(0.8f);
-        Thread anime = new Thread() {
-            @Override
-            public void run() {
-                if(win_type == 1){
-                    game.robot.microchips+=win_num;
-                }
-                if(win_type == 2){
-                    game.robot.lamps+=win_num;
-                }
-                if(win_type == 3){
-                    game.robot.metal+=win_num;
-                }
-                if(win_type == 4){
-                    game.robot.gears+=win_num;
-                }
-                int dir_scale = 1;
-                int level_dir = 0;
-                Sleep(  200);
-                while (win_scale<500) {
-                    win_rot+=0.7;
-                    win_scale+=2;
-                    if(win_scale%100==0){
-                        move[2].play(0.7f);
+    public void EndGame(int win) {
+        if (!dead) {
+            win_num = game.random.nextInt(7) + 1;
+            win_rot = 0.0f;
+            win_type = game.robot.level;
+            this.win = win;
+            game.click.play(0.8f);
+            Thread anime = new Thread() {
+                @Override
+                public void run() {
+                    if (win_type == 1) {
+                        game.robot.microchips += win_num;
                     }
-                    if(win_rot >= 360){
-                        win_rot = 0;
+                    if (win_type == 2) {
+                        game.robot.lamps += win_num;
                     }
-                    Sleep(5);
-                }
-                while (!closed) {
-                    if(win_y<300){
-                        win_y+=4;
+                    if (win_type == 3) {
+                        game.robot.metal += win_num;
                     }
-                    win_rot+=0.2f;
-                    if(dir_scale==1) {
-                        win_scale+=1;
-                        if (win_scale > 525) {
-                            dir_scale=-1;
-                            level_dir++;
+                    if (win_type == 4) {
+                        game.robot.gears += win_num;
+                    }
+                    int dir_scale = 1;
+                    int level_dir = 0;
+                    Sleep(200);
+                    while (win_scale < 500) {
+                        win_rot += 0.7;
+                        win_scale += 2;
+                        if (win_scale % 100 == 0) {
+                            move[2].play(0.7f);
                         }
-                    }else{
-                        win_scale-=1;
-                        if (win_scale < 500) {
-                            dir_scale=1;
-                            level_dir++;
+                        if (win_rot >= 360) {
+                            win_rot = 0;
                         }
+                        Sleep(5);
                     }
-                    if(win_rot >= 360){
-                        win_rot = 0;
+                    game.MusicSwap();
+                    while (!closed) {
+                        if (win_y < 300) {
+                            win_y += 4;
+                        }
+                        win_rot += 0.2f;
+                        if (dir_scale == 1) {
+                            win_scale += 1;
+                            if (win_scale > 525) {
+                                dir_scale = -1;
+                                level_dir++;
+                            }
+                        } else {
+                            win_scale -= 1;
+                            if (win_scale < 500) {
+                                dir_scale = 1;
+                                level_dir++;
+                            }
+                        }
+                        if (win_rot >= 360) {
+                            win_rot = 0;
+                        }
+                        if (level_dir > 4) {
+                            end = true;
+
+                        }
+                        Sleep(20);
                     }
-                    if(level_dir>4){
-                        end = true;
-                    }
-                    Sleep(20);
+
                 }
-            }
-        };
-        anime.start();
+            };
+            anime.start();
+        }
     }
     public void SetMeteor(){
         if(meteor_run){
@@ -1097,8 +1106,12 @@ public class GamePlay extends Openable implements Screen{
                         scale-=0.0002f;
                         Sleep(  5);
                     }
-                    Sleep(  500);
-                    DoorClose(1);
+                    if (!Edead) {
+
+                        Sleep(500);
+                        game.MusicSwap();
+                        DoorClose(1);
+                    }
                 }
             };
             anime.start();

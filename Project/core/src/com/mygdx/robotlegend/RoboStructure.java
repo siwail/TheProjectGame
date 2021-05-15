@@ -109,6 +109,23 @@ public class RoboStructure {
         Ht.dispose();
         Bt.dispose();
     }*/
+    public void UpdateParameters(){
+        energy_speed = 90-Hid*10;
+        Eenergy_speed = 90-EHid*10;
+
+        attack_speed = 8-Bid;
+        Eattack_speed = 8-EBid;
+
+        move_speed = 11-RLid-LLid;
+        Emove_speed = 11-ERLid-ELLid;
+
+        damage = RHid*2+LHid*2;
+        Edamage = ERHid*2+ELHid*2;
+
+        health = Hid*10+Bid*15+RHid*5+LHid*5+RLid*5+LLid*5;
+        Ehealth = EHid*10+EBid*15+ERHid*5+ELHid*5+ERLid*5+ELLid*5;
+
+    }
     public void SetWorkMenuTextures(){
         Hidet = new Texture("Interface/hide.png");
         HeadSelectt = new Texture("Robot/head_select.png");
@@ -123,27 +140,34 @@ public class RoboStructure {
         if(which_select == 1){
             Ht.dispose();
             Ht = new Texture("Robot/head_" + Hid + ".png");
+            H =  new TextureRegion(Ht, 300, 300);
         }
         if(which_select == 2){
             Bt.dispose();
             Bt = new Texture("Robot/body_" + Bid + ".png");
-        }
-        if(which_select == 3){
-            RHt.dispose();
-            RHt = new Texture("Robot/hand_" + RHid + ".png");
-        }
-        if(which_select == 4){
-            LHt.dispose();
-            LHt = new Texture("Robot/hand_" + LHid + ".png");
-        }
-        if(which_select == 5){
-            RLt.dispose();
-            RLt = new Texture("Robot/leg_" + RLid + ".png");
+            B =  new TextureRegion(Bt, 300, 300);
         }
         if(which_select == 6){
+            RHt.dispose();
+            RHt = new Texture("Robot/hand_" + RHid + ".png");
+            RH =  new TextureRegion(RHt, 300, 300);
+        }
+        if(which_select == 5){
+            LHt.dispose();
+            LHt = new Texture("Robot/hand_" + LHid + ".png");
+            LH =  new TextureRegion(LHt, 300, 300);
+        }
+        if(which_select == 4){
+            RLt.dispose();
+            RLt = new Texture("Robot/leg_" + RLid + ".png");
+            RL =  new TextureRegion(RLt, 300, 300);
+        }
+        if(which_select == 3){
             LLt.dispose();
             LLt = new Texture("Robot/leg_" + LLid + ".png");
+            LL =  new TextureRegion(LLt, 300, 300);
         }
+        UpdateParameters();
     }
     public void DisposeWorkMenuTextures(){
         Hidet.dispose();
@@ -261,21 +285,7 @@ public class RoboStructure {
         RLid = 1;
         LLid = 1;
 
-        energy_speed = 90-Hid*7;
-        Eenergy_speed = 90-EHid*7;
-
-        attack_speed = 8-Bid;
-        Eattack_speed = 8-EBid;
-
-        move_speed = 11-RLid-LLid;
-        Emove_speed = 10-ERLid-ELLid;
-
-        damage = RHid*2+LHid*2;
-        Edamage = ERHid*2+ELHid*2;
-
-        health = Hid*10+Bid*15+RHid*5+LHid*5+RLid*5+LLid*5;
-        Ehealth = EHid*10+EBid*15+ERHid*5+ELHid*5+ERLid*5+ELLid*5;
-
+        UpdateParameters();
         level = game.random.nextInt(4)+1;
 
     }
