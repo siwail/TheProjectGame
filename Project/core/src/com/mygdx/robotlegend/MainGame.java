@@ -2,7 +2,6 @@ package com.mygdx.robotlegend;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
@@ -27,11 +26,9 @@ public class MainGame extends Game {
         random = new Random();
         robot.SetFirstChanges();
         robot.UpdateTextures();
-
         music_war = Gdx.audio.newMusic(Gdx.files.internal("Sound/music.mp3"));
         music_war.setVolume(0.1f);
         music_war.setLooping(true);
-
         music = Gdx.audio.newMusic(Gdx.files.internal("Sound/sound.mp3"));
         music.setVolume(0.2f);
         music.setLooping(true);
@@ -41,12 +38,16 @@ public class MainGame extends Game {
     public void MusicSwap(){
         if(!war){
             war = true;
-            music.stop();
-            music_war.play();
+            if(music_play) {
+                music.stop();
+                music_war.play();
+            }
         }else{
             war = false;
-            music_war.stop();
-            music.play();
+            if(music_play) {
+                music_war.stop();
+                music.play();
+            }
         }
     }
     public void MusicSet(){

@@ -7,9 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
-import org.omg.CORBA.WrongTransaction;
-
 public class GamePlay extends Openable implements Screen{
     SpriteBatch batch;
     Sound[] blaster;
@@ -17,6 +14,7 @@ public class GamePlay extends Openable implements Screen{
     Sound[] move;
     Sound death;
     Sound siren;
+    Sound boom;
     Thread anime;//Анимации перса
     Thread Eanime;//Анимации Врага
     Thread EnergyAdd;
@@ -25,6 +23,9 @@ public class GamePlay extends Openable implements Screen{
     Thread CrossAdd;
     Thread StartLevel;
     Thread MedAdd;
+    Thread BoomAdd;
+    Thread TimeAdd;
+    Texture Front_energy;
     Texture Rocket;
     Texture floor;
     Texture background;
@@ -57,10 +58,19 @@ public class GamePlay extends Openable implements Screen{
     Texture metall;
     Texture bulb;
     Texture Bluefire;
+    Texture[] achivement = new Texture[4];
     Texture[] med = new Texture[5];
+    Texture[] booms = new Texture[3];
     TextureRegion Meteor;
     TextureRegion Effect;
+    int front_energy_scale = 0;
     int win_y = 0;
+    int boom_x = 0;
+    int boom_y = 0;
+    int boom_anime = 1;
+    int boom_height = 0;
+    int robot_speed_bonus = 0;
+    int Erobot_speed_bonus = 0;
     float win_rot = 0.0f;
     int win_scale = 0;
     int win = 0;
@@ -98,6 +108,8 @@ public class GamePlay extends Openable implements Screen{
     int Eenergy = 200;
     int energy_use = 0;
     int openlevel_x = 0;
+    int time = 120;
+    int type_achivement = 1;
     double speed = 1.0;
     double anime_grass = 0;
     int[] grass_1 = new int[5];
@@ -119,6 +131,9 @@ public class GamePlay extends Openable implements Screen{
     float Erot = 0;
     float Escale = 0.8f;
     float meteor_rot = 0.0f;
+    boolean Erobotboom = false;
+    boolean robotboom = false;
+    boolean isboom = false;
     boolean meteor_rocket = false;
     boolean med_used = false;
     boolean med_is = false;
@@ -154,16 +169,24 @@ public class GamePlay extends Openable implements Screen{
     public void show() {
         game.MusicSwap();
         game.robot.SetGamePlayTextures();
+        booms[0] = new Texture("Object/energy_1.png");
+        booms[1] = new Texture("Object/energy_2.png");
+        booms[2] = new Texture("Object/energy_3.png");
         metall = new Texture("Item/metall.png");
         chip = new Texture("Item/chip.png");
         bulb = new Texture("Item/bulb.png");
         gear = new Texture("Item/gear.png");
+        achivement[0] = new Texture("Object/swap.png");
+        achivement[1] = new Texture("Object/gold.png");
+        achivement[2] = new Texture("Object/silver.png");
+        achivement[3] = new Texture("Object/bronze.png");
         energy = game.robot.energy;
         Darkeffect = new Texture("Interface/dark.png");
         Wineffect = new Texture("Interface/gameplay_effect_1.png");
         Rocket = new Texture("Object/rocket.png");
         Effect = new TextureRegion(Wineffect, 300, 300);
         Frontground = new Texture("Interface/frontground.png");
+        Front_energy = new Texture("Interface/frontground_energy.png");
         Openlevel_1 = new Texture("Interface/openlevel_1.png");
         Openlevel_2 = new Texture("Interface/openlevel_2.png");
         Bluefire = new Texture("Object/bluefire.png");
@@ -207,6 +230,7 @@ public class GamePlay extends Openable implements Screen{
         move[2] = Gdx.audio.newSound(Gdx.files.internal("Sound/move_3.wav"));
         death = Gdx.audio.newSound(Gdx.files.internal("Sound/dead.wav"));
         siren = Gdx.audio.newSound(Gdx.files.internal("Sound/siren.wav"));
+        boom = Gdx.audio.newSound(Gdx.files.internal("Sound/upgrade.wav"));
         parameter.size = (int)(150.0*wpw);
         item_font = generator.generateFont(parameter);
         item_font.setColor(Color.GREEN);
@@ -225,6 +249,7 @@ public class GamePlay extends Openable implements Screen{
             grass_3[i] = game.random.nextInt(10)+1;
             i++;
         }
+
         health = game.robot.health;
         Ehealth = game.robot.Ehealth;
         y = game.random.nextInt(3)+1;
@@ -232,7 +257,32 @@ public class GamePlay extends Openable implements Screen{
         background = new Texture("Location/background_" + game.robot.level + ".png");
         floor = new Texture("Location/grass_alpha_" + game.robot.level + ".png");
         open_x = 0;
+        front_energy_scale = height*2;
         batch = new SpriteBatch();
+        TimeAdd = new Thread(){
+            @Override
+            public void run(){
+                time = 120;
+                type_achivement = 1;
+                Sleep(5000);
+                while (!closed && time>0){
+                    if(!pause){
+                        time--;
+                        button_font.setColor(255-time,75+time,75+time,75);
+                        if(time==90 || time == 60){
+                            type_achivement = 0;
+                        }
+                        if(time<=90){
+                            type_achivement = 2;
+                        }
+                        if(time<=60){
+                            type_achivement = 3;
+                        }
+                    }
+                    Sleep((int)(1000*speed));
+                }
+            }
+        };
         StartLevel = new Thread(){
             @Override
             public void run(){
@@ -256,7 +306,7 @@ public class GamePlay extends Openable implements Screen{
             @Override
             public void run(){
                 Sleep(7000);
-                while(!closed){
+                while(!closed && time > 0){
                     if(!med_is && !pause) {
                         med_is = true;
                         med_x = (game.random.nextInt(7) + 2);
@@ -292,6 +342,52 @@ public class GamePlay extends Openable implements Screen{
 
                     }
                     Sleep((game.random.nextInt(15) + 5) * 1000);
+                }
+            }
+        };
+        BoomAdd = new Thread(){
+            @Override
+            public void run(){
+                Sleep((game.random.nextInt(25) + 13-type_achivement*3) * 1000);
+                while(!closed){
+                    if(!pause) {
+                        boom_x = game.random.nextInt(7) + 2;
+                        boom_y = game.random.nextInt(3) + 1;
+                        boom_height = 10;
+                        isboom = true;
+                        int boom_value = 0;
+                        boom.play();
+                        while (boom_height < height) {
+                            boom_height += 8;
+                            Sleep(1);
+                        }
+                        boom.play();
+                        CheckBoom();
+                        while (boom_value != 15) {
+                            boom_value += 1;
+                            boom_anime++;
+                            if (boom_anime > 3) {
+                                boom_anime = 1;
+                            }
+                            CheckBoom();
+                            Sleep(50);
+                        }
+                        while (boom_height > 0) {
+                            boom_height -= 8;
+                            Sleep(1);
+                        }
+                        Erobotboom = false;
+                        robotboom = false;
+                        boom_x = 0;
+                        boom_y = 0;
+                        boom_anime = 1;
+                        isboom = false;
+                    }
+                    if(time>0) {
+                        Sleep((game.random.nextInt(25) + 13 - type_achivement * 3) * 1000);
+                    }else{
+                        Sleep((game.random.nextInt(5) + 5) * 1000);
+                    }
                 }
             }
         };
@@ -334,7 +430,11 @@ public class GamePlay extends Openable implements Screen{
                     if(closed){
                         break;
                     }
-                    Sleep(  (int)(time*speed));
+                    if(time > 0) {
+                        Sleep((int) (time * speed));
+                    }else{
+                        Sleep((int) (time/2 * speed));
+                    }
                 }
             }
         };
@@ -345,7 +445,7 @@ public class GamePlay extends Openable implements Screen{
                 int random;
                 while(true){
                     if(!pause) {
-                        random = game.random.nextInt(5);
+                        random = game.random.nextInt(6-type_achivement);
                         if (!meteor_run && random == 0) {
                             meteor_run = true;
                             SetMeteor();
@@ -386,7 +486,11 @@ public class GamePlay extends Openable implements Screen{
                     if(closed){
                         break;
                     }
-                    Sleep(  (int)(Etime*speed));
+                    if(Etime > 0) {
+                        Sleep((int) (Etime * speed));
+                    }else{
+                        Sleep((int) (Etime/2 * speed));
+                    }
                 }
             }
         };
@@ -401,7 +505,15 @@ public class GamePlay extends Openable implements Screen{
                     if(closed){
                         break;
                     }
-                    Sleep(  (int)(game.robot.energy_speed*speed));
+                    if(robot_speed_bonus == 0) {
+                        if(time>0) {
+                            Sleep((int) (game.robot.energy_speed * speed));
+                        }else{
+                            Sleep((int) (game.robot.energy_speed/2 * speed));
+                        }
+                    }else{
+                        Sleep((int) (40 * speed));
+                    }
                 }
             }
         };
@@ -416,7 +528,15 @@ public class GamePlay extends Openable implements Screen{
                     if(closed){
                         break;
                     }
-                    Sleep(  (int)(game.robot.Eenergy_speed*speed));
+                    if(Erobot_speed_bonus == 0) {
+                        if(time>0) {
+                            Sleep((int) (game.robot.Eenergy_speed * speed));
+                        }else{
+                            Sleep((int) (game.robot.Eenergy_speed/2 * speed));
+                        }
+                    }else{
+                        Sleep((int) (40 * speed));
+                    }
                 }
             }
         };
@@ -497,6 +617,8 @@ public class GamePlay extends Openable implements Screen{
             }
         };
         drawer = new SpriteBatchRubber(this, batch);
+        TimeAdd.start();
+        BoomAdd.start();
         MedAdd.start();
         StartLevel.start();
         CrossAdd.start();
@@ -522,15 +644,28 @@ public class GamePlay extends Openable implements Screen{
                 if(!meteor_rocket) {
                     drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
                     drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1, 1, meteor_rot);
+
                 }else{
-                    drawer.draw(Fire, meteor_x - 12, meteor_y+70, 175.0f, 200.0f + (meteor_rot) / 4);
-                    drawer.draw(Rocket, meteor_x-50, meteor_y-10, 250, 250);
+                    drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    drawer.draw(Rocket, meteor_x-50, meteor_y-80, 250, 250);
                 }
             }else{
                 drawer.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
             }
         }
         drawer.draw(floor, 0, height/5*2-80, width, height/5);
+        if(med_is && med_y == 3){
+            if(!med_swap &&  !med_used) {
+                drawer.draw(med[med_anime], med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60-10*med_y, med_scale, med_scale);
+
+            }else{
+                if(med_used) {
+                    drawer.draw(Bluefire, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
+                }else{
+                    drawer.draw(MedSwap, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
+                }
+            }
+        }
         if(meteor_run && will_meteor_y == 3) {
             drawer.draw(game.robot.Cross, meteor_x + (150-cross_size)/2, will_meteor_y * (height / 5) - 60 - 10 * will_meteor_y, cross_size, cross_size);
         }
@@ -544,15 +679,29 @@ public class GamePlay extends Openable implements Screen{
                 if(!meteor_rocket) {
                     drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
                     drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1, 1, meteor_rot);
+
                 }else{
-                    drawer.draw(Fire, meteor_x - 12, meteor_y+70, 175.0f, 200.0f + (meteor_rot) / 4);
-                    drawer.draw(Rocket, meteor_x-50, meteor_y-10, 250, 250);
+                    drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    drawer.draw(Rocket, meteor_x-50, meteor_y-80, 250, 250);
+
                 }
             }else{
                 drawer.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
             }
         }
         drawer.draw(floor, 0, height/5-70, width, height/5);
+        if(med_is && med_y == 2){
+            if(!med_swap &&  !med_used) {
+                drawer.draw(med[med_anime], med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60-10*med_y, med_scale, med_scale);
+
+            }else{
+                if(med_used) {
+                    drawer.draw(Bluefire, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
+                }else{
+                    drawer.draw(MedSwap, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
+                }
+            }
+        }
         if(meteor_run && will_meteor_y == 2) {
             drawer.draw(game.robot.Cross, meteor_x + (150-cross_size)/2, will_meteor_y * (height / 5) - 60 - 10 * will_meteor_y, cross_size, cross_size);
         }
@@ -566,15 +715,30 @@ public class GamePlay extends Openable implements Screen{
                 if(!meteor_rocket) {
                     drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
                     drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1, 1, meteor_rot);
+
                 }else{
-                    drawer.draw(Fire, meteor_x - 12, meteor_y+70, 175.0f, 200.0f + (meteor_rot) / 4);
-                    drawer.draw(Rocket, meteor_x-50, meteor_y-10, 250, 250);
+
+                    drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    drawer.draw(Rocket, meteor_x-50, meteor_y-80, 250, 250);
+
                 }
             }else{
                 drawer.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
             }
         }
         drawer.draw(floor, 0, -60, width, height/5);
+        if(med_is && med_y == 1){
+            if(!med_swap &&  !med_used) {
+                drawer.draw(med[med_anime], med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60-10*med_y, med_scale, med_scale);
+
+            }else{
+                if(med_used) {
+                    drawer.draw(Bluefire, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
+                }else{
+                    drawer.draw(MedSwap, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
+                }
+            }
+        }
         if(meteor_run && will_meteor_y == 1) {
             drawer.draw(game.robot.Cross, meteor_x + (150-cross_size)/2, will_meteor_y * (height / 5) - 60 - 10 * will_meteor_y, cross_size, cross_size);
         }
@@ -587,22 +751,19 @@ public class GamePlay extends Openable implements Screen{
                 index++;
             }
         }
-        if(med_is && med_y == 3){
-            if(!med_swap && !med_used) {
-                drawer.draw(med[med_anime], med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60-10*med_y, med_scale, med_scale);
+        if(Ey == 3){
+            if(!Erobotboom) {
+                DrawEnemy(drawer, Ex * (width / 10) + (int) Erobot_x, (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y, Escale * (1.0f - 0.03f * Ey), Erothand + 90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
             }else{
-                if(med_used) {
-                    drawer.draw(Bluefire, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
-                }else{
-                    drawer.draw(MedSwap, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
-                }
+                DrawEnemy(drawer, Ex * (width / 10) + (int) Erobot_x - boom_anime*10, (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y - boom_anime*10, Escale * (1.0f - 0.03f * Ey), Erothand + 90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
             }
         }
-        if(Ey == 3){
-            DrawEnemy(drawer, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale*(1.0f-0.03f*Ey), Erothand+90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
-        }
         if(y == 3){
-            DrawRobot(drawer, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead, 0);
+            if(!robotboom) {
+                DrawRobot(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, swap, hurt, dead, 0);
+            }else{
+                DrawRobot(drawer, x * (width / 10) + (int) robot_x - boom_anime*10, (height / 5) * y - 60 - 10 * y + (int) robot_y - boom_anime*10, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, swap, hurt, dead, 0);
+            }
         }
         index = 0;
         if(bullets>0) {
@@ -613,22 +774,19 @@ public class GamePlay extends Openable implements Screen{
                 index++;
             }
         }
-        if(med_is && med_y == 2){
-            if(!med_swap &&  !med_used) {
-                drawer.draw(med[med_anime], med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60-10*med_y, med_scale, med_scale);
+        if(Ey == 2){
+            if(!Erobotboom) {
+                DrawEnemy(drawer, Ex * (width / 10) + (int) Erobot_x, (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y, Escale * (1.0f - 0.03f * Ey), Erothand + 90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
             }else{
-                if(med_used) {
-                    drawer.draw(Bluefire, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
-                }else{
-                    drawer.draw(MedSwap, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
-                }
+                DrawEnemy(drawer, Ex * (width / 10) + (int) Erobot_x - boom_anime*10, (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y - boom_anime*10, Escale * (1.0f - 0.03f * Ey), Erothand + 90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
             }
         }
-        if(Ey == 2){
-            DrawEnemy(drawer, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale*(1.0f-0.03f*Ey), Erothand+90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
-        }
         if(y == 2){
-            DrawRobot(drawer, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead, 0);
+            if(!robotboom) {
+                DrawRobot(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, swap, hurt, dead, 0);
+            }else{
+                DrawRobot(drawer, x * (width / 10) + (int) robot_x - boom_anime*10, (height / 5) * y - 60 - 10 * y + (int) robot_y - boom_anime*10, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, swap, hurt, dead, 0);
+            }
         }
         index = 0;
         if(bullets>0) {
@@ -639,22 +797,22 @@ public class GamePlay extends Openable implements Screen{
                 index++;
             }
         }
-        if(med_is && med_y == 1){
-            if(!med_swap &&  !med_used) {
-                drawer.draw(med[med_anime], med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60-10*med_y, med_scale, med_scale);
+        if(Ey == 1){
+            if(!Erobotboom) {
+                DrawEnemy(drawer, Ex * (width / 10) + (int) Erobot_x, (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y, Escale * (1.0f - 0.03f * Ey), Erothand + 90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
             }else{
-                if(med_used) {
-                    drawer.draw(Bluefire, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
-                }else{
-                    drawer.draw(MedSwap, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
-                }
+                DrawEnemy(drawer, Ex * (width / 10) + (int) Erobot_x - boom_anime*10, (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y - boom_anime*10, Escale * (1.0f - 0.03f * Ey), Erothand + 90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
             }
         }
-        if(Ey == 1){
-            DrawEnemy(drawer, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale*(1.0f-0.03f*Ey), Erothand+90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
-        }
         if(y == 1){
-            DrawRobot(drawer, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale*(1.0f-0.03f*y), rothand+90, rothead, rotleg, rot , swap, hurt, dead, 0);
+            if(!robotboom) {
+                DrawRobot(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, swap, hurt, dead, 0);
+            }else{
+                DrawRobot(drawer, x * (width / 10) + (int) robot_x - boom_anime*10, (height / 5) * y - 60 - 10 * y + (int) robot_y - boom_anime*10, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, swap, hurt, dead, 0);
+            }
+        }
+        if(isboom){
+            drawer.draw(booms[boom_anime-1], boom_x*(width/10)-250,  (height/5)*boom_y-60-10*boom_y+(height-boom_height), 500, boom_height);
         }
         DrawEnemyIcon(drawer, Ex*(width/10)+(int)Erobot_x, (height/5)*Ey-60-10*Ey+(int)Erobot_y, Escale, Ehealth);
         DrawRobotIcon(drawer, x*(width/10)+(int)robot_x, (height/5)*y-60-10*y+(int)robot_y, scale, health);
@@ -697,9 +855,15 @@ public class GamePlay extends Openable implements Screen{
             drawer.draw(jump, (int)(width-400*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
         }
         DrawEnergy(drawer, (int)(400*(scale_inteface-0.1)), (int)(-50*(scale_inteface-0.1)), 1.3*(scale_inteface-0.1), energy, warning);
+        if(time > 0) {
+            button_font.draw(batch, time + "", (int) (700.0 * wpw * scale_inteface), (int) (85.0 * hph * scale_inteface));
+        }else{
+            button_font.draw(batch, "ХАРД", (int) (680.0 * wpw * scale_inteface), (int) (85.0 * hph * scale_inteface));
+        }
+        drawer.draw(achivement[type_achivement], (int)(950.0*scale_inteface), 0, (int)(150*scale_inteface), (int)(150*scale_inteface));
         if(win != 0){
             drawer.draw(Darkeffect, 0, 0, width, height);
-            drawer.draw(Effect, (float) (width/2.0-(double)win_scale/2.0), (float) (height/2.0-(double)win_scale/2.0), (float)win_scale/2.0f, (float)win_scale/2.0f, (float)win_scale, (float)win_scale, 1, 1, (float)win_rot);
+            drawer.draw(Effect, (float) (width/2.0-(double)win_scale/2.0), (float) (height/2.0-(double)win_scale/2.0), (float)win_scale/2.0f, (float)win_scale/2.0f, (float)win_scale, (float)win_scale, 1, 1, win_rot);
             if(win_type == 1) {
                 drawer.draw(chip,  width/2-(int)((double)win_scale*0.70)/2, height/2-(int)((double)win_scale*0.70)/2, (int)((double)win_scale*0.70), (int)((double)win_scale*0.70));
             }
@@ -715,11 +879,15 @@ public class GamePlay extends Openable implements Screen{
             resource_font.draw(batch, win_num + "", (int)(((double)width/2.0-50)*wpw), (int)(((double)win_y-160.0)*hph));
             resource_font.draw(batch, "ХЛАМ", (int)(((double)width/2.0-200)*wpw), (int)(((double)height-(double)win_y+260.0)*hph));
         }
+
         drawer.draw(Frontground, 0, 0, width, height);
+        if(robot_speed_bonus > 0){
+            drawer.draw(Front_energy, 0, (height-front_energy_scale)/2, width, front_energy_scale);
+        }
         if(pause){
             drawer.draw(Openlevel_1, openlevel_x-width-10, 0, width, height);
             drawer.draw(Openlevel_2, width-openlevel_x+10, 0, width, height);
-            item_font.draw(batch, game.robot.level + " УРОВЕНЬ", (int)((double)(width/2.0-400.0)*wpw), (int)(((double)height/(double)width*(double)openlevel_x/2.0-50)*hph));
+            item_font.draw(batch, game.robot.level_win + " УРОВЕНЬ", (int)((width/2.0-400.0)*wpw), (int)(((double)height/(double)width*(double)openlevel_x/2.0-50)*hph));
         }
         CheckClose(drawer);
         CheckOpen(drawer);
@@ -941,8 +1109,6 @@ public class GamePlay extends Openable implements Screen{
                         Escale-=0.0002f;
                         Sleep(  5);
                     }
-
-                    Sleep(  500);
                     EndGame(1);
                 }
             };
@@ -950,8 +1116,7 @@ public class GamePlay extends Openable implements Screen{
         }
     }
     public void EndGame(int win) {
-        if (!dead) {
-            win_num = game.random.nextInt(7) + 1;
+            win_num = game.random.nextInt(7) + (5-type_achivement);
             win_rot = 0.0f;
             win_type = game.robot.level;
             this.win = win;
@@ -1013,11 +1178,11 @@ public class GamePlay extends Openable implements Screen{
                         }
                         Sleep(20);
                     }
-
+                    game.robot.level_win+=1;
                 }
             };
             anime.start();
-        }
+
     }
     public void SetMeteor(){
         if(meteor_run){
@@ -1033,7 +1198,11 @@ public class GamePlay extends Openable implements Screen{
                 will_meteor_y = y;
             }
             siren.play(0.2f);
-            meteor_y = height;
+            if(!meteor_rocket) {
+                meteor_y = height;
+            }else{
+                meteor_y = height+100;
+            }
             meteor_x = will_meteor_x*width/10;
             Thread anime = new Thread() {
                 @Override
@@ -1091,6 +1260,30 @@ public class GamePlay extends Openable implements Screen{
             anime.start();
         }
     }
+    public void CheckBoom(){
+            if(x == boom_x && y == boom_y && !robotboom){
+                robotboom = true;
+                health = 10;
+                robot_speed_bonus = 1;
+                front_energy_scale=0;
+                Thread anime = new Thread() {
+                    @Override
+                    public void run() {
+                        while (front_energy_scale<height) {
+                            front_energy_scale+=2;
+                            Sleep(  5);
+                        }
+                    }
+                };
+                anime.start();
+            }
+            if(Ex == boom_x && Ey == boom_y && !Erobotboom){
+                 Erobotboom = true;
+                Ehealth = Ehealth/2;
+                Erobot_speed_bonus = 1;
+
+            }
+    }
     public void Dead(){
         if(!dead){
             dead = true;
@@ -1106,8 +1299,7 @@ public class GamePlay extends Openable implements Screen{
                         scale-=0.0002f;
                         Sleep(  5);
                     }
-                    if (!Edead) {
-
+                    if (!Edead && win != 1) {
                         Sleep(500);
                         game.MusicSwap();
                         DoorClose(1);
@@ -1145,7 +1337,11 @@ public class GamePlay extends Openable implements Screen{
                                     break;
                                 }
                             }
-                            Sleep(  (int)(game.robot.Eattack_speed*speed));
+                            if(Erobot_speed_bonus == 0) {
+                                Sleep((int) (game.robot.Eattack_speed * speed));
+                            }else{
+                                Sleep((int) (1 * speed));
+                            }
                         }
                         Efire_clicked = false;
                         Erothand = lastrot;
@@ -1185,7 +1381,11 @@ public class GamePlay extends Openable implements Screen{
                                     break;
                                 }
                             }
-                            Sleep(  (int)(game.robot.attack_speed*speed));
+                            if(robot_speed_bonus == 0) {
+                                Sleep((int) (game.robot.attack_speed * speed));
+                            }else{
+                                Sleep((int) (1 * speed));
+                            }
                         }
                         scale_inteface = 1.1;
                         fire_clicked = false;
@@ -1367,7 +1567,12 @@ public class GamePlay extends Openable implements Screen{
                                 EUseMed();
                                 break;
                             }
+                            if(Erobot_speed_bonus == 0) {
                                 Sleep(  (int)(game.robot.Emove_speed*speed));
+                            }else{
+                                Sleep(  (int)(1*speed));
+                            }
+
                         }
                     }
                 };
@@ -1425,7 +1630,11 @@ public class GamePlay extends Openable implements Screen{
                                 EUseMed();
                                 break;
                             }
+                            if(Erobot_speed_bonus == 0) {
                                 Sleep(  (int)(game.robot.Emove_speed*speed));
+                            }else{
+                                Sleep(  (int)(1*speed));
+                            }
                         }
                     }
                 };
@@ -1479,8 +1688,13 @@ public class GamePlay extends Openable implements Screen{
                                 break;
                             }
 
+                            if(robot_speed_bonus == 0) {
                                 Sleep(  (int)(game.robot.move_speed*speed));
+                            }else{
+                                Sleep(  (int)(1*speed));
+                            }
                         }
+
                         up_clicked = false;
                         rotleg = 0;
                         robot_y = 0;
@@ -1537,7 +1751,11 @@ public class GamePlay extends Openable implements Screen{
                                 }
                                 break;
                             }
+                            if(robot_speed_bonus == 0) {
                                 Sleep(  (int)(game.robot.move_speed*speed));
+                            }else{
+                                Sleep(  (int)(1*speed));
+                            }
                         }
                         down_clicked = false;
                         rotleg = 0;
@@ -1572,7 +1790,12 @@ public class GamePlay extends Openable implements Screen{
                                 break;
                             }
                         }
-                        Sleep(  (int)(5*speed));
+                        if(Erobot_speed_bonus == 0) {
+                            Sleep(  (int)(((double)game.robot.Eattack_speed/1.20)*speed));
+                        }else{
+                            Sleep(  (int)(2*speed));
+                        }
+
                     }
                     Eredir_clicked = false;
                     Edir = -Edir;
@@ -1603,7 +1826,11 @@ public class GamePlay extends Openable implements Screen{
                                 break;
                             }
                         }
-                        Sleep(  (int)(5*speed));
+                        if(robot_speed_bonus == 0) {
+                            Sleep(  (int)(((double)game.robot.attack_speed/1.20)*speed));
+                        }else{
+                            Sleep(  (int)(2*speed));
+                        }
                     }
                     redir_clicked = false;
                     dir = -dir;
@@ -1750,5 +1977,14 @@ public class GamePlay extends Openable implements Screen{
         Darkeffect.dispose();
         MedSwap.dispose();
         Bluefire.dispose();
+        boom.dispose();
+        booms[0].dispose();
+        booms[1].dispose();
+        booms[2].dispose();
+        Front_energy.dispose();
+        achivement[0].dispose();
+        achivement[1].dispose();
+        achivement[2].dispose();
+        achivement[3].dispose();
     }
 }

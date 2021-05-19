@@ -1,11 +1,11 @@
 package com.mygdx.robotlegend;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 public class RoboStructure {
     com.mygdx.robotlegend.MainGame game;
     public RoboStructure(MainGame game){ this.game = game; }
     int level = 0;
+    int level_win = 1;
     int gears = 0;
     int microchips = 0;
     int lamps = 0;
@@ -32,7 +32,6 @@ public class RoboStructure {
     Texture EBullet;
     Texture ESelect;
     Texture Select;
-    Texture Hidet;
     Texture HeadDeadt;
     Texture BodyDeadt;
     Texture LeftLegDeadt;
@@ -70,19 +69,18 @@ public class RoboStructure {
     Texture LLt;
     Texture Ht;
     Texture Bt;
-    TextureRegion Hide;
     TextureRegion RH;
     TextureRegion LH;                                                                                               
     TextureRegion RL;
     TextureRegion LL;
     TextureRegion H;
     TextureRegion B;
-    int EHid;
-    int EBid;
-    int ERHid;
-    int ELHid;
-    int ERLid;
-    int ELLid;
+    int EHid = 1;
+    int EBid = 1;
+    int ERHid = 1;
+    int ELHid = 1;
+    int ERLid = 1;
+    int ELLid = 1;
     int Ehealth = 100;
     int Edamage;
     int Eattack_speed;
@@ -100,41 +98,25 @@ public class RoboStructure {
     TextureRegion ELL;
     TextureRegion EH;
     TextureRegion EB;
-   /* public void DisposeRobotTextures(){
-        RHt.dispose();
-        LHt.dispose();
-        LHt.dispose();
-        RLt.dispose();
-        LLt.dispose();
-        Ht.dispose();
-        Bt.dispose();
-    }*/
     public void UpdateParameters(){
         energy_speed = 90-Hid*10;
         Eenergy_speed = 90-EHid*10;
-
         attack_speed = 8-Bid;
         Eattack_speed = 8-EBid;
-
         move_speed = 11-RLid-LLid;
         Emove_speed = 11-ERLid-ELLid;
-
         damage = RHid*2+LHid*2;
         Edamage = ERHid*2+ELHid*2;
-
         health = Hid*10+Bid*15+RHid*5+LHid*5+RLid*5+LLid*5;
         Ehealth = EHid*10+EBid*15+ERHid*5+ELHid*5+ERLid*5+ELLid*5;
-
     }
     public void SetWorkMenuTextures(){
-        Hidet = new Texture("Interface/hide.png");
         HeadSelectt = new Texture("Robot/head_select.png");
         BodySelectt = new Texture("Robot/body_select.png");
         LeftLegSelectt = new Texture("Robot/leg_select.png");
         RightLegSelectt = new Texture("Robot/leg_select.png");
         LeftHandSelectt = new Texture("Robot/hand_select.png");
         RightHandSelectt = new Texture("Robot/hand_select.png");
-        Hide =  new TextureRegion(Hidet, 300, 300);
     }
     public void UpdateRobotTexture(int which_select){
         if(which_select == 1){
@@ -170,7 +152,6 @@ public class RoboStructure {
         UpdateParameters();
     }
     public void DisposeWorkMenuTextures(){
-        Hidet.dispose();
         HeadSelectt.dispose();
         BodySelectt.dispose();
         LeftLegSelectt.dispose();
@@ -253,41 +234,19 @@ public class RoboStructure {
         RightHandDeadt.dispose();
     }
     public void SetFirstChanges(){
-        Hid = game.random.nextInt(4)+1;
-        Bid = game.random.nextInt(4)+1;
-        RHid = game.random.nextInt(4)+1; //Правая рука
-        LHid = game.random.nextInt(4)+1; //Левая рука
-        RLid = game.random.nextInt(4)+1; //Правая нога
-        LLid = game.random.nextInt(4)+1; //Левая нога
-        EHid = game.random.nextInt(4)+1;
-        EBid = game.random.nextInt(4)+1;
-        ERHid = game.random.nextInt(4)+1; //Правая рука
-        ELHid = game.random.nextInt(4)+1; //Левая рука
-        ERLid = game.random.nextInt(4)+1; //Правая нога
-        ELLid = game.random.nextInt(4)+1; //Левая нога
-
+        level_win = TakeSafe("level");
         gears = TakeSafe("gears");
         microchips = TakeSafe("microchips");
         lamps = TakeSafe("lamps");
         metal = TakeSafe("metal");
-
         Hid = TakeSafe("H");
         Bid = TakeSafe("B");
         RHid = TakeSafe("RH");
         LHid = TakeSafe("LH");
         RLid = TakeSafe("RL");
         LLid = TakeSafe("LL");
-
-        Hid = 1;
-        Bid = 1;
-        RHid = 1;
-        LHid = 1;
-        RLid = 1;
-        LLid = 1;
-
         UpdateParameters();
         level = game.random.nextInt(4)+1;
-
     }
     public int TakeSafe(String name){
         if(game.safes.contains(name)) {
@@ -295,6 +254,75 @@ public class RoboStructure {
         }else{
             return 1;
         }
+    }
+    public void RandomEnemy(){
+        int level_arm = level_win;
+        if(level_win>48){
+            level_arm = 48;
+        }
+        while(EHid+EBid+ERHid+ERLid+ELLid+ELHid!=level_arm/2+6) {
+            EHid = game.random.nextInt(5) + 1;
+            EBid = game.random.nextInt(5) + 1;
+            ERHid = game.random.nextInt(5) + 1; //Правая рука
+            ELHid = game.random.nextInt(5) + 1; //Левая рука
+            ERLid = game.random.nextInt(5) + 1; //Правая нога
+            ELLid = game.random.nextInt(5) + 1; //Левая нога
+            if (EHid > 5) {
+                EHid = 5;
+            }
+            if (EBid > 5) {
+                EBid = 5;
+            }
+            if (ERHid > 5) {
+                ERHid = 5;
+            }
+            if (ELHid > 5) {
+                ELHid = 5;
+            }
+            if (ELLid > 5) {
+                ELLid = 5;
+            }
+            if (ERLid > 5) {
+                ERLid = 5;
+            }
+            if (EHid < 1) {
+                EHid = 1;
+            }
+            if (EBid < 1) {
+                EBid = 1;
+            }
+            if (ERHid < 1) {
+                ERHid = 1;
+            }
+            if (ELHid < 1) {
+                ELHid = 1;
+            }
+            if (ELLid < 1) {
+                ELLid = 1;
+            }
+            if (ERLid < 1) {
+                ERLid = 1;
+            }
+        }
+        ERHt.dispose();
+        ELHt.dispose();
+        ERLt.dispose();
+        ELLt.dispose();
+        EHt.dispose();
+        EBt.dispose();
+        ERHt =  new Texture("Robot/hand_" + ERHid + ".png");
+        ELHt = new Texture("Robot/hand_" + ELHid + ".png");
+        ERLt = new Texture("Robot/leg_" + ERLid + ".png");
+        ELLt = new Texture("Robot/leg_" + ELLid + ".png");
+        EHt = new Texture("Robot/head_" + EHid + ".png");
+        EBt = new Texture("Robot/body_" + EBid + ".png");
+        ERH =  new TextureRegion(ERHt, 300, 300);
+        ELH =  new TextureRegion(ELHt, 300, 300);
+        ERL =  new TextureRegion(ERLt, 300, 300);
+        ELL =  new TextureRegion(ELLt, 300, 300);
+        EH =  new TextureRegion(EHt, 300, 300);
+        EB =  new TextureRegion(EBt, 300, 300);
+        UpdateParameters();
     }
     public void UpdateTextures(){
         RHt =  new Texture("Robot/hand_" + RHid + ".png");

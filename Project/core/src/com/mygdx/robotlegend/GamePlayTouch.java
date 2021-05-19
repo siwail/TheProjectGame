@@ -1,6 +1,5 @@
 package com.mygdx.robotlegend;
 import com.badlogic.gdx.InputProcessor;
-
 public class GamePlayTouch implements InputProcessor {
     com.mygdx.robotlegend.MainGame game;
     com.mygdx.robotlegend.GamePlay gamePlay;
@@ -41,28 +40,30 @@ public class GamePlayTouch implements InputProcessor {
         gamePlay.redir_touch = false;
         gamePlay.fire_touch = false;
         gamePlay.jump_touch = false;
-        if(screenX >= SX(gamePlay.width-275*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-25*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-250*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
-            gamePlay.Fire();
-        }
-        if(screenX >= SX(50*gamePlay.scale_inteface) && screenX <= SX(200*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-275*gamePlay.scale_inteface) && screenY < SY(gamePlay.height-125)){
+        if (!gamePlay.robotboom && gamePlay.win != 1){
+            if (screenX >= SX(gamePlay.width - 275 * gamePlay.scale_inteface) && screenX <= SX(gamePlay.width - 25 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 250 * gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)) {
+                gamePlay.Fire();
+            }
+        if (screenX >= SX(50 * gamePlay.scale_inteface) && screenX <= SX(200 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 275 * gamePlay.scale_inteface) && screenY < SY(gamePlay.height - 125)) {
             gamePlay.Up();
         }
-        if(screenX >= SX(50*gamePlay.scale_inteface) && screenX <= SX(200*gamePlay.scale_inteface) && screenY > SY(gamePlay.height-125*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
+        if (screenX >= SX(50 * gamePlay.scale_inteface) && screenX <= SX(200 * gamePlay.scale_inteface) && screenY > SY(gamePlay.height - 125 * gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)) {
             gamePlay.Down();
         }
-        if(screenX >= SX(200*gamePlay.scale_inteface) && screenX <= SX(350*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
+        if (screenX >= SX(200 * gamePlay.scale_inteface) && screenX <= SX(350 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 150 * gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)) {
             gamePlay.Redir();
         }
-        if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
+        if (screenX >= SX(gamePlay.width - 400 * gamePlay.scale_inteface) && screenX <= SX(gamePlay.width - 250 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 150 * gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)) {
             gamePlay.Jump();
         }
+    }
         return false;
     }
     public int SX(double x){
-        return (int)((double)x*gamePlay.wpw);
+        return (int)(x*gamePlay.wpw);
     }
     public int SY(double y){
-        return (int)((double)y*gamePlay.hph);
+        return (int)(y*gamePlay.hph);
     }
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }

@@ -37,6 +37,12 @@ public class GameMenuTouch implements InputProcessor {
                 gameMenu.play_touch = true;
             }
         }
+        if (screenX >= SX(gameMenu.width/2-150) && screenX <= SX(gameMenu.width/2+150) && screenY >= SY(gameMenu.height-150) && screenY <= SY(gameMenu.height) && !gameMenu.istutorial){
+
+            if(gameMenu.isOpen) {
+                gameMenu.tutorial_touch = true;
+            }
+        }
 
         return false;
     }
@@ -45,21 +51,32 @@ public class GameMenuTouch implements InputProcessor {
         gameMenu.close_touch = false;
         gameMenu.work_touch = false;
         gameMenu.play_touch = false;
-        if (screenX >= SX(50) && screenX <= SX(550) && screenY <= SY(gameMenu.height) && screenY >= SY(gameMenu.height-250)){
-            Gdx.app.exit();
-        }
-        if (screenX >= SX(620) && screenX <= SX(1020) && screenY <= SY(200) && screenY >= SY(0)){
-            if(gameMenu.isOpen) {
-                gameMenu.DoorClose(1);
+        gameMenu.tutorial_touch = false;
+        if(!gameMenu.istutorial) {
+            if (screenX >= SX(50) && screenX <= SX(550) && screenY <= SY(gameMenu.height) && screenY >= SY(gameMenu.height - 250)) {
+                Gdx.app.exit();
+            }
+            if (screenX >= SX(620) && screenX <= SX(1020) && screenY <= SY(200) && screenY >= SY(0)) {
+                if (gameMenu.isOpen) {
+                    gameMenu.DoorClose(1);
+                }
+            }
+            if (screenX >= SX(gameMenu.width - 550) && screenX <= SX(gameMenu.width - 50) && screenY >= SY(gameMenu.height - 250) && screenY <= SY(gameMenu.height)) {
+                if (gameMenu.isOpen) {
+                    gameMenu.DoorClose(2);
+                }
+            }
+            if (screenX >= SX(1020) && screenX <= SX(1120) && screenY >= SY(0) && screenY <= SY(100)) {
+                game.MusicSet();
+            }
+            if (screenX >= SX(gameMenu.width / 2 - 150) && screenX <= SX(gameMenu.width / 2 + 150) && screenY >= SY(gameMenu.height - 150) && screenY <= SY(gameMenu.height)) {
+                if (gameMenu.isOpen) {
+                    gameMenu.SceneTutorial();
+                }
             }
         }
-        if (screenX >= SX(gameMenu.width-550) && screenX <= SX(gameMenu.width-50) && screenY >= SY(gameMenu.height-250) && screenY <= SY(gameMenu.height)){
-            if(gameMenu.isOpen) {
-                gameMenu.DoorClose(2);
-            }
-        }
-        if (screenX >= SX(1020) && screenX <= SX(1120) && screenY >= SY(0) && screenY <= SY(100)){
-            game.MusicSet();
+        if(gameMenu.istutorial && gameMenu.tutorial_scene<=gameMenu.max_tutorial_scene && !gameMenu.resize_scene){
+            gameMenu.SceneTutorial();
         }
         return false;
     }

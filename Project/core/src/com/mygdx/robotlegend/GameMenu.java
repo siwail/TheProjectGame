@@ -26,6 +26,10 @@ public class GameMenu extends Openable implements Screen{
     Texture exit;
     Texture work;
     Texture go;
+    Texture tutorial;
+    Texture screen;
+    Texture front_break;
+    Texture[] tutorials = new Texture[7];
     Texture[] smoke = new Texture[4];
     Texture[] birds = new Texture[4];
     float rotation_hand = 0.0f;
@@ -38,6 +42,12 @@ public class GameMenu extends Openable implements Screen{
     boolean work_touch = false;
     boolean isJump = false;
     double robot_x;
+    boolean tutorial_touch = false;
+    boolean istutorial = false;
+    boolean resize_scene = false;
+    int scene_size = 0;
+    int tutorial_scene = 0;
+    int max_tutorial_scene = 7;
     int anime_grass_1 = 0;
     int anime_grass_2 = 0;
     int grass_dir_1 = 1;
@@ -51,6 +61,11 @@ public class GameMenu extends Openable implements Screen{
     @Override
     public void show() {
         Safe();
+        game.robot.RandomEnemy();
+        tutorial = new Texture("Button/button_tutorial.png");
+        for(int i=0;i<max_tutorial_scene;i++){
+        tutorials[i] = new Texture("Tutorial/tutorial_" + (i+1) + ".png");
+        }
         smoke[0] = new Texture("Object/smoke1.png");
         smoke[1] = new Texture("Object/smoke2.png");
         smoke[2] = new Texture("Object/smoke3.png");
@@ -60,6 +75,8 @@ public class GameMenu extends Openable implements Screen{
         birds[2] = new Texture("Object/bird_3.png");
         birds[3] = new Texture("Object/bird_4.png");
         work = new Texture("Button/work.png");
+        screen = new Texture("Object/screen.png");
+        front_break = new Texture("Interface/break.png");
         exit = new Texture("Button/exit.png");
         go = new Texture("Button/button.png");
         white = new Texture("Button/button_white.png");
@@ -168,8 +185,8 @@ public class GameMenu extends Openable implements Screen{
         Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
         batch.begin();
         drawer.draw(camp, 0, 0, width, height);
-        drawer.draw(grass, width-200, 230, 250, 250+anime_grass_1);
-        drawer.draw(grass, -70, 230, 250, 250+anime_grass_2);
+        drawer.draw(grass, width-200, 220, 250, 250+anime_grass_1);
+        drawer.draw(grass, -70, 220, 250, 250+anime_grass_2);
         DrawRobot(drawer, (int)robot_x, robot_y, scale, rotation_hand+90, rotation_head, rotation_leg, 0 , false, false, false, 0);
         if (BirdFly) {
             TextureRegion bird_region = new TextureRegion(birds[bird_anime], 400, 400);
@@ -190,6 +207,11 @@ public class GameMenu extends Openable implements Screen{
         }else{
             play= go;
         }
+        if(tutorial_touch){
+            drawer.draw(white, width/2-150, 0, 300, 150);
+        }else{
+            drawer.draw(tutorial, width/2-150, 0, 300, 150);
+        }
         drawer.draw(close, 50, 0, 500, 250);
         drawer.draw(play, width-550, 0, 500, 250);
         drawer.draw(workspace, 620, height-200, 400, 200);
@@ -207,6 +229,10 @@ public class GameMenu extends Openable implements Screen{
         item_font.draw(batch, Integer.toString(game.robot.microchips), (int)(275.0*wpw), (int)((height-130)*hph));
         item_font.draw(batch, Integer.toString(game.robot.lamps), (int)(405.0*wpw), (int)((height-130)*hph));
         drawer.draw(smoke[smoke_anime], width/2-125, 400, 175, 175);
+        if(istutorial){
+            drawer.draw(tutorials[tutorial_scene-1], scene_size-width-10, 0, width, height);
+            drawer.draw(front_break, scene_size-width/2, 0, width, height);
+        }
         CheckClose(drawer);
         CheckOpen(drawer);
         batch.end();
@@ -219,6 +245,37 @@ public class GameMenu extends Openable implements Screen{
             }
         }
     }
+    public void SceneTutorial(){
+        Thread anime = new Thread(){
+            @Override
+            public void run(){
+                if(tutorial_scene+1<=max_tutorial_scene) {
+                    tutorial_scene++;
+                }else{
+                    scene_size = width;
+                    resize_scene = true;
+                    while (scene_size > 10) {
+                        scene_size -= 5;
+                        Sleep(1);
+                    }
+                    resize_scene = false;
+                    istutorial = false;
+                    tutorial_scene = 0;
+                }
+                if(tutorial_scene == 1) {
+                    istutorial = true;
+                    scene_size = 10;
+                    resize_scene = true;
+                    while (scene_size < width) {
+                        scene_size += 5;
+                        Sleep(1);
+                    }
+                    resize_scene = false;
+                }
+            }
+        };
+        anime.start();
+    }
     public void Safe(){
         game.safes.putInteger("H", game.robot.Hid);
         game.safes.putInteger("B", game.robot.Bid);
@@ -226,6 +283,7 @@ public class GameMenu extends Openable implements Screen{
         game.safes.putInteger("LH", game.robot.LHid);
         game.safes.putInteger("LL", game.robot.LLid);
         game.safes.putInteger("RL", game.robot.RLid);
+        game.safes.putInteger("level", game.robot.level_win);
         game.safes.putInteger("gears", game.robot.gears);
         game.safes.putInteger("lamps", game.robot.lamps);
         game.safes.putInteger("microchips", game.robot.microchips);
@@ -357,6 +415,9 @@ public class GameMenu extends Openable implements Screen{
     }
     @Override
     public void dispose () {
+        for(int i=0;i<6;i++){
+            tutorials[i].dispose();
+        }
         smoke[0].dispose();
         smoke[1].dispose();
         smoke[2].dispose();
@@ -381,6 +442,8 @@ public class GameMenu extends Openable implements Screen{
         gear.dispose();
         metall.dispose();
         chip.dispose();
-
+        tutorial.dispose();
+        screen.dispose();
+        front_break.dispose();
     }
 }

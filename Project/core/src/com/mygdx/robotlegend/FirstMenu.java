@@ -29,19 +29,21 @@ public class FirstMenu  extends Openable implements Screen{
 	}
 	@Override
 	public void render(float delta) {
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-			if(close_touch){
-				button_exit = white;
-			}else{
-				button_exit = exit;
-			}
-			if(play_touch){
-				button_play = white;
-			}else{
-				button_play = play;
-			}
-			batch.begin();
-			drawer.draw(backs[a-1], 0, 0, width, height);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		if (close_touch) {
+			button_exit = white;
+		} else {
+			button_exit = exit;
+		}
+		if (play_touch) {
+			button_play = white;
+		} else {
+			button_play = play;
+		}
+		batch.begin();
+				try {
+					drawer.draw(backs[a - 1], 0, 0, width, height);
+				}catch (Exception ignored){ }
 			drawer.draw(head[h], ((float) width - 500), 50, 500, 500);
 			drawer.draw(button_exit, 100.0f, ((float) height / 2 + 100), 500, 250);
 			drawer.draw(robo, -150, -150, 100, 100, 750, 750, 1, 1, rotate - 30);
