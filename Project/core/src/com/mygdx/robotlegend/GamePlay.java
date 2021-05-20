@@ -25,6 +25,7 @@ public class GamePlay extends Openable implements Screen{
     Thread MedAdd;
     Thread BoomAdd;
     Thread TimeAdd;
+    Thread PlanetAdd;
     Texture Front_energy;
     Texture Rocket;
     Texture floor;
@@ -58,9 +59,12 @@ public class GamePlay extends Openable implements Screen{
     Texture metall;
     Texture bulb;
     Texture Bluefire;
+    Texture planett;
+    Texture FrontLevel2;
     Texture[] achivement = new Texture[4];
     Texture[] med = new Texture[5];
     Texture[] booms = new Texture[3];
+    TextureRegion planet;
     TextureRegion Meteor;
     TextureRegion Effect;
     int front_energy_scale = 0;
@@ -112,6 +116,8 @@ public class GamePlay extends Openable implements Screen{
     int type_achivement = 1;
     double speed = 1.0;
     double anime_grass = 0;
+    double rotate_planet = 0;
+    double x_planet = 0;
     int[] grass_1 = new int[5];
     int[] grass_2 = new int[5];
     int[] grass_3 = new int[5];
@@ -176,6 +182,11 @@ public class GamePlay extends Openable implements Screen{
         chip = new Texture("Item/chip.png");
         bulb = new Texture("Item/bulb.png");
         gear = new Texture("Item/gear.png");
+        if(game.robot.level == 2){
+            planett = new Texture("Object/planet.png");
+            planet = new TextureRegion(planett, 400, 400);
+            FrontLevel2 = new Texture("Location/background_2_front.png");
+        }
         achivement[0] = new Texture("Object/swap.png");
         achivement[1] = new Texture("Object/gold.png");
         achivement[2] = new Texture("Object/silver.png");
@@ -234,22 +245,38 @@ public class GamePlay extends Openable implements Screen{
         parameter.size = (int)(150.0*wpw);
         item_font = generator.generateFont(parameter);
         item_font.setColor(Color.GREEN);
-        int i = 0;                                                 //Стандартная переменная, которая, почему-то, используется везде. Зачем я вообще написал этот комментарий?
-        while(i != 5){
-            grass_1[i] = game.random.nextInt(10)+1;
-            i++;
+        int i = 0;
+        if(game.robot.level != 2) {                                                      //Стандартная переменная, которая, почему-то, используется везде. Зачем я вообще написал этот комментарий?
+            while (i != 5) {
+                grass_1[i] = game.random.nextInt(10) + 1;
+                i++;
+            }
+            i = 0;
+            while (i != 5) {
+                grass_2[i] = game.random.nextInt(10) + 1;
+                i++;
+            }
+            i = 0;
+            while (i != 5) {
+                grass_3[i] = game.random.nextInt(10) + 1;
+                i++;
+            }
+        }else{
+            while (i != 3) {
+                grass_1[i] = game.random.nextInt(10) + 1;
+                i++;
+            }
+            i = 0;
+            while (i != 3) {
+                grass_2[i] = game.random.nextInt(10) + 1;
+                i++;
+            }
+            i = 0;
+            while (i != 3) {
+                grass_3[i] = game.random.nextInt(10) + 1;
+                i++;
+            }
         }
-        i = 0;
-        while(i != 5){
-            grass_2[i] = game.random.nextInt(10)+1;
-            i++;
-        }
-        i = 0;
-        while(i != 5){
-            grass_3[i] = game.random.nextInt(10)+1;
-            i++;
-        }
-
         health = game.robot.health;
         Ehealth = game.robot.Ehealth;
         y = game.random.nextInt(3)+1;
@@ -259,6 +286,27 @@ public class GamePlay extends Openable implements Screen{
         open_x = 0;
         front_energy_scale = height*2;
         batch = new SpriteBatch();
+        PlanetAdd = new Thread(){
+            @Override
+            public void run(){
+                x_planet = 300;
+                while(!closed){
+                    x_planet+=1;
+                    rotate_planet+=0.1;
+                    if(rotate_planet>= 360.0){
+                        rotate_planet=0.0;
+                    }
+                    if(x_planet >=width+500){
+
+                        break;
+                    }
+                    Sleep(45);
+                }
+            }
+        };
+        if(game.robot.level == 2){
+            PlanetAdd.start();
+        }
         TimeAdd = new Thread(){
             @Override
             public void run(){
@@ -397,15 +445,17 @@ public class GamePlay extends Openable implements Screen{
                 int dir = 2;                                        //Указание направления анимации. Типо реверс.
                 int time = game.random.nextInt(10)+10;
                 while(true){
-                    if(grass_dir == 1){
-                        anime_grass+=0.5;
-                        if(anime_grass>=5.0){
-                            grass_dir = 0;
-                        }
-                    }else{
-                        anime_grass-=0.5;
-                        if(anime_grass<=-5.0){
-                            grass_dir = 1;
+                    if(game.robot.level != 2) {
+                        if (grass_dir == 1) {
+                            anime_grass += 0.5;
+                            if (anime_grass >= 5.0) {
+                                grass_dir = 0;
+                            }
+                        } else {
+                            anime_grass -= 0.5;
+                            if (anime_grass <= -5.0) {
+                                grass_dir = 1;
+                            }
                         }
                     }
                     if(dir==1){
@@ -633,7 +683,15 @@ public class GamePlay extends Openable implements Screen{
     public void render(float delta) {
         Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         batch.begin();
-        drawer.draw(background, 0, 0, width, height);
+        if(game.robot.level == 2){
+            drawer.draw(background, (int)x_planet-width, 0, width, height);
+            drawer.draw(background, (int)x_planet, 0, width, height);
+            drawer.draw(FrontLevel2, (int)(x_planet*1.15)-width, 0, width, height);
+            drawer.draw(FrontLevel2, (int)(x_planet*1.15), 0, width, height);
+            drawer.draw(planet, (float) (width+100-x_planet), height-500, (float) (300), (float) (300), (float) (600), (float) (600), 1, 1,  (float)rotate_planet);
+        }else{
+            drawer.draw(background, 0, 0, width, height);
+        }
         int i = 0;
         while(i!=5){
             drawer.draw(grass, grass_3[i]*(width/10), (height/5)*3-70-15*3, 150, (int)(150+anime_grass));
@@ -642,11 +700,14 @@ public class GamePlay extends Openable implements Screen{
         if(will_meteor_y == 3 && meteor_run){
             if(!meteor_splash) {
                 if(!meteor_rocket) {
-                    drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    if(game.robot.level != 2) {
+                        drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    }
                     drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1, 1, meteor_rot);
-
                 }else{
-                    drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    if(game.robot.level != 2) {
+                        drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    }
                     drawer.draw(Rocket, meteor_x-50, meteor_y-80, 250, 250);
                 }
             }else{
@@ -655,9 +716,8 @@ public class GamePlay extends Openable implements Screen{
         }
         drawer.draw(floor, 0, height/5*2-80, width, height/5);
         if(med_is && med_y == 3){
-            if(!med_swap &&  !med_used) {
+            if(!med_swap && !med_used) {
                 drawer.draw(med[med_anime], med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60-10*med_y, med_scale, med_scale);
-
             }else{
                 if(med_used) {
                     drawer.draw(Bluefire, med_x * (width / 10) - med_scale / 2 + 70, med_y * (height / 5) - 60 - 10 * med_y, med_scale, med_scale);
@@ -677,11 +737,15 @@ public class GamePlay extends Openable implements Screen{
         if(will_meteor_y == 2 && meteor_run){
             if(!meteor_splash) {
                 if(!meteor_rocket) {
-                    drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    if(game.robot.level != 2) {
+                        drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    }
                     drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1, 1, meteor_rot);
 
                 }else{
-                    drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    if(game.robot.level != 2) {
+                        drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                    }
                     drawer.draw(Rocket, meteor_x-50, meteor_y-80, 250, 250);
 
                 }
@@ -713,14 +777,16 @@ public class GamePlay extends Openable implements Screen{
         if(will_meteor_y == 1 && meteor_run){
             if(!meteor_splash) {
                 if(!meteor_rocket) {
-                    drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
-                    drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1, 1, meteor_rot);
+                    if(game.robot.level != 2) {
+                        drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                        drawer.draw(Meteor, meteor_x, meteor_y, 75.0f, 75.0f, 150.0f, 150.0f, 1, 1, meteor_rot);
+                    }
 
                 }else{
-
-                    drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
-                    drawer.draw(Rocket, meteor_x-50, meteor_y-80, 250, 250);
-
+                    if(game.robot.level != 2) {
+                        drawer.draw(Fire, meteor_x - 12, meteor_y, 175.0f, 200.0f + (meteor_rot) / 4);
+                        drawer.draw(Rocket, meteor_x - 50, meteor_y - 80, 250, 250);
+                    }
                 }
             }else{
                 drawer.draw(Splash, meteor_x-meteor_splash_size/2, meteor_y, 150+meteor_splash_size, 150+meteor_splash_size);
@@ -879,7 +945,6 @@ public class GamePlay extends Openable implements Screen{
             resource_font.draw(batch, win_num + "", (int)(((double)width/2.0-50)*wpw), (int)(((double)win_y-160.0)*hph));
             resource_font.draw(batch, "ХЛАМ", (int)(((double)width/2.0-200)*wpw), (int)(((double)height-(double)win_y+260.0)*hph));
         }
-
         drawer.draw(Frontground, 0, 0, width, height);
         if(robot_speed_bonus > 0){
             drawer.draw(Front_energy, 0, (height-front_energy_scale)/2, width, front_energy_scale);
@@ -1069,12 +1134,14 @@ public class GamePlay extends Openable implements Screen{
                         while (anime_dir != 3) {
                             if (anime_dir == 1) {
                                 scale += 0.001f;
+                                scale_inteface-=0.002;
                                 anime_pos += 1;
                                 if (anime_pos >= 40) {
                                     anime_dir = 2;
                                 }
                             } else {
                                 scale -= 0.001f;
+                                scale_inteface+=0.002;
                                 anime_pos -= 1;
                                 if (anime_pos <= 0) {
                                     anime_dir = 3;
@@ -1219,10 +1286,10 @@ public class GamePlay extends Openable implements Screen{
                         }
                         if(meteor_y < will_meteor_y*(height/5)+150 && meteor_y > will_meteor_y*(height/5)-100){
                             if(will_meteor_x == x && will_meteor_y == y){
-                                DamageRobot(10);
+                                DamageRobot(20+10*game.robot.level_win/5);
                             }
                             if(will_meteor_x == Ex && will_meteor_y == Ey){
-                                DamageEnemy(10);
+                                DamageEnemy(20+10*game.robot.level_win/5);
                             }
                         }
                         if(cross_size> 5){
@@ -1232,10 +1299,10 @@ public class GamePlay extends Openable implements Screen{
                         Sleep(  (int)(5*speed));
                     }
                     if(will_meteor_x == x && will_meteor_y == y){
-                        DamageRobot(20);
+                        DamageRobot(20+10*game.robot.level_win/5);
                     }
                     if(will_meteor_x == Ex && will_meteor_y == Ey){
-                        DamageEnemy(10);
+                        DamageEnemy(20+10*game.robot.level_win/5);
                     }
                     meteor_rot = 0.0f;
                     meteor_splash=true;
@@ -1292,6 +1359,7 @@ public class GamePlay extends Openable implements Screen{
                 public void run() {
                     death.play(0.8f);
                     Sleep(  200);
+                    Gdx.input.vibrate(500);
                     while (pos_interface<500) {
                         scale_inteface-=0.0002;
                         pos_interface+=1;
@@ -1452,7 +1520,6 @@ public class GamePlay extends Openable implements Screen{
         }
         return this.energy >= energy;
     }
-
     public void EUseMed(){
         if(med_y == Ey && med_x == Ex && !med_used && med_is && !med_swap){
             move[1].play(0.9f);
@@ -1944,6 +2011,7 @@ public class GamePlay extends Openable implements Screen{
         move[2].dispose();
         for(Texture texture: med){ texture.dispose(); }
         death.dispose();
+        grass.dispose();
         game.robot.DisposeGamePlayTextures();
         Frontground.dispose();
         Openlevel_1.dispose();
@@ -1986,5 +2054,10 @@ public class GamePlay extends Openable implements Screen{
         achivement[1].dispose();
         achivement[2].dispose();
         achivement[3].dispose();
+        background.dispose();
+        if(game.robot.level == 2){
+            planett.dispose();
+            FrontLevel2.dispose();
+        }
     }
 }

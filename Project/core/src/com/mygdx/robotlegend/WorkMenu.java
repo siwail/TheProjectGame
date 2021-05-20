@@ -377,6 +377,7 @@ public class WorkMenu extends Openable implements Screen {
                         can_type_2 = game.robot.lamps >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
                     }
+
                     while (scale_frame < 1.0) {
                         scale_frame += 0.01;
                         Sleep(3);
@@ -446,6 +447,7 @@ public class WorkMenu extends Openable implements Screen {
                     upgrade.play(0.8f);
                 }
             }
+            Gdx.input.vibrate(200);
             if(type_1 == 1){
                 game.robot.metal -= number_1;
             }

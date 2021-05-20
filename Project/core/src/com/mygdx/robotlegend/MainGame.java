@@ -51,12 +51,22 @@ public class MainGame extends Game {
         }
     }
     public void MusicSet(){
-        if(music_play){
-            music_play = false;
-            music.pause();
+        if(!war) {
+            if (music_play) {
+                music_play = false;
+                music.pause();
+            } else {
+                music_play = true;
+                music.play();
+            }
         }else{
-            music_play = true;
-            music.play();
+            if (music_play) {
+                music_play = false;
+                music_war.pause();
+            } else {
+                music_play = true;
+                music_war.play();
+            }
         }
     }
     public void setGamePlay(){

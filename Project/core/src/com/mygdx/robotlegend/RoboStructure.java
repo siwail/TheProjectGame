@@ -63,29 +63,47 @@ public class RoboStructure {
     Texture RobotDetect;
     Texture RobotHealth;
     Texture EnemyHealth;
+    Texture puck;
     Texture RHt;
     Texture LHt;
     Texture RLt;
     Texture LLt;
     Texture Ht;
     Texture Bt;
+    Texture SRHt;
+    Texture SLHt;
+    Texture SRLt;
+    Texture SLLt;
+    Texture SHt;
+    Texture SBt;
     TextureRegion RH;
     TextureRegion LH;                                                                                               
     TextureRegion RL;
     TextureRegion LL;
     TextureRegion H;
     TextureRegion B;
+    TextureRegion SRH;
+    TextureRegion SLH;
+    TextureRegion SRL;
+    TextureRegion SLL;
+    TextureRegion SH;
+    TextureRegion SB;
     int EHid = 1;
     int EBid = 1;
     int ERHid = 1;
     int ELHid = 1;
     int ERLid = 1;
     int ELLid = 1;
+    int skin = 3;
     int Ehealth = 100;
     int Edamage;
     int Eattack_speed;
     int Emove_speed;
     int Eenergy_speed = 80-EBid*7;
+    int max_skin = 4;
+    int[] skins_open = new int[max_skin];
+    int index_skin = 3;
+    int opened = 4;
     Texture ERHt;
     Texture ELHt;
     Texture ERLt;
@@ -98,6 +116,20 @@ public class RoboStructure {
     TextureRegion ELL;
     TextureRegion EH;
     TextureRegion EB;
+    public void ClearSafe(){
+        gears = 1;
+        microchips = 1;
+        lamps = 1;
+        metal = 1;
+        level_win = 1;
+        Hid = 1;
+        Bid = 1;
+        LHid = 1;
+        RHid = 1;
+        LLid = 1;
+        RLid = 1;
+        Safe();
+    }
     public void UpdateParameters(){
         energy_speed = 90-Hid*10;
         Eenergy_speed = 90-EHid*10;
@@ -196,6 +228,50 @@ public class RoboStructure {
         LeftHandDeadt = new Texture("Robot/hand_dead.png");
         RightHandDeadt = new Texture("Robot/hand_dead.png");
     }
+    public void UpdatePuck() {
+        puck.dispose();
+        puck = new Texture("Object/gift_" + skin + ".png");
+    }
+    public void UpdateSkin(){
+        if(skin != 0) {
+            SRHt.dispose();
+            SLHt.dispose();
+            SRLt.dispose();
+            SLLt.dispose();
+            SHt.dispose();
+            SBt.dispose();
+            SRHt = new Texture("Robot/skin_hand_" + skin + ".png");
+            SLHt = new Texture("Robot/skin_hand_" + skin + ".png");
+            SRLt = new Texture("Robot/skin_leg_" + skin + ".png");
+            SLLt = new Texture("Robot/skin_leg_" + skin + ".png");
+            SHt = new Texture("Robot/skin_head_" + skin + ".png");
+            SBt = new Texture("Robot/skin_body_" + skin + ".png");
+            SRH = new TextureRegion(SRHt, 300, 300);
+            SLH = new TextureRegion(SLHt, 300, 300);
+            SRL = new TextureRegion(SRLt, 300, 300);
+            SLL = new TextureRegion(SLLt, 300, 300);
+            SH = new TextureRegion(SHt, 300, 300);
+            SB = new TextureRegion(SBt, 300, 300);
+        }
+    }
+    public void UpdateSkins(){
+        UpdatePuck();
+        UpdateSkin();
+    }
+    public void Safe(){
+        game.safes.putInteger("H", game.robot.Hid);
+        game.safes.putInteger("B", game.robot.Bid);
+        game.safes.putInteger("RH", game.robot.RHid);
+        game.safes.putInteger("LH", game.robot.LHid);
+        game.safes.putInteger("LL", game.robot.LLid);
+        game.safes.putInteger("RL", game.robot.RLid);
+        game.safes.putInteger("level", game.robot.level_win);
+        game.safes.putInteger("gears", game.robot.gears);
+        game.safes.putInteger("lamps", game.robot.lamps);
+        game.safes.putInteger("microchips", game.robot.microchips);
+        game.safes.putInteger("metal", game.robot.metal);
+        game.safes.flush();
+    }
     public void DisposeGamePlayTextures(){
         Cross.dispose();
         Energy.dispose();
@@ -245,8 +321,13 @@ public class RoboStructure {
         LHid = TakeSafe("LH");
         RLid = TakeSafe("RL");
         LLid = TakeSafe("LL");
+        skins_open[0] = 0;
+        skins_open[1] = 1;
+        skins_open[2] = 2;
+        skins_open[3] = 3;
         UpdateParameters();
         level = game.random.nextInt(4)+1;
+        level = 2;
     }
     public int TakeSafe(String name){
         if(game.safes.contains(name)) {
@@ -325,6 +406,7 @@ public class RoboStructure {
         UpdateParameters();
     }
     public void UpdateTextures(){
+        puck = new Texture("Object/gift_0.png");
         RHt =  new Texture("Robot/hand_" + RHid + ".png");
         LHt = new Texture("Robot/hand_" + LHid + ".png");
         RLt = new Texture("Robot/leg_" + RLid + ".png");
@@ -349,5 +431,17 @@ public class RoboStructure {
         ELL =  new TextureRegion(ELLt, 300, 300);
         EH =  new TextureRegion(EHt, 300, 300);
         EB =  new TextureRegion(EBt, 300, 300);
+        SRHt =  new Texture("Robot/skin_hand_1.png");
+        SLHt = new Texture("Robot/skin_hand_1.png");
+        SRLt = new Texture("Robot/skin_leg_1.png");
+        SLLt = new Texture("Robot/skin_leg_1.png");
+        SHt = new Texture("Robot/skin_head_1.png");
+        SBt = new Texture("Robot/skin_body_1.png");
+        SRH =  new TextureRegion(SRHt, 300, 300);
+        SLH =  new TextureRegion(SLHt, 300, 300);
+        SRL =  new TextureRegion(SRLt, 300, 300);
+        SLL =  new TextureRegion(SLLt, 300, 300);
+        SH =  new TextureRegion(SHt, 300, 300);
+        SB =  new TextureRegion(SBt, 300, 300);
     }
 }

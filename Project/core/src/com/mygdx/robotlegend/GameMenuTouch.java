@@ -43,11 +43,22 @@ public class GameMenuTouch implements InputProcessor {
                 gameMenu.tutorial_touch = true;
             }
         }
-
-        return false;
+        if(gameMenu.istutorial && gameMenu.tutorial_scene<=gameMenu.max_tutorial_scene && !gameMenu.resize_scene){
+            gameMenu.plus_height = 20;
+            gameMenu.plus_width = 20;
+        }
+        if (screenX >= SX(450) && screenX <= SX(600) && screenY <= SY(gameMenu.height-435) && screenY >= SY(gameMenu.height-635) && !gameMenu.istutorial) {
+            gameMenu.right_touched = true;
+        }
+        if (screenX >= SX(100) && screenX <= SX(250) && screenY <= SY(gameMenu.height-435) && screenY >= SY(gameMenu.height-635) && !gameMenu.istutorial) {
+            gameMenu.left_touched = true;
+        }
+            return false;
     }
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        gameMenu.right_touched = false;
+        gameMenu.left_touched = false;
         gameMenu.close_touch = false;
         gameMenu.work_touch = false;
         gameMenu.play_touch = false;
@@ -75,8 +86,16 @@ public class GameMenuTouch implements InputProcessor {
                 }
             }
         }
+        if (screenX >= SX(450) && screenX <= SX(600) && screenY <= SY(gameMenu.height-435) && screenY >= SY(gameMenu.height-635) && !gameMenu.istutorial) {
+            gameMenu.NextRightSkin();
+        }
+        if (screenX >= SX(100) && screenX <= SX(250) && screenY <= SY(gameMenu.height-435) && screenY >= SY(gameMenu.height-635) && !gameMenu.istutorial) {
+            gameMenu.NextLeftSkin();
+        }
         if(gameMenu.istutorial && gameMenu.tutorial_scene<=gameMenu.max_tutorial_scene && !gameMenu.resize_scene){
             gameMenu.SceneTutorial();
+            gameMenu.plus_height = 0;
+            gameMenu.plus_width = 0;
         }
         return false;
     }
