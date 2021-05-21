@@ -22,6 +22,7 @@ public class RoboStructure {
     int attack_speed;
     int move_speed;
     int energy_speed;
+    Texture contrast;
     Texture Cross;
     Texture EnergyBack;
     Texture Energy;
@@ -70,6 +71,12 @@ public class RoboStructure {
     Texture LLt;
     Texture Ht;
     Texture Bt;
+    Texture ESRHt;
+    Texture ESLHt;
+    Texture ESRLt;
+    Texture ESLLt;
+    Texture ESHt;
+    Texture ESBt;
     Texture SRHt;
     Texture SLHt;
     Texture SRLt;
@@ -82,28 +89,35 @@ public class RoboStructure {
     TextureRegion LL;
     TextureRegion H;
     TextureRegion B;
+    TextureRegion ESRH;
+    TextureRegion ESLH;
+    TextureRegion ESRL;
+    TextureRegion ESLL;
+    TextureRegion ESH;
+    TextureRegion ESB;
     TextureRegion SRH;
     TextureRegion SLH;
     TextureRegion SRL;
     TextureRegion SLL;
     TextureRegion SH;
     TextureRegion SB;
+    int Eskin = 0;
     int EHid = 1;
     int EBid = 1;
     int ERHid = 1;
     int ELHid = 1;
     int ERLid = 1;
     int ELLid = 1;
-    int skin = 3;
+    int skin = 0;
     int Ehealth = 100;
     int Edamage;
     int Eattack_speed;
     int Emove_speed;
     int Eenergy_speed = 80-EBid*7;
-    int max_skin = 4;
+    int max_skin = 6;
     int[] skins_open = new int[max_skin];
-    int index_skin = 3;
-    int opened = 4;
+    int index_skin = 0;
+    int opened = 6;
     Texture ERHt;
     Texture ELHt;
     Texture ERLt;
@@ -128,6 +142,12 @@ public class RoboStructure {
         RHid = 1;
         LLid = 1;
         RLid = 1;
+        opened = 1;
+        int i = 0;
+        while(i!=opened){
+            skins_open[i] = TakeSafe("skin_"+i, 0);
+            i++;
+        }
         Safe();
     }
     public void UpdateParameters(){
@@ -232,6 +252,28 @@ public class RoboStructure {
         puck.dispose();
         puck = new Texture("Object/gift_" + skin + ".png");
     }
+    public void EUpdateSkin() {
+        if (Eskin != 0) {
+            ESRHt.dispose();
+            ESLHt.dispose();
+            ESRLt.dispose();
+            ESLLt.dispose();
+            ESHt.dispose();
+            ESBt.dispose();
+            ESRHt = new Texture("Robot/skin_hand_" + Eskin + ".png");
+            ESLHt = new Texture("Robot/skin_hand_" + Eskin + ".png");
+            ESRLt = new Texture("Robot/skin_leg_" + Eskin + ".png");
+            ESLLt = new Texture("Robot/skin_leg_" + Eskin + ".png");
+            ESHt = new Texture("Robot/skin_head_" + Eskin + ".png");
+            ESBt = new Texture("Robot/skin_body_" + Eskin + ".png");
+            ESRH = new TextureRegion(ESRHt, 300, 300);
+            ESLH = new TextureRegion(ESLHt, 300, 300);
+            ESRL = new TextureRegion(ESRLt, 300, 300);
+            ESLL = new TextureRegion(ESLLt, 300, 300);
+            ESH = new TextureRegion(ESHt, 300, 300);
+            ESB = new TextureRegion(ESBt, 300, 300);
+        }
+    }
     public void UpdateSkin(){
         if(skin != 0) {
             SRHt.dispose();
@@ -270,6 +312,12 @@ public class RoboStructure {
         game.safes.putInteger("lamps", game.robot.lamps);
         game.safes.putInteger("microchips", game.robot.microchips);
         game.safes.putInteger("metal", game.robot.metal);
+        game.safes.putInteger("opened", opened);
+        int i = 0;
+        while(i!=opened){
+            game.safes.putInteger("skin_" + i, skins_open[i]);
+            i++;
+        }
         game.safes.flush();
     }
     public void DisposeGamePlayTextures(){
@@ -310,6 +358,7 @@ public class RoboStructure {
         RightHandDeadt.dispose();
     }
     public void SetFirstChanges(){
+        contrast = new Texture("Interface/contrast.png");
         level_win = TakeSafe("level");
         gears = TakeSafe("gears");
         microchips = TakeSafe("microchips");
@@ -321,19 +370,49 @@ public class RoboStructure {
         LHid = TakeSafe("LH");
         RLid = TakeSafe("RL");
         LLid = TakeSafe("LL");
+        opened = TakeSafe("opened");
+        int i = 0;
+        while(i!=opened){
+            skins_open[i] = TakeSafe("skin_"+i);
+            i++;
+        }
         skins_open[0] = 0;
-        skins_open[1] = 1;
-        skins_open[2] = 2;
-        skins_open[3] = 3;
+        skin = 0;
+        index_skin = 0;
         UpdateParameters();
         level = game.random.nextInt(4)+1;
-        level = 2;
+    }
+    public void AddSkin(int index){
+        if(opened!=max_skin) {
+            boolean accept = true;
+                    int i = 0;
+                    while(i<opened){
+                        if (skins_open[i] == index) {
+                            accept = false;
+                            break;
+                        }
+                    i++;
+                    }
+            if(accept) {
+                if(opened<max_skin) {
+                    opened++;
+                    skins_open[opened-1] = index;
+                }
+            }
+        }
     }
     public int TakeSafe(String name){
         if(game.safes.contains(name)) {
             return game.safes.getInteger(name);
         }else{
             return 1;
+        }
+    }
+    public int TakeSafe(String name, int def){
+        if(game.safes.contains(name)) {
+            return game.safes.getInteger(name);
+        }else{
+            return def;
         }
     }
     public void RandomEnemy(){
@@ -443,5 +522,17 @@ public class RoboStructure {
         SLL =  new TextureRegion(SLLt, 300, 300);
         SH =  new TextureRegion(SHt, 300, 300);
         SB =  new TextureRegion(SBt, 300, 300);
+        ESRHt =  new Texture("Robot/skin_hand_1.png");
+        ESLHt = new Texture("Robot/skin_hand_1.png");
+        ESRLt = new Texture("Robot/skin_leg_1.png");
+        ESLLt = new Texture("Robot/skin_leg_1.png");
+        ESHt = new Texture("Robot/skin_head_1.png");
+        ESBt = new Texture("Robot/skin_body_1.png");
+        ESRH =  new TextureRegion(ESRHt, 300, 300);
+        ESLH =  new TextureRegion(ESLHt, 300, 300);
+        ESRL =  new TextureRegion(ESRLt, 300, 300);
+        ESLL =  new TextureRegion(ESLLt, 300, 300);
+        ESH =  new TextureRegion(ESHt, 300, 300);
+        ESB =  new TextureRegion(ESBt, 300, 300);
     }
 }

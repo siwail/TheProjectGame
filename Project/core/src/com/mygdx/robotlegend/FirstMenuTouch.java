@@ -32,11 +32,13 @@ public class FirstMenuTouch implements InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         firstMenu.play_touch = false;
         firstMenu.close_touch = false;
-        if (screenX >= SX(100) && screenX <= SX(600) && screenY >= SY(firstMenu.height/2-350) && screenY <= SY(firstMenu.height/2-100)){
-            Gdx.app.exit();
-        }
-        if (screenX >= SX(firstMenu.width/2+300) && screenX <= SX(firstMenu.width/2+800) && screenY >= SY(firstMenu.height/2-350)  && screenY <= SY(firstMenu.height/2-100)){
-            firstMenu.DoorClose(1);
+        if(!firstMenu.is_trailer) {
+            if (screenX >= SX(100) && screenX <= SX(600) && screenY >= SY(firstMenu.height / 2 - 350) && screenY <= SY(firstMenu.height / 2 - 100)) {
+                Gdx.app.exit();
+            }
+            if (screenX >= SX(firstMenu.width / 2 + 300) && screenX <= SX(firstMenu.width / 2 + 800) && screenY >= SY(firstMenu.height / 2 - 350) && screenY <= SY(firstMenu.height / 2 - 100)) {
+                firstMenu.DoorClose(1);
+            }
         }
         return false;
     }

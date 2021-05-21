@@ -170,6 +170,12 @@ public class Openable implements Screen{
         TextureRegion RightLeg = game.robot.ERL;
         TextureRegion LeftHand = game.robot.ELH;
         TextureRegion RightHand = game.robot.ERH;
+        TextureRegion SHead = game.robot.ESH;
+        TextureRegion SBody = game.robot.ESB;
+        TextureRegion SLeftLeg = game.robot.ESLL;
+        TextureRegion SRightLeg = game.robot.ESRL;
+        TextureRegion SLeftHand = game.robot.ESLH;
+        TextureRegion SRightHand = game.robot.ESRH;
         if(swap) {
             Head = new TextureRegion(game.robot.HeadSwapt, 300, 300);
             Body = new TextureRegion(game.robot.BodySwapt, 300, 300);
@@ -195,11 +201,29 @@ public class Openable implements Screen{
             RightHand = new TextureRegion(game.robot.RightHandDeadt, 300, 300);
         }
         drawer.draw(Head, x, (float) (y + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rothead);
+        if(game.robot.Eskin!=0) {
+            drawer.draw(SHead, x, (float) (y + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rothead);
+        }
         drawer.draw(Body, x, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rot);
+        if(game.robot.Eskin!=0) {
+            drawer.draw(SBody, x, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rot);
+        }
         drawer.draw(LeftLeg, (float) (x - 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  -rotleg);
+        if(game.robot.Eskin!=0) {
+            drawer.draw(SLeftLeg, (float) (x - 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, -rotleg);
+        }
         drawer.draw(RightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rotleg);
+        if(game.robot.Eskin!=0) {
+            drawer.draw(SRightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rotleg);
+        }
         drawer.draw(LeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand);
-        drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand - 90);
+        if(game.robot.Eskin!=0) {
+            drawer.draw(SLeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand);
+        }
+        drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand - 90 + rot);
+        if(game.robot.Eskin!=0) {
+            drawer.draw(SRightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand - 90 + rot);
+        }
     }
     public void DrawRobotIcon(SpriteBatchRubber drawer, int x, int y, double scale, int health) {
         if(y+510*scale>=height-70*scale){

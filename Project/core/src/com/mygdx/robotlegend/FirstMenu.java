@@ -15,12 +15,16 @@ public class FirstMenu  extends Openable implements Screen{
 	Texture white;
 	Texture play;
 	Texture exit;
+	Texture trailer;
 	TextureRegion robo;
 	Thread anime;
 	Thread leg;
+	Thread anime_trailer;
 	boolean close_touch = false;
 	boolean play_touch = false;
+	boolean is_trailer = true;
 	float rotate = 0;
+	float trailer_scale = 1.0f;
 	int a = 0;
 	int dir_rotate = 0;
 	int h = 1; //Анимация головы
@@ -44,10 +48,14 @@ public class FirstMenu  extends Openable implements Screen{
 				try {
 					drawer.draw(backs[a - 1], 0, 0, width, height);
 				}catch (Exception ignored){ }
+
 			drawer.draw(head[h], ((float) width - 500), 50, 500, 500);
 			drawer.draw(button_exit, 100.0f, ((float) height / 2 + 100), 500, 250);
 			drawer.draw(robo, -150, -150, 100, 100, 750, 750, 1, 1, rotate - 30);
 			drawer.draw(button_play, ((float) width / 2 + 300), ((float) height / 2 + 100), 500, 250);
+		if (is_trailer){
+			drawer.draw(trailer, -((int)( (float)width * trailer_scale) - width) / 2, -((int) ((float)height * trailer_scale) - height) / 2, (int)((float)width * trailer_scale), (int)((float)height * trailer_scale));
+		}
 			CheckClose(drawer);
 			batch.end();
 			if(closed){
@@ -61,6 +69,7 @@ public class FirstMenu  extends Openable implements Screen{
 		play = new Texture("Button/button2.png");
 		white = new Texture("Button/button_white.png");
 		robo_texture = new Texture("Object/logo_1.png");
+		trailer = new Texture("Decoration/trailer.png");
 		for(int i=0;i<5;i++){
 			backs[i] = new Texture("Interface/back" + (i+1) + ".png");
 		}
@@ -89,6 +98,18 @@ public class FirstMenu  extends Openable implements Screen{
 			}
 		}
 	};
+		anime_trailer = new Thread() {
+			@Override
+			public void run() {
+				Sleep(2000);
+				while (trailer_scale < 50.0f) {
+					trailer_scale += 0.05f;
+					Sleep(2);
+				}
+				is_trailer = false;
+				trailer_scale = 1.0f;
+			}
+		};
 	Start();
 	leg = new Thread(){
 		@Override
@@ -110,6 +131,7 @@ public class FirstMenu  extends Openable implements Screen{
 		}
 	};
 		drawer = new SpriteBatchRubber(this, batch);
+		anime_trailer.start();
 		leg.start();
 		anime.start();
 }
@@ -126,5 +148,6 @@ public class FirstMenu  extends Openable implements Screen{
 		door_right.dispose();
 		door_left.dispose();
 		exit.dispose();
+		trailer.dispose();
 	}
 }

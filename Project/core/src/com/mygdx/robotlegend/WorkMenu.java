@@ -37,6 +37,9 @@ public class WorkMenu extends Openable implements Screen {
     Texture blue_back;
     Texture red_back;
     Texture green_back;
+    Texture close;
+    Texture close_touched;
+    Texture max;
     TextureRegion lamp;
     TextureRegion[] light = new TextureRegion[2];
     double x = 0.0;
@@ -55,6 +58,7 @@ public class WorkMenu extends Openable implements Screen {
     int which_select = 0;
     int which_select_will = 0;
     int light_anime = 1;
+    boolean max_level = false;
     boolean can_swap = true;
     boolean can_type_1 = false;
     boolean can_type_2 = false;
@@ -80,6 +84,7 @@ public class WorkMenu extends Openable implements Screen {
         Frontground = new Texture("Interface/frontground.png");
         not = new Texture("Interface/cross.png");
         yes = new Texture("Interface/yes.png");
+        max = new Texture("Object/max.png");
         frame = new Texture("Interface/frame.png");
         damage = new Texture("Interface/damage_icon.png");
         move_speed = new Texture("Interface/speed_move_icon.png");
@@ -93,6 +98,8 @@ public class WorkMenu extends Openable implements Screen {
         upgrade_1 = new Texture("Button/button_upgrade_1.png");
         upgrade_2 = new Texture("Button/button_upgrade_2.png");
         upgrade_touched = new Texture("Button/button_upgrade_touched.png");
+        close = new Texture("Button/button_close.png");
+        close_touched = new Texture("Button/button_close_touched.png");
         red = new Texture("Button/button_red.png");
         red_touched = new Texture("Button/button_red_touched.png");
         metal = new Texture("Interface/metalic.png");
@@ -166,10 +173,10 @@ public class WorkMenu extends Openable implements Screen {
         drawer.draw(background, 0, 0, width, height);
         if (!exit_touch) {
             drawer.draw(red, 10, height - 150, 150, 150);
-            drawer.draw(red, width-700, height - 100, 100, 100);
+            drawer.draw(close, width-700, height - 100, 100, 100);
         } else {
             drawer.draw(red_touched, 10, height - 150, 150, 150);
-            drawer.draw(red_touched, width-700, height - 100, 100, 100);
+            drawer.draw(close_touched, width-700, height - 100, 100, 100);
         }
         drawer.draw(frame, 10, height - 350, 150, 150);
         drawer.draw(frame, 10, height - 500, 150, 150);
@@ -184,60 +191,68 @@ public class WorkMenu extends Openable implements Screen {
         item_font.draw(batch, Integer.toString(game.robot.microchips), (int)(170.0*wpw), (int)(((double)height - 600.0)*hph));
         item_font.draw(batch, Integer.toString(game.robot.lamps), (int)(170.0*wpw),(int)(((double)height - 750.0)*hph));
         drawer.draw(metal, RS(width - 600), RS(0), RS(600), RS(height));
-        if(upgrade_can && which_select != 0){
-            drawer.draw(green_back, RS(width - 595), RS(0), RS(600), RS(350));
-        }
-        if(!upgrade_can && which_select != 0){
-            drawer.draw(red_back, RS(width - 595), RS(0), RS(600), RS(350));
-        }
-        if(which_select!=0) {
-            if (type_1 == 4) {
-                drawer.draw(gear, RS(width - 500), RS(200), RS(150), RS(150));
+        if(!max_level) {
+            if (upgrade_can && which_select != 0) {
+                drawer.draw(green_back, RS(width - 595), RS(0), RS(600), RS(350));
             }
-            if (type_1 == 3) {
-                drawer.draw(chip, RS(width - 500), RS(200), RS(150), RS(150));
+            if (!upgrade_can && which_select != 0) {
+                drawer.draw(red_back, RS(width - 595), RS(0), RS(600), RS(350));
             }
-            if (type_1 == 2) {
-                drawer.draw(bulb, RS(width -500), RS(200), RS(150), RS(150));
+            if (which_select != 0) {
+                if (type_1 == 4) {
+                    drawer.draw(gear, RS(width - 500), RS(200), RS(150), RS(150));
+                }
+                if (type_1 == 3) {
+                    drawer.draw(chip, RS(width - 500), RS(200), RS(150), RS(150));
+                }
+                if (type_1 == 2) {
+                    drawer.draw(bulb, RS(width - 500), RS(200), RS(150), RS(150));
+                }
+                if (type_1 == 1) {
+                    drawer.draw(metall, RS(width - 500), RS(200), RS(150), RS(150));
+                }
+                if (type_2 == 4) {
+                    drawer.draw(gear, RS(width - 250), RS(200), RS(150), RS(150));
+                }
+                if (type_2 == 3) {
+                    drawer.draw(chip, RS(width - 250), RS(200), RS(150), RS(150));
+                }
+                if (type_2 == 2) {
+                    drawer.draw(bulb, RS(width - 250), RS(200), RS(150), RS(150));
+                }
+                if (type_2 == 1) {
+                    drawer.draw(metall, RS(width - 250), RS(200), RS(150), RS(150));
+                }
             }
-            if (type_1 == 1) {
-                drawer.draw(metall, RS(width - 500), RS(200), RS(150), RS(150));
+            if (type_1 != 0 && type_2 != 0 && which_select != 0) {
+                if (can_type_1) {
+                    drawer.draw(yes, RS(width - 425), RS(220), RS(100), RS(100));
+                } else {
+                    drawer.draw(not, RS(width - 425), RS(220), RS(100), RS(100));
+                }
+                if (can_type_2) {
+                    drawer.draw(yes, RS(width - 175), RS(220), RS(100), RS(100));
+                } else {
+                    drawer.draw(not, RS(width - 175), RS(220), RS(100), RS(100));
+                }
+                item_font.draw(batch, number_1 + "", RS((int) (((double) width - 500.0) * wpw)), RS((int) (225.0 * hph)));
+                item_font.draw(batch, number_2 + "", RS((int) (((double) width - 250.0) * wpw)), RS((int) (225.0 * hph)));
             }
-            if (type_2 == 4) {
-                drawer.draw(gear, RS(width - 250), RS(200), RS(150), RS(150));
+            if (!upgrade_can || which_select == 0) {
+                drawer.draw(upgrade_1, RS(width - 500), RS(0), RS(400), RS(175));
+            } else {
+                if (!upgrade_touch) {
+                    drawer.draw(upgrade_2, RS(width - 500), RS(0), RS(400), RS(175));
+                } else {
+                    drawer.draw(upgrade_touched, RS(width - 500), RS(0), RS(400), RS(175));
+                }
             }
-            if (type_2 == 3) {
-                drawer.draw(chip, RS(width - 250), RS(200), RS(150), RS(150));
-            }
-            if (type_2 == 2) {
-                drawer.draw(bulb, RS(width - 250), RS(200), RS(150), RS(150));
-            }
-            if (type_2 == 1) {
-                drawer.draw(metall, RS(width - 250), RS(200), RS(150), RS(150));
-            }
-        }
-        if (type_1 != 0 && type_2 != 0 && which_select!=0){
-            if(can_type_1) {
-                drawer.draw(yes, RS(width - 425), RS(220), RS(100), RS(100));
-            }else{
-                drawer.draw(not, RS(width - 425), RS(220), RS(100), RS(100));
-            }
-            if(can_type_2) {
-                drawer.draw(yes, RS(width - 175), RS(220), RS(100), RS(100));
-            }else{
-                drawer.draw(not, RS(width - 175), RS(220), RS(100), RS(100));
-            }
-            item_font.draw(batch, number_1 +"", RS((int)(((double)width-500.0)*wpw)), RS((int)(225.0*hph)));
-            item_font.draw(batch, number_2 +"", RS((int)(((double)width-250.0)*wpw)), RS((int)(225.0*hph)));
-        }
-        if(!upgrade_can || which_select==0) {
-            drawer.draw(upgrade_1, RS(width-500), RS(0), RS(400), RS(175));
         }else{
-            if(!upgrade_touch) {
-                drawer.draw(upgrade_2, RS(width-500), RS(0), RS(400), RS(175));
-            }else{
-                drawer.draw(upgrade_touched, RS(width-500), RS(0), RS(400), RS(175));
-            }
+            drawer.draw(red_back, RS(width - 595), RS(0), RS(600), RS(350));
+            drawer.draw(max, RS(width - 500), RS(200), RS(150), RS(150));
+            drawer.draw(max, RS(width - 250), RS(200), RS(150), RS(150));
+            drawer.draw(not, RS(width - 425), RS(220), RS(100), RS(100));
+            drawer.draw(not, RS(width - 175), RS(220), RS(100), RS(100));
         }
         drawer.draw(health, RS(width-500), RS(550), RS(150), RS(150));
         if(which_select!=0) {
@@ -324,55 +339,61 @@ public class WorkMenu extends Openable implements Screen {
                     }
                     which_select = which_select_will;
                     if (which_select == 1) {
+                        max_level = game.robot.Hid >= 5;
                         type_1 = 3;
                         type_2 = 2;
-                        number_1 = 5 * game.robot.Hid;
-                        number_2 = 2 * game.robot.Hid;
+                        number_1 = 6 * game.robot.Hid;
+                        number_2 = 3 * game.robot.Hid;
                         can_type_1 = game.robot.microchips >= number_1;
                         can_type_2 = game.robot.lamps >= number_2;
                         upgrade_can = game.robot.microchips >= number_1 && game.robot.lamps >= number_2;
                     }
                     if (which_select == 2) {
+                        max_level = game.robot.Bid >= 5;
                         type_1 = 3;
                         type_2 = 1;
-                        number_1 = 3 * game.robot.Bid;
-                        number_2 = 5 * game.robot.Bid;
+                        number_1 = 4 * game.robot.Bid;
+                        number_2 = 6 * game.robot.Bid;
                         can_type_1 = game.robot.microchips >= number_1;
                         can_type_2 = game.robot.metal >= number_2;
                         upgrade_can = game.robot.microchips >= number_1 && game.robot.metal >= number_2;
                     }
                     if (which_select == 3) {
+                        max_level = game.robot.LLid >= 5;
                         type_1 = 4;
                         type_2 = 1;
-                        number_1 = 3 * game.robot.LLid;
-                        number_2 = 4 * game.robot.LLid;
+                        number_1 = 4 * game.robot.LLid;
+                        number_2 = 5 * game.robot.LLid;
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.metal >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
                     }
                     if (which_select == 4) {
+                        max_level = game.robot.RLid >= 5;
                         type_1 = 4;
                         type_2 = 1;
-                        number_1 = 3 * game.robot.RLid;
-                        number_2 = 4 * game.robot.RLid;
+                        number_1 = 4 * game.robot.RLid;
+                        number_2 = 5 * game.robot.RLid;
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.metal >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
                     }
                     if (which_select == 5) {
+                        max_level = game.robot.LHid >= 5;
                         type_1 = 4;
                         type_2 = 2;
-                        number_1 = 3 * game.robot.LHid;
-                        number_2 = 4 * game.robot.LHid;
+                        number_1 = 4 * game.robot.LHid;
+                        number_2 = 5 * game.robot.LHid;
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.lamps >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
                     }
                     if (which_select == 6) {
+                        max_level = game.robot.RHid >= 5;
                         type_1 = 4;
                         type_2 = 2;
-                        number_1 = 3 * game.robot.RHid;
-                        number_2 = 4 * game.robot.RHid;
+                        number_1 = 4 * game.robot.RHid;
+                        number_2 = 5 * game.robot.RHid;
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.lamps >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
@@ -404,7 +425,7 @@ public class WorkMenu extends Openable implements Screen {
         return (int)((double)value*scale_frame)-(int)((1.0-scale_frame)*400);
     }
     public void upgrade() {
-        if (upgrade_can) {
+        if (upgrade_can && !max_level) {
             if (which_select == 1) {
                 if (game.robot.Hid < 5) {
                     game.robot.Hid++;
@@ -510,5 +531,8 @@ public class WorkMenu extends Openable implements Screen {
         red_back.dispose();
         green_back.dispose();
         blue_back.dispose();
+        close.dispose();
+        close_touched.dispose();
+        max.dispose();
     }
-}
+    }
