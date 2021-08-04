@@ -32,7 +32,7 @@ public class FirstMenuTouch implements InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         firstMenu.play_touch = false;
         firstMenu.close_touch = false;
-        if(!firstMenu.is_trailer) {
+        if(firstMenu.can_touch) {
             if (screenX >= SX(100) && screenX <= SX(600) && screenY >= SY(firstMenu.height / 2 - 350) && screenY <= SY(firstMenu.height / 2 - 100)) {
                 Gdx.app.exit();
             }

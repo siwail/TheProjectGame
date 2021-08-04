@@ -4,21 +4,34 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Server;
 
 import java.util.Random;
 public class MainGame extends Game {
     Preferences safes;
     Music music;
     Music music_war;
+    Music music_wave;
+    Music music_main;
+    Music music_rl;
     Random random;
     Sound click;
     Sound opened;
     Sound closed;
+    Server server;
+    Client client;
     RoboStructure robot = new RoboStructure(this);
-    boolean war = false;
+    int music_type = 1;
     boolean music_play = true;
+
+    int max_planet = 4;
     @Override
     public void create() {
+        server = new Server();
+        client = new Client();
+        server.getKryo().register(ClientPacket.class);
+        client.getKryo().register(ClientPacket.class);
         safes = Gdx.app.getPreferences("Save");
         click = Gdx.audio.newSound(Gdx.files.internal("Sound/click.wav"));
         opened = Gdx.audio.newSound(Gdx.files.internal("Sound/opened.wav"));
@@ -26,60 +39,109 @@ public class MainGame extends Game {
         random = new Random();
         robot.SetFirstChanges();
         robot.UpdateTextures();
+        music_main = Gdx.audio.newMusic(Gdx.files.internal("Sound/wave.wav"));
+        music_main.setVolume(0.3f);
+        music_main.setLooping(true);
+        music_rl = Gdx.audio.newMusic(Gdx.files.internal("Sound/sound.mp3"));
+        music_rl.setVolume(0.3f);
+        music_rl.setLooping(true);
+        music_wave = Gdx.audio.newMusic(Gdx.files.internal("Sound/rl.mp3"));
+        music_wave.setVolume(0.3f);
+        music_wave.setLooping(true);
         music_war = Gdx.audio.newMusic(Gdx.files.internal("Sound/music.mp3"));
         music_war.setVolume(0.1f);
         music_war.setLooping(true);
-        music = Gdx.audio.newMusic(Gdx.files.internal("Sound/sound.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("Sound/rl2.mp3"));
         music.setVolume(0.2f);
         music.setLooping(true);
         music.play();
+        robot.level = random.nextInt(4)+1;
         setScreen(new FirstMenu(this));
     }
-    public void MusicSwap(){
-        if(!war){
-            war = true;
-            if(music_play) {
-                music.stop();
-                music_war.play();
-            }
-        }else{
-            war = false;
-            if(music_play) {
-                music_war.stop();
-                music.play();
-            }
+    public void MusicSwap(int type){
+        if(music_type == 1) {
+            music.stop();
+        }
+        if(music_type == 2) {
+            music_war.stop();
+        }
+        if(music_type == 3) {
+            music_wave.stop();
+        }
+        if(music_type == 4) {
+            music_main.stop();
+        }
+        if(music_type == 5) {
+            music_rl.stop();
+        }
+        music_type = type;
+        if(music_type == 1) {
+            music.play();
+        }
+        if(music_type == 2) {
+            music_war.play();
+        }
+        if(music_type == 3) {
+            music_wave.play();
+        }
+        if(music_type == 4) {
+            music_main.play();
+        }
+        if(music_type == 5) {
+            music_rl.play();
         }
     }
     public void MusicSet(){
-        if(!war) {
-            if (music_play) {
-                music_play = false;
+        music_play = !music_play;
+        if(!music_play) {
+            if (music_type == 1) {
                 music.pause();
-            } else {
-                music_play = true;
-                music.play();
+            }
+            if (music_type == 2) {
+                music_war.pause();
+            }
+            if (music_type == 3) {
+                music_wave.pause();
+            }
+            if(music_type == 4) {
+                music_main.pause();
+            }
+            if(music_type == 5) {
+                music_rl.pause();
             }
         }else{
-            if (music_play) {
-                music_play = false;
-                music_war.pause();
-            } else {
-                music_play = true;
+            if (music_type == 1) {
+                music.play();
+            }
+            if (music_type == 2) {
                 music_war.play();
+            }
+            if (music_type == 3) {
+                music_wave.play();
+            }
+            if(music_type == 4) {
+                music_main.play();
+            }
+            if(music_type == 5) {
+                music_rl.play();
             }
         }
     }
-    public void setGamePlay(){
+    public void setGamePlay(boolean online, boolean host){
         getScreen().dispose();
-        setScreen(new GamePlay(this));
+        setScreen(new GamePlay(this, online, host));
     }
     public void setGameMenu(){
         getScreen().dispose();
-        robot.level = random.nextInt(4)+1;
+
         setScreen(new GameMenu(this));
     }
     public void setWorkMenu(){
         getScreen().dispose();
         setScreen(new WorkMenu(this));
+    }
+    public void setMultiplayerMenu(){
+        getScreen().dispose();
+        setScreen(new MultiplayerMenu(this));
     }
 }

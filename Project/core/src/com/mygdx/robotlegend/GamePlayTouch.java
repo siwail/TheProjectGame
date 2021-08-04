@@ -31,6 +31,9 @@ public class GamePlayTouch implements InputProcessor {
         if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.jump_touch = true;
         }
+        if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height+150)*gamePlay.scale_inteface){
+            gamePlay.ball_touch = true;
+        }
         return false;
     }
     @Override
@@ -40,6 +43,7 @@ public class GamePlayTouch implements InputProcessor {
         gamePlay.redir_touch = false;
         gamePlay.fire_touch = false;
         gamePlay.jump_touch = false;
+        gamePlay.ball_touch = false;
         if (!gamePlay.robotboom && gamePlay.win != 1){
             if (screenX >= SX(gamePlay.width - 275 * gamePlay.scale_inteface) && screenX <= SX(gamePlay.width - 25 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 250 * gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)) {
                 gamePlay.Fire();
@@ -55,6 +59,9 @@ public class GamePlayTouch implements InputProcessor {
         }
         if (screenX >= SX(gamePlay.width - 400 * gamePlay.scale_inteface) && screenX <= SX(gamePlay.width - 250 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 150 * gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)) {
             gamePlay.Jump();
+        }
+        if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height+150)*gamePlay.scale_inteface){
+            gamePlay.Ball();
         }
     }
         return false;

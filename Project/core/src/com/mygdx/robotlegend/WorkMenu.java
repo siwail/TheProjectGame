@@ -40,6 +40,13 @@ public class WorkMenu extends Openable implements Screen {
     Texture close;
     Texture close_touched;
     Texture max;
+    Texture leg_lu;
+    Texture leg_ru;
+    Texture leg_cu;
+    Texture leg_ld;
+    Texture leg_rd;
+    Texture leg_cd;
+    Texture[] fire = new Texture[4];
     TextureRegion lamp;
     TextureRegion[] light = new TextureRegion[2];
     double x = 0.0;
@@ -55,9 +62,30 @@ public class WorkMenu extends Openable implements Screen {
     float rothead = 0;
     float rotleg = 0;
     float rot = 0;
+
+
+    int y_ld = 0;
+    int y_rd = 0;
+    int y_cd = 0;
+    int y_lu = 0;
+    int y_ru = 0;
+    int y_cu = 0;
+
+    int fire_anime = 1;
+
+
     int which_select = 0;
     int which_select_will = 0;
     int light_anime = 1;
+
+    boolean fire_now = false;
+    boolean ld = false;
+    boolean rd = false;
+    boolean cd = false;
+    boolean lu = false;
+    boolean ru = false;
+    boolean cu = false;
+
     boolean max_level = false;
     boolean can_swap = true;
     boolean can_type_1 = false;
@@ -70,17 +98,19 @@ public class WorkMenu extends Openable implements Screen {
     }
     @Override
     public void show() {
+        game.MusicSwap(4);
         game.robot.SetWorkMenuTextures();
         Gdx.input.setInputProcessor(new WorkMenuTouch(game, this));
         Start();
         x = width/2-400;
+        game.robot.UpdateParameters();
         upgrade = Gdx.audio.newSound(Gdx.files.internal("Sound/upgrade.wav"));
         lightt_1 = new Texture("Interface/light1.png");
         lightt_2 = new Texture("Interface/light2.png");
-        light[0] = new TextureRegion(lightt_1, 1280, 720);
-        light[1] = new TextureRegion(lightt_2, 1280, 720);
+        light[0] = new TextureRegion(lightt_1, 960, 540);
+        light[1] = new TextureRegion(lightt_2, 960, 540);
         lampt = new Texture("Interface/lamp_full.png");
-        lamp = new TextureRegion(lampt, 1280, 720);
+        lamp = new TextureRegion(lampt, 960, 540);
         Frontground = new Texture("Interface/frontground.png");
         not = new Texture("Interface/cross.png");
         yes = new Texture("Interface/yes.png");
@@ -107,6 +137,18 @@ public class WorkMenu extends Openable implements Screen {
         gear = new Texture("Item/gear.png");
         chip = new Texture("Item/chip.png");
         bulb = new Texture("Item/bulb.png");
+        fire[0] = new Texture("Object/fire_1.png");
+        fire[1] = new Texture("Object/fire_2.png");
+        fire[2] = new Texture("Object/fire_3.png");
+        fire[3] = new Texture("Object/fire_4.png");
+
+        leg_lu = new Texture("Object/leg_lu.png");
+        leg_ru = new Texture("Object/leg_ru.png");
+        leg_cu = new Texture("Object/leg_cu.png");
+        leg_ld = new Texture("Object/leg_ld.png");
+        leg_rd = new Texture("Object/leg_rd.png");
+        leg_cd = new Texture("Object/leg_cd.png");
+
         open_x = 0;
         anime  = new Thread(){
             @Override
@@ -238,21 +280,25 @@ public class WorkMenu extends Openable implements Screen {
                 item_font.draw(batch, number_1 + "", RS((int) (((double) width - 500.0) * wpw)), RS((int) (225.0 * hph)));
                 item_font.draw(batch, number_2 + "", RS((int) (((double) width - 250.0) * wpw)), RS((int) (225.0 * hph)));
             }
-            if (!upgrade_can || which_select == 0) {
-                drawer.draw(upgrade_1, RS(width - 500), RS(0), RS(400), RS(175));
-            } else {
-                if (!upgrade_touch) {
-                    drawer.draw(upgrade_2, RS(width - 500), RS(0), RS(400), RS(175));
+            if (which_select != 0) {
+                if (!upgrade_can || which_select == 0) {
+                    drawer.draw(upgrade_1, RS(width - 500), RS(0), RS(400), RS(175));
                 } else {
-                    drawer.draw(upgrade_touched, RS(width - 500), RS(0), RS(400), RS(175));
+                    if (!upgrade_touch) {
+                        drawer.draw(upgrade_2, RS(width - 500), RS(0), RS(400), RS(175));
+                    } else {
+                        drawer.draw(upgrade_touched, RS(width - 500), RS(0), RS(400), RS(175));
+                    }
                 }
             }
         }else{
-            drawer.draw(red_back, RS(width - 595), RS(0), RS(600), RS(350));
-            drawer.draw(max, RS(width - 500), RS(200), RS(150), RS(150));
-            drawer.draw(max, RS(width - 250), RS(200), RS(150), RS(150));
-            drawer.draw(not, RS(width - 425), RS(220), RS(100), RS(100));
-            drawer.draw(not, RS(width - 175), RS(220), RS(100), RS(100));
+            if(which_select != 0) {
+                drawer.draw(red_back, RS(width - 595), RS(0), RS(600), RS(350));
+                drawer.draw(max, RS(width - 500), RS(200), RS(150), RS(150));
+                drawer.draw(max, RS(width - 250), RS(200), RS(150), RS(150));
+                drawer.draw(not, RS(width - 425), RS(220), RS(100), RS(100));
+                drawer.draw(not, RS(width - 175), RS(220), RS(100), RS(100));
+            }
         }
         drawer.draw(health, RS(width-500), RS(550), RS(150), RS(150));
         if(which_select!=0) {
@@ -262,14 +308,30 @@ public class WorkMenu extends Openable implements Screen {
             drawer.draw(blue_back, RS(width - 595), RS(370), RS(600), RS(160));
             item_font.draw(batch, "Параметры", RS((int)(((double)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, (game.robot.Hid*10)+(game.robot.Bid*15)+(game.robot.RHid*5)+(game.robot.LHid*5)+(game.robot.RLid*5)+(game.robot.LLid*5) +"", RS((int)(((double)width-500.0)*wpw)), RS((int)(570.0*hph)));
+            if(game.robot.Bhealth != 0){
+                item_green_font.draw(batch,  " +" + game.robot.Bhealth, RS((int)(((double)width-440.0)*wpw)), RS((int)(570.0*hph)));
+            }
             drawer.draw(energy, RS(width-250), RS(550), RS(150), RS(150));
             item_font.draw(batch, (game.robot.Hid*10)+"", RS((int)(((double)width-250.0)*wpw)), RS((int)(570.0*hph)));
+            if(game.robot.Benergy_speed != 0){
+                item_green_font.draw(batch,  " +" + game.robot.Benergy_speed, RS((int)(((double)width-190.0)*wpw)), RS((int)(570.0*hph)));
+            }
             drawer.draw(move_speed, RS(width-500), RS(380), RS(150), RS(150));
             item_font.draw(batch, (game.robot.LLid+game.robot.RLid) +"", RS((int)(((double)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            if(game.robot.Bmove_speed != 0){
+                item_green_font.draw(batch,  " +" + game.robot.Bmove_speed, RS((int)(((double)width-440.0)*wpw)), RS((int)(400.0*hph)));
+            }
+
             drawer.draw(attack_speed, RS(width-250), RS(380), RS(150), RS(150));
             item_font.draw(batch, (game.robot.Bid)+"", RS((int)(((double)width-250.0)*wpw)), RS((int)(400.0*hph)));
+            if(game.robot.Battack_speed != 0){
+                item_green_font.draw(batch,  " +" + game.robot.Battack_speed, RS((int)(((double)width-190.0)*wpw)), RS((int)(400.0*hph)));
+            }
             drawer.draw(damage, RS(width-375), RS(210), RS(150), RS(150));
             item_font.draw(batch, (game.robot.LHid+game.robot.RHid)*2+"", RS((int)(((double)width-375.0)*wpw)), RS((int)(230.0*hph)));
+            if(game.robot.Bdamage != 0){
+                item_green_font.draw(batch,  " +" + game.robot.Bdamage, RS((int)(((double)width-315.0)*wpw)), RS((int)(230.0*hph)));
+            }
         }
         if(which_select == 1){
             item_font.draw(batch, "Мозг робота Ур. " + game.robot.Hid, RS((int)(((double)width-540.0)*wpw)), RS((int)(780.0*hph)));
@@ -315,6 +377,42 @@ public class WorkMenu extends Openable implements Screen {
         }
         DrawRobot(drawer, (int)x, y, scale, rothand, rothead, rotleg, rot, false, false, false, 90);
         DrawSelect(drawer, (int)x, y, scale, rothand, rothead, rotleg, rot, which_select_will);
+        if(cu){
+            drawer.draw(leg_cu, (int)x-(int)(50*scale), height-y_cu, 400, 400);
+            if(y_cu>=300){
+                drawer.draw(fire[fire_anime-1], (int)x-(int)(50*scale)+50, height-50-y_cu+50, 300, 300);
+            }
+        }
+        if(cd){
+            drawer.draw(leg_cd, (int)x-(int)(50*scale), y_cd-400, 400, 400);
+            if(y_cd>=400){
+                drawer.draw(fire[fire_anime-1], (int)x-(int)(50*scale)+50, y_cd-350+50, 300, 300);
+            }
+        }
+        if(ld){
+            drawer.draw(leg_ld, (int)x-(int)(100*scale), y_ld-300, 400, 400);
+            if(y_ld>=300){
+                drawer.draw(fire[fire_anime-1], (int)x-(int)(100*scale)+50, y_ld-250+50, 300, 300);
+            }
+        }
+        if(rd){
+            drawer.draw(leg_rd, (int)x+(int)(10*scale), y_rd-300, 400, 400);
+            if(y_rd>=300){
+                drawer.draw(fire[fire_anime-1], (int)x+(int)(10*scale)+50, y_rd-250+50, 300, 300);
+            }
+        }
+        if(lu){
+            drawer.draw(leg_lu, (int)x-(int)(170*scale), height-y_lu, 500, 500);
+            if(y_lu>=500){
+                drawer.draw(fire[fire_anime-1], (int)x-(int)(170*scale)+100, height-y_lu-80+100, 300, 300);
+            }
+        }
+        if(ru){
+            drawer.draw(leg_ru, (int)x+(int)(30*scale)-10, height-y_ru, 500, 500);
+            if(y_ru>=500){
+                drawer.draw(fire[fire_anime-1], (int)x+(int)(20*scale)-10+100, height-y_ru-80+100, 300, 300);
+            }
+        }
         if(light_anime<3) {
             drawer.draw(light[light_anime], -200.0f, -200, (float) (width / 2 - 100), height + 350.0f, (float) (width), (float) (height + 300), 1, 1, rotlamp);
         }
@@ -342,8 +440,8 @@ public class WorkMenu extends Openable implements Screen {
                         max_level = game.robot.Hid >= 5;
                         type_1 = 3;
                         type_2 = 2;
-                        number_1 = 6 * game.robot.Hid;
-                        number_2 = 3 * game.robot.Hid;
+                        number_1 = 8 * game.robot.Hid;
+                        number_2 = 5 * game.robot.Hid;
                         can_type_1 = game.robot.microchips >= number_1;
                         can_type_2 = game.robot.lamps >= number_2;
                         upgrade_can = game.robot.microchips >= number_1 && game.robot.lamps >= number_2;
@@ -352,8 +450,8 @@ public class WorkMenu extends Openable implements Screen {
                         max_level = game.robot.Bid >= 5;
                         type_1 = 3;
                         type_2 = 1;
-                        number_1 = 4 * game.robot.Bid;
-                        number_2 = 6 * game.robot.Bid;
+                        number_1 = 6 * game.robot.Bid;
+                        number_2 = 9 * game.robot.Bid;
                         can_type_1 = game.robot.microchips >= number_1;
                         can_type_2 = game.robot.metal >= number_2;
                         upgrade_can = game.robot.microchips >= number_1 && game.robot.metal >= number_2;
@@ -362,8 +460,8 @@ public class WorkMenu extends Openable implements Screen {
                         max_level = game.robot.LLid >= 5;
                         type_1 = 4;
                         type_2 = 1;
-                        number_1 = 4 * game.robot.LLid;
-                        number_2 = 5 * game.robot.LLid;
+                        number_1 = 6 * game.robot.LLid;
+                        number_2 = 7 * game.robot.LLid;
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.metal >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
@@ -372,8 +470,8 @@ public class WorkMenu extends Openable implements Screen {
                         max_level = game.robot.RLid >= 5;
                         type_1 = 4;
                         type_2 = 1;
-                        number_1 = 4 * game.robot.RLid;
-                        number_2 = 5 * game.robot.RLid;
+                        number_1 = 6 * game.robot.RLid;
+                        number_2 = 7 * game.robot.RLid;
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.metal >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
@@ -382,23 +480,22 @@ public class WorkMenu extends Openable implements Screen {
                         max_level = game.robot.LHid >= 5;
                         type_1 = 4;
                         type_2 = 2;
-                        number_1 = 4 * game.robot.LHid;
-                        number_2 = 5 * game.robot.LHid;
+                        number_1 = 6 * game.robot.LHid;
+                        number_2 = 8 * game.robot.LHid;
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.lamps >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
                     }
                     if (which_select == 6) {
-                        max_level = game.robot.RHid >= 5;
+                        max_level = game. robot.RHid >= 5;
                         type_1 = 4;
                         type_2 = 2;
-                        number_1 = 4 * game.robot.RHid;
-                        number_2 = 5 * game.robot.RHid;
+                        number_1 = 6 * game.robot.RHid;
+                        number_2 = 8 * game.robot.RHid;
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.lamps >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
                     }
-
                     while (scale_frame < 1.0) {
                         scale_frame += 0.01;
                         Sleep(3);
@@ -424,12 +521,139 @@ public class WorkMenu extends Openable implements Screen {
     public int RS(int value){ //right scale
         return (int)((double)value*scale_frame)-(int)((1.0-scale_frame)*400);
     }
+    public void AddLeg(int leg){
+        if(leg == 1) {
+            cu = true;
+            Thread anime = new Thread() {
+                @Override
+                public void run() {
+                    while (y_cu<300) {
+                        y_cu+=5;
+                        Sleep(5);
+                    }
+                    Fire();
+                    while (y_cu>0) {
+                        y_cu-=2;
+                        Sleep(5);
+                    }
+                }
+            };
+            anime.start();
+        }
+        if(leg == 2) {
+            cd= true;
+            Thread anime = new Thread() {
+                @Override
+                public void run() {
+                    while (y_cd<400) {
+                        y_cd+=5;
+                        Sleep(5);
+                    }
+                    Fire();
+                    while (y_cd>0) {
+                        y_cd-=2;
+                        Sleep(5);
+                    }
+                }
+            };
+            anime.start();
+        }
+        if(leg == 3) {
+            ld= true;
+            Thread anime = new Thread() {
+                @Override
+                public void run() {
+                    while (y_ld<300) {
+                        y_ld+=5;
+                        Sleep(5);
+                    }
+                    Fire();
+                    while (y_ld>0) {
+                        y_ld-=2;
+                        Sleep(5);
+                    }
+                }
+            };
+            anime.start();
+        }
+        if(leg == 4) {
+            rd= true;
+            Thread anime = new Thread() {
+                @Override
+                public void run() {
+                    while (y_rd<300) {
+                        y_rd+=5;
+                        Sleep(5);
+                    }
+                    Fire();
+                    while (y_rd>0) {
+                        y_rd-=2;
+                        Sleep(5);
+                    }
+                }
+            };
+            anime.start();
+        }
+        if(leg == 5) {
+            ru= true;
+            Thread anime = new Thread() {
+                @Override
+                public void run() {
+                    while (y_ru<500) {
+                        y_ru+=5;
+                        Sleep(5);
+                    }
+                    Fire();
+                    while (y_ru>0) {
+                        y_ru-=2;
+                        Sleep(5);
+                    }
+                }
+            };
+            anime.start();
+        }
+        if(leg == 6) {
+            lu= true;
+            Thread anime = new Thread() {
+                @Override
+                public void run() {
+                    while (y_lu<500) {
+                        y_lu+=5;
+                        Sleep(5);
+                    }
+                    Fire();
+                    while (y_lu>0) {
+                        y_lu-=2;
+                        Sleep(5);
+                    }
+                }
+            };
+            anime.start();
+        }
+    }
+    public void Fire(){
+        boolean can_anime;
+        can_anime= !fire_now;
+                int anime = 0;
+                while (anime < 30) {
+                    if(can_anime) {
+                        fire_anime++;
+                        if (fire_anime > 4) {
+                            fire_anime = 1;
+                        }
+                    }
+                    anime++;
+                    Sleep(50);
+                }
+
+    }
     public void upgrade() {
         if (upgrade_can && !max_level) {
             if (which_select == 1) {
                 if (game.robot.Hid < 5) {
                     game.robot.Hid++;
                     game.robot.UpdateRobotTexture(which_select);
+                    AddLeg(1);
                     upgrade.play(0.8f);
                 }
             }
@@ -437,6 +661,7 @@ public class WorkMenu extends Openable implements Screen {
                 if (game.robot.Bid < 5) {
                     game.robot.Bid++;
                     game.robot.UpdateRobotTexture(which_select);
+                    AddLeg(2);
                     upgrade.play(0.8f);
                 }
             }
@@ -444,6 +669,7 @@ public class WorkMenu extends Openable implements Screen {
                 if (game.robot.RHid < 5) {
                     game.robot.RHid++;
                     game.robot.UpdateRobotTexture(which_select);
+                    AddLeg(6);
                     upgrade.play(0.8f);
                 }
             }
@@ -451,6 +677,7 @@ public class WorkMenu extends Openable implements Screen {
                 if (game.robot.LHid < 5) {
                     game.robot.LHid++;
                     game.robot.UpdateRobotTexture(which_select);
+                    AddLeg(5);
                     upgrade.play(0.8f);
                 }
             }
@@ -458,6 +685,7 @@ public class WorkMenu extends Openable implements Screen {
                 if (game.robot.RLid < 5) {
                     game.robot.RLid++;
                     game.robot.UpdateRobotTexture(which_select);
+                    AddLeg(4);
                     upgrade.play(0.8f);
                 }
             }
@@ -465,6 +693,7 @@ public class WorkMenu extends Openable implements Screen {
                 if (game.robot.LLid < 5) {
                     game.robot.LLid++;
                     game.robot.UpdateRobotTexture(which_select);
+                    AddLeg(3);
                     upgrade.play(0.8f);
                 }
             }
@@ -534,5 +763,16 @@ public class WorkMenu extends Openable implements Screen {
         close.dispose();
         close_touched.dispose();
         max.dispose();
+        fire[0].dispose();
+        fire[1].dispose();
+        fire[2].dispose();
+        fire[3].dispose();
+
+        leg_lu.dispose();
+        leg_ru.dispose();
+        leg_cu.dispose();
+        leg_ld.dispose();
+        leg_rd.dispose();
+        leg_cd.dispose();
     }
     }

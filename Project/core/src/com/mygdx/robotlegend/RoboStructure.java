@@ -11,6 +11,16 @@ public class RoboStructure {
     int lamps = 0;
     int metal = 0;
     int energy = 100;
+    int Bhealth = 0;
+    int Bdamage = 0;
+    int Bmove_speed = 0;
+    int Battack_speed = 0;
+    int Benergy_speed = 0;
+    int EBhealth = 0;
+    int EBdamage = 0;
+    int EBmove_speed = 0;
+    int EBattack_speed = 0;
+    int EBenergy_speed = 0;
     int Hid = 1;
     int Bid = 1;
     int RHid = 1; //Правая рука
@@ -22,6 +32,21 @@ public class RoboStructure {
     int attack_speed;
     int move_speed;
     int energy_speed;
+    int experience = 0;
+
+    int[] metal_chance = new int[4];
+    int[] chip_chance = new int[4];
+    int[] gear_chance = new int[4];
+    int[] bulb_chance = new int[4];
+    Texture alert;
+    Texture[] ToBall_1t = new Texture[5];
+    Texture[] ToBall_2t = new Texture[5];
+    Texture[] ToBall_3t = new Texture[5];
+    TextureRegion[] ToBall_1 = new TextureRegion[5];
+    TextureRegion[] ToBall_2 = new TextureRegion[5];
+    TextureRegion[] ToBall_3 = new TextureRegion[5];
+    Texture Ball_1t;
+    Texture Ball_2t;
     Texture contrast;
     Texture Cross;
     Texture EnergyBack;
@@ -83,6 +108,8 @@ public class RoboStructure {
     Texture SLLt;
     Texture SHt;
     Texture SBt;
+    TextureRegion Ball_1;
+    TextureRegion Ball_2;
     TextureRegion RH;
     TextureRegion LH;                                                                                               
     TextureRegion RL;
@@ -114,7 +141,7 @@ public class RoboStructure {
     int Eattack_speed;
     int Emove_speed;
     int Eenergy_speed = 80-EBid*7;
-    int max_skin = 6;
+    int max_skin = 9;
     int[] skins_open = new int[max_skin];
     int index_skin = 0;
     int opened = 6;
@@ -143,6 +170,7 @@ public class RoboStructure {
         LLid = 1;
         RLid = 1;
         opened = 1;
+        experience = 0;
         int i = 0;
         while(i!=opened){
             skins_open[i] = TakeSafe("skin_"+i, 0);
@@ -161,6 +189,10 @@ public class RoboStructure {
         Edamage = ERHid*2+ELHid*2;
         health = Hid*10+Bid*15+RHid*5+LHid*5+RLid*5+LLid*5;
         Ehealth = EHid*10+EBid*15+ERHid*5+ELHid*5+ERLid*5+ELLid*5;
+        ClearSkinBust();
+        ChangeSkinBust();
+        EClearSkinBust();
+        EChangeSkinBust();
     }
     public void SetWorkMenuTextures(){
         HeadSelectt = new Texture("Robot/head_select.png");
@@ -169,6 +201,100 @@ public class RoboStructure {
         RightLegSelectt = new Texture("Robot/leg_select.png");
         LeftHandSelectt = new Texture("Robot/hand_select.png");
         RightHandSelectt = new Texture("Robot/hand_select.png");
+    }
+    public void ChangeSkinBust(){
+        if(skin == 1){
+            Bhealth = 40;
+            Battack_speed = 1;
+        }
+        if(skin == 2){
+            Bmove_speed = 1;
+            Battack_speed = 2;
+        }
+        if(skin == 3){
+            Bhealth = 30;
+            Benergy_speed = 10;
+        }
+        if(skin == 4){
+            Bdamage = 2;
+            Battack_speed = 1;
+        }
+        if(skin == 5){
+            Bdamage = 4;
+            Benergy_speed = 20;
+        }
+        if(skin == 6){
+            Bhealth = 50;
+            Benergy_speed = 5;
+        }
+        if(skin == 8){
+            Bhealth = 30;
+            Bdamage = 6;
+        }
+        health+=Bhealth;
+        damage+=Bdamage;
+        move_speed+=Bmove_speed;
+        attack_speed+=Battack_speed;
+        energy_speed+=Benergy_speed;
+    }
+    public void EChangeSkinBust(){
+        if(Eskin == 1){
+            EBhealth = 40;
+            EBattack_speed = 1;
+        }
+        if(Eskin == 2){
+            EBmove_speed = 1;
+            EBattack_speed = 2;
+        }
+        if(Eskin == 3){
+            EBhealth = 30;
+            EBenergy_speed = 10;
+        }
+        if(Eskin == 4){
+            EBdamage = 2;
+            EBattack_speed = 1;
+        }
+        if(Eskin == 5){
+            EBdamage = 4;
+            EBenergy_speed = 20;
+        }
+        if(Eskin == 6){
+            EBhealth = 50;
+            EBenergy_speed = 5;
+        }
+        if(Eskin == 8){
+            EBhealth = 30;
+            EBdamage = 6;
+        }
+        Ehealth+=EBhealth;
+        Edamage+=EBdamage;
+        Emove_speed+=EBmove_speed;
+        Eattack_speed+=EBattack_speed;
+        Eenergy_speed+=EBenergy_speed;
+    }
+    public void ClearSkinBust(){
+         health -= Bhealth;
+         damage -= Bdamage;
+         move_speed -= Bmove_speed;
+         attack_speed -= Battack_speed;
+         energy_speed -= Benergy_speed;
+         Bhealth = 0;
+         Bdamage = 0;
+         Bmove_speed = 0;
+         Battack_speed = 0;
+         Benergy_speed = 0;
+    }
+    public void EClearSkinBust(){
+        Ehealth -= EBhealth;
+        Edamage -= EBdamage;
+        Emove_speed -= EBmove_speed;
+        Eattack_speed -= EBattack_speed;
+        Eenergy_speed -= EBenergy_speed;
+        EBhealth = 0;
+        EBdamage = 0;
+        EBmove_speed = 0;
+        EBattack_speed = 0;
+        EBenergy_speed = 0;
     }
     public void UpdateRobotTexture(int which_select){
         if(which_select == 1){
@@ -212,6 +338,13 @@ public class RoboStructure {
         RightHandSelectt.dispose();
     }
     public void SetGamePlayTextures(){
+        for(int i=1;i<6; i++){ ToBall_1t[i-1] = new Texture("Robot/ball_1_" + i + ".png");  ToBall_1[i-1] = new TextureRegion(ToBall_1t[i-1], 200, 200);}
+        for(int i=1;i<6; i++){ ToBall_2t[i-1] = new Texture("Robot/ball_2_" + i + ".png");  ToBall_2[i-1] = new TextureRegion(ToBall_2t[i-1], 200, 200);}
+        for(int i=1;i<6; i++){ ToBall_3t[i-1] = new Texture("Robot/ball_3_" + i + ".png");  ToBall_3[i-1] = new TextureRegion(ToBall_3t[i-1], 200, 200);}
+        Ball_2t = new Texture("Robot/ball_2.png");
+        Ball_1t = new Texture("Robot/ball_1.png");
+        Ball_1 = new TextureRegion(Ball_1t, 300, 300);
+        Ball_2 = new TextureRegion(Ball_2t, 300, 300);
         Cross = new Texture("Object/aim.png");
         Energy = new Texture("Interface/energy.png");
         EnergyBack = new Texture("Interface/back_energy.png");
@@ -313,6 +446,7 @@ public class RoboStructure {
         game.safes.putInteger("microchips", game.robot.microchips);
         game.safes.putInteger("metal", game.robot.metal);
         game.safes.putInteger("opened", opened);
+        game.safes.putInteger("experience", experience);
         int i = 0;
         while(i!=opened){
             game.safes.putInteger("skin_" + i, skins_open[i]);
@@ -321,6 +455,11 @@ public class RoboStructure {
         game.safes.flush();
     }
     public void DisposeGamePlayTextures(){
+        for(int i=1;i<6; i++) ToBall_1t[i-1].dispose();
+        for(int i=1;i<6; i++) ToBall_2t[i-1].dispose();
+        for(int i=1;i<6; i++) ToBall_3t[i-1].dispose();
+        Ball_1t.dispose();
+        Ball_2t.dispose();
         Cross.dispose();
         Energy.dispose();
         EnergyBack.dispose();
@@ -358,6 +497,26 @@ public class RoboStructure {
         RightHandDeadt.dispose();
     }
     public void SetFirstChanges(){
+        metal_chance[0] = 60;
+        metal_chance[1] = 20;
+        metal_chance[2] = 10;
+        metal_chance[3] = 10;
+
+        chip_chance[0] = 10;
+        chip_chance[1] = 60;
+        chip_chance[2] = 20;
+        chip_chance[3] = 10;
+
+        gear_chance[0] = 20;
+        gear_chance[1] = 10;
+        gear_chance[2] = 20;
+        gear_chance[3] = 50;
+
+        bulb_chance[0] = 10;
+        bulb_chance[1] = 10;
+        bulb_chance[2] = 50;
+        bulb_chance[3] = 30;
+        alert = new Texture("Interface/alert.png");
         contrast = new Texture("Interface/contrast.png");
         level_win = TakeSafe("level");
         gears = TakeSafe("gears");
@@ -371,16 +530,39 @@ public class RoboStructure {
         RLid = TakeSafe("RL");
         LLid = TakeSafe("LL");
         opened = TakeSafe("opened");
+        experience = TakeSafe("experience");
         int i = 0;
         while(i!=opened){
             skins_open[i] = TakeSafe("skin_"+i);
             i++;
         }
+
         skins_open[0] = 0;
         skin = 0;
         index_skin = 0;
         UpdateParameters();
         level = game.random.nextInt(4)+1;
+    }
+    public void AddExperience(int num){
+        int added = 0;
+            while (true) {
+                if(added<num){
+                    experience += 1;
+                    added += 1;
+                }else{
+                    break;
+                }
+                if(experience>=level_win*100){
+                    level_win+=1;
+                    experience=0;
+                }
+                try {
+                    Thread.sleep(10);
+                } catch (Exception ignored) {
+                }
+
+            }
+
     }
     public void AddSkin(int index){
         if(opened!=max_skin) {
@@ -395,6 +577,7 @@ public class RoboStructure {
                     }
             if(accept) {
                 if(opened<max_skin) {
+                    index_skin = i-1;
                     opened++;
                     skins_open[opened-1] = index;
                 }
@@ -420,7 +603,7 @@ public class RoboStructure {
         if(level_win>48){
             level_arm = 48;
         }
-        while(EHid+EBid+ERHid+ERLid+ELLid+ELHid!=level_arm/2+6) {
+        while(EHid+EBid+ERHid+ERLid+ELLid+ELHid!=level_arm+6) {
             EHid = game.random.nextInt(5) + 1;
             EBid = game.random.nextInt(5) + 1;
             ERHid = game.random.nextInt(5) + 1; //Правая рука
