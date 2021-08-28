@@ -28,6 +28,7 @@ public class MainGame extends Game {
     int max_planet = 4;
     @Override
     public void create() {
+        Gdx.graphics.setVSync(true);
         server = new Server();
         client = new Client();
         server.getKryo().register(ClientPacket.class);

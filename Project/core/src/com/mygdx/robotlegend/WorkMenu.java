@@ -56,7 +56,7 @@ public class WorkMenu extends Openable implements Screen {
     int number_1 = 0;
     int number_2 = 0;
     double scale_frame = 1.0;
-    double scale = 1.35;
+    float scale = 1.35f;
     float rotlamp = 0.0f;
     float rothand = 0;
     float rothead = 0;

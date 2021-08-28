@@ -139,13 +139,18 @@ public class FirstMenu  extends Openable implements Screen{
 					if(closed){
 						break;
 					}
-				Sleep( 80);
+				Sleep( 60);
 			}
 		}
 	};
 		anime_space = new Thread() {
 			@Override
 			public void run() {
+
+				space_2_px = (int)(width*0.2);
+				space_3_px = (int)(width*0.4);
+				space_4_px = (int)(width*0.6);
+				space_5_px = (int)(width*0.8);
 				while(trailer_state!=10){
 					space_1_px += trailer_state/2+1;
 					space_2_px += trailer_state*5+1;
@@ -187,21 +192,21 @@ public class FirstMenu  extends Openable implements Screen{
 							space_5_px = -height;
 						}
 					}
-					space_2_rot += 0.1f;
+					space_2_rot -= 0.1f;
 					if(space_2_rot>360.0f){
 						space_2_rot=0.0f;
 					}
-					space_3_rot -= 0.2f;
-					if(space_3_rot<0.0f){
-						space_3_rot=360.0f;
+					space_3_rot += 0.2f;
+					if(space_3_rot>360.0f){
+						space_3_rot=0.0f;
 					}
-					space_4_rot += 0.3f;
+					space_4_rot -= 0.3f;
 					if(space_4_rot>360.0f){
 						space_4_rot=0.0f;
 					}
-					space_5_rot -= 0.4f;
-					if(space_5_rot<0.0f){
-						space_5_rot=360.0f;
+					space_5_rot += 0.4f;
+					if(space_5_rot>360.0f){
+						space_5_rot=0.0f;
 					}
 					if(trailer_state == 9 && !trailer_started){
 						trailer_started = true;

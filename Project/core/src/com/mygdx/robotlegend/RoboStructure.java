@@ -33,7 +33,7 @@ public class RoboStructure {
     int move_speed;
     int energy_speed;
     int experience = 0;
-
+    boolean exp_process = false;
     int[] metal_chance = new int[4];
     int[] chip_chance = new int[4];
     int[] gear_chance = new int[4];
@@ -545,6 +545,7 @@ public class RoboStructure {
     }
     public void AddExperience(int num){
         int added = 0;
+        exp_process = true;
             while (true) {
                 if(added<num){
                     experience += 1;
@@ -562,6 +563,7 @@ public class RoboStructure {
                 }
 
             }
+        exp_process = false;
 
     }
     public void AddSkin(int index){

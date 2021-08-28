@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
+
+import sun.java2d.pipe.TextPipe;
+
 public class GamePlay extends Openable implements Screen{
     SpriteBatch batch;
     Server server;
@@ -154,6 +157,7 @@ public class GamePlay extends Openable implements Screen{
     int gift_index = 0;
     int local_speed = 0;
     int resized = 0;
+    int experience = 0;
     double speed = 1.0;
     double anime_grass = 0;
     double rotate_planet = 0;
@@ -167,7 +171,7 @@ public class GamePlay extends Openable implements Screen{
     int[] grass_1_type = new int[10];
     int[] grass_2_type  = new int[10];
     int[] grass_3_type  = new int[10];
-    double scale_inteface = 1.1;
+    float scale_inteface = 1.1f;
     double robot_x = 0;
     double robot_y = 0;
     double Erobot_x = 0;
@@ -239,6 +243,8 @@ public class GamePlay extends Openable implements Screen{
     boolean alert_location = false;
     boolean resizing=false;
     boolean show_exp;
+    int dead_state;
+    int Edead_state;
     int MEturnedJump = 0;
     int MEturnedFire = 0;
     int MEturnedUp = 0;
@@ -1076,7 +1082,7 @@ public class GamePlay extends Openable implements Screen{
                             }
                         }
                         int distance = Math.abs(Ex - x) + Math.abs(Ey - y);
-                        if (distance <= 2) {
+                        if (distance <= 1) {
                             steps_run++;
                             if (steps_run >= steps_to_run) {
                                 run_away = true;
@@ -1603,6 +1609,12 @@ public class GamePlay extends Openable implements Screen{
                 DrawRobotBall(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, ball_state);
             }
         }
+        if(dead){
+            DrawRobotDead(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y - boom_anime*10, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, 0, dead_state);
+        }
+        if(Edead){
+            DrawEnemyDead(drawer, Ex * (width / 10) + (int) Erobot_x, (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y - boom_anime*10, Escale * (1.0f - 0.03f * Ey), Erothand + 90, Erothead, Erotleg, Erot, 0, Edead_state);
+        }
         if(isboom){
             drawer.draw(booms[boom_anime-1], boom_x*(width/10)-250,  (height/5)*boom_y-60-10*boom_y+(height-boom_height), 500, boom_height);
         }
@@ -1668,7 +1680,7 @@ public class GamePlay extends Openable implements Screen{
         }else{
             drawer.draw(jump, (int)(width-400*scale_inteface), -pos_interface, (int)(150*scale_inteface), (int)(150*scale_inteface));
         }
-        DrawEnergy(drawer, (int)(400*(scale_inteface-0.1)), (int)(-50*(scale_inteface-0.1))-pos_interface, 1.3*(scale_inteface-0.1), energy, warning);
+        DrawEnergy(drawer, (int)(400*(scale_inteface-0.1)), (int)(-50*(scale_inteface-0.1))-pos_interface, 1.3f*(scale_inteface-0.1f), energy, warning);
         if(time > 0) {
             button_font.draw(batch, time + "", (int) (700.0 * wpw * scale_inteface), (int) ((85.0-(double)pos_interface) * hph * scale_inteface));
         }else{
@@ -1707,8 +1719,8 @@ public class GamePlay extends Openable implements Screen{
         if(pause){
             drawer.draw(begin_left[anime_begin], openlevel_x-width-10, 0, width, height);
             drawer.draw(begin_right[anime_begin], width-openlevel_x+10, 0, width, height);
-            DrawRobot(drawer, openlevel_x-width-(width-openlevel_x)/2-100, -450, scale * 3.0, rothand + 90, rothead, rotleg, rot, swap, hurt, dead, 0);
-            DrawEnemy(drawer, width-openlevel_x+1300+(width-openlevel_x)/2, -450, Escale * 3.0, Erothand + 90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
+            DrawRobot(drawer, openlevel_x-width-(width-openlevel_x)/2-100, -450, scale * 3.0f, rothand + 90, rothead, rotleg, rot, swap, hurt, dead, 0);
+            DrawEnemy(drawer, width-openlevel_x+1300+(width-openlevel_x)/2, -450, Escale * 3.0f, Erothand + 90, Erothead, Erotleg, Erot, Eswap, Ehurt, Edead);
             item_font.draw(batch, game.robot.level_win + " УРОВЕНЬ", (int)((width/2.0-400.0)*wpw), (int)(((double)height/(double)width*(double)openlevel_x/2.0-250)*hph));
         }
         if(alert_location){
@@ -1885,6 +1897,7 @@ public class GamePlay extends Openable implements Screen{
                     if(Ehealth <= 0) {
                         Ehealth = 0;
                     }
+                    experience+=1*game.robot.level_win;
                     RandomHitSound();
                     Thread anime = new Thread() {
                         @Override
@@ -1927,6 +1940,7 @@ public class GamePlay extends Openable implements Screen{
                 if(health <= 0) {
                     health = 0;
                 }
+
                 RandomHitSound();
                 Thread anime = new Thread() {
                     @Override
@@ -1967,12 +1981,16 @@ public class GamePlay extends Openable implements Screen{
     public void EDead(){
         if(!Edead){
             Edead = true;
+
             Thread anime = new Thread() {
                 @Override
                 public void run() {
                     death.play(0.8f);
                     Sleep(  200);
                     while (pos_interface<500) {
+                        if(Edead_state < 500){
+                            Edead_state+=1;
+                        }
                         scale_inteface-=0.0002;
                         pos_interface+=1;
                         Erobot_y-=2;
@@ -2055,7 +2073,7 @@ public class GamePlay extends Openable implements Screen{
                                 show_exp_x+=5;
                                 Sleep(5);
                             }
-                            game.robot.AddExperience(150);
+                            game.robot.AddExperience(experience);
                         }
                     };
                     AddExp.start();
@@ -2080,9 +2098,10 @@ public class GamePlay extends Openable implements Screen{
                         if (win_rot >= 360) {
                             win_rot = 0;
                         }
-                        if (level_dir > 9) {
-                            end = true;
-
+                        if (level_dir > 7){
+                            if(!game.robot.exp_process) {
+                                end = true;
+                            }
                         }
                         Sleep(20);
                     }
@@ -2304,6 +2323,7 @@ public class GamePlay extends Openable implements Screen{
     public void CheckBoom(){
             drawer.Shake();
             if(x == boom_x && y == boom_y && !robotboom){
+                experience+=5*game.robot.level_win;
                 robotboom = true;
                 health = health/2;
                 robot_speed_bonus = 1;
@@ -2352,6 +2372,9 @@ public class GamePlay extends Openable implements Screen{
                     Sleep(  200);
                     Gdx.input.vibrate(500);
                     while (pos_interface<500) {
+                        if(dead_state < 500){
+                            dead_state+=1;
+                        }
                         scale_inteface-=0.0002;
                         pos_interface+=1;
                         robot_y-=2;
@@ -2450,7 +2473,7 @@ public class GamePlay extends Openable implements Screen{
                                 Sleep((int) (1 * speed));
                             }
                         }
-                        scale_inteface = 1.1;
+                        scale_inteface = 1.1f;
                         fire_clicked = false;
                         rothand = lastrot;
                     }
@@ -2554,6 +2577,7 @@ public class GamePlay extends Openable implements Screen{
             if(health > game.robot.health){
                 health = game.robot.health;
             }
+            experience+=3*game.robot.level_win;
             med_scale = 10;
             med_used = true;
             Thread anime = new Thread() {
