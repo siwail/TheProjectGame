@@ -214,11 +214,11 @@ public class WorkMenu extends Openable implements Screen {
         batch.begin();
         drawer.draw(background, 0, 0, width, height);
         if (!exit_touch) {
-            drawer.draw(red, 10, height - 150, 150, 150);
-            drawer.draw(close, width-700, height - 100, 100, 100);
+            drawer.draw(close, 10, height - 150, 150, 150);
+            drawer.draw(red, width-700, height - 100, 100, 100);
         } else {
-            drawer.draw(red_touched, 10, height - 150, 150, 150);
-            drawer.draw(close_touched, width-700, height - 100, 100, 100);
+            drawer.draw(close_touched, 10, height - 150, 150, 150);
+            drawer.draw(red_touched, width-700, height - 100, 100, 100);
         }
         drawer.draw(frame, 10, height - 350, 150, 150);
         drawer.draw(frame, 10, height - 500, 150, 150);

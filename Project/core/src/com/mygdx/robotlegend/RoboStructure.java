@@ -45,6 +45,9 @@ public class RoboStructure {
     TextureRegion[] ToBall_1 = new TextureRegion[5];
     TextureRegion[] ToBall_2 = new TextureRegion[5];
     TextureRegion[] ToBall_3 = new TextureRegion[5];
+    Texture[] jetpack_1 = new Texture[4];
+    Texture[] jetpack_2 = new Texture[4];
+    Texture jetpack_3;
     Texture Ball_1t;
     Texture Ball_2t;
     Texture contrast;
@@ -380,6 +383,15 @@ public class RoboStructure {
         RightLegDeadt = new Texture("Robot/leg_dead.png");
         LeftHandDeadt = new Texture("Robot/hand_dead.png");
         RightHandDeadt = new Texture("Robot/hand_dead.png");
+        jetpack_1[0] = new Texture("Robot/jetpack_left.png");
+        jetpack_1[1] = new Texture("Robot/jetpack_left_1.png");
+        jetpack_1[2] = new Texture("Robot/jetpack_left_2.png");
+        jetpack_1[3] = new Texture("Robot/jetpack_left_3.png");
+        jetpack_2[0] = new Texture("Robot/jetpack_right.png");
+        jetpack_2[1] = new Texture("Robot/jetpack_right_1.png");
+        jetpack_2[2] = new Texture("Robot/jetpack_right_2.png");
+        jetpack_2[3] = new Texture("Robot/jetpack_right_3.png");
+        jetpack_3 = new Texture("Robot/jetpack.png");
     }
     public void UpdatePuck() {
         puck.dispose();
@@ -495,6 +507,15 @@ public class RoboStructure {
         RightLegDeadt.dispose();
         LeftHandDeadt.dispose();
         RightHandDeadt.dispose();
+        jetpack_1[0].dispose();
+        jetpack_1[1].dispose();
+        jetpack_1[2].dispose();
+        jetpack_1[3].dispose();
+        jetpack_2[0].dispose();
+        jetpack_2[1].dispose();
+        jetpack_2[2].dispose();
+        jetpack_2[3].dispose();
+        jetpack_3.dispose();
     }
     public void SetFirstChanges(){
         metal_chance[0] = 60;

@@ -49,7 +49,9 @@ public class MainGame extends Game {
         music_wave = Gdx.audio.newMusic(Gdx.files.internal("Sound/rl.mp3"));
         music_wave.setVolume(0.3f);
         music_wave.setLooping(true);
+        if(random.nextBoolean())
         music_war = Gdx.audio.newMusic(Gdx.files.internal("Sound/music.mp3"));
+        else music_war = Gdx.audio.newMusic(Gdx.files.internal("Sound/dont.mp3"));
         music_war.setVolume(0.1f);
         music_war.setLooping(true);
         music = Gdx.audio.newMusic(Gdx.files.internal("Sound/rl2.mp3"));
@@ -64,10 +66,48 @@ public class MainGame extends Game {
             music.stop();
         }
         if(music_type == 2) {
-            music_war.stop();
+            Thread sound_thread = new Thread(){
+                public void run() {
+                    music_war.setVolume(0.15f);
+                    try {
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    music_war.setVolume(0.05f);
+                    try {
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    music_war.stop();
+                    music_war.setVolume(0.1f);
+                }
+            };
+            sound_thread.start();
+
         }
         if(music_type == 3) {
-            music_wave.stop();
+            Thread sound_thread = new Thread(){
+                public void run() {
+                    music_wave.setVolume(0.2f);
+                    try {
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    music_wave.setVolume(0.1f);
+                    try {
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    music_wave.stop();
+                    music_wave.setVolume(0.3f);
+                }
+            };
+            sound_thread.start();
+
         }
         if(music_type == 4) {
             music_main.stop();
@@ -80,9 +120,46 @@ public class MainGame extends Game {
             music.play();
         }
         if(music_type == 2) {
+            Thread sound_thread = new Thread(){
+                public void run() {
+                    music_war.setVolume(0.05f);
+                    try {
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    music_war.setVolume(0.08f);
+                    try {
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    music_war.setVolume(0.1f);
+                }
+            };
+            sound_thread.start();
             music_war.play();
+
         }
         if(music_type == 3) {
+            Thread sound_thread = new Thread(){
+                public void run() {
+                    music_wave.setVolume(0.08f);
+                    try {
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    music_wave.setVolume(0.15f);
+                    try {
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    music_wave.setVolume(0.2f);
+                }
+            };
+            sound_thread.start();
             music_wave.play();
         }
         if(music_type == 4) {

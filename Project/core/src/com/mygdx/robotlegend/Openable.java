@@ -19,8 +19,7 @@ public class Openable implements Screen{
     BitmapFont level_font;
     Texture door_left;
     Texture door_right;
-    Texture door_custom_left;
-    Texture door_custom_right;
+
     Thread door;
     SpriteBatchRubber drawer;
     FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Decoration/main_font.ttf"));
@@ -39,8 +38,7 @@ public class Openable implements Screen{
     public void Start(){
         door_left =  new Texture("Interface/door_1.png");
         door_right=  new Texture("Interface/door_2.png");
-        door_custom_left =  new Texture("Interface/door_left.png");
-        door_custom_right=  new Texture("Interface/door_right.png");
+
         width = 1741;
         height = 810;
         open_x = width/2;
@@ -140,14 +138,38 @@ public class Openable implements Screen{
         TextureRegion RightLeg = game.robot.RL;
         TextureRegion LeftHand = game.robot.LH;
         TextureRegion RightHand = game.robot.RH;
-        drawer.draw(Head, x+dead_state*5, (float) (y+dead_state*5 + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rothead+dead_state);
-        float v = y - dead_state * 10 + 170 * scale;
-        drawer.draw(Body, x-dead_state*5, (float) v, 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rot-dead_state);
-        drawer.draw(LeftLeg, (float) (x+dead_state*5 - 50 * scale), y-dead_state*5, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  -rotleg+dead_state);
-        drawer.draw(RightLeg, (float) (x-dead_state*5 + 50 * scale), y+dead_state*5, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rotleg-dead_state);
-        drawer.draw(LeftHand, (float) (x-dead_state*5 + 90 * scale), (float) v, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand+dead_state);
-        drawer.draw(RightHand, (float) (x+dead_state*5 - 90 * scale), (float) (y+dead_state*5 + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand - 90 + rotate-dead_state);
-    }
+        TextureRegion SHead = game.robot.SH;
+        TextureRegion SBody = game.robot.SB;
+        TextureRegion SLeftLeg = game.robot.SLL;
+        TextureRegion SRightLeg = game.robot.SRL;
+        TextureRegion SLeftHand = game.robot.SLH;
+        TextureRegion SRightHand = game.robot.SRH;
+
+        drawer.draw(Head, x, (float) (y+dead_state*3 + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rothead - rotate-dead_state);
+        if(game.robot.skin!=0) {
+            drawer.draw(SHead, x, (float) (y+dead_state*3 + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rothead - rotate-dead_state);
+        }
+        float v = y - dead_state * 3 + 170 * scale;
+        drawer.draw(Body, x-dead_state*3, (float) v, 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rot-dead_state);
+        if(game.robot.skin!=0) {
+            drawer.draw(SBody, x-dead_state*3, (float) v, 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rot-dead_state);
+        }
+        drawer.draw(LeftLeg, (float) (x+dead_state-4 - 50 * scale), y-dead_state*4, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  -rotleg+dead_state);
+        if(game.robot.skin!=0) {
+            drawer.draw(SLeftLeg, (float) (x+dead_state*4 - 50 * scale), y-dead_state*4, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  -rotleg+dead_state);
+        }
+        drawer.draw(RightLeg, (float) (x-dead_state*4 + 50 * scale), y+dead_state*4, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rotleg-dead_state);
+        if(game.robot.skin!=0) {
+            drawer.draw(SRightLeg, (float) (x-dead_state*4 + 50 * scale), y+dead_state*4, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rotleg-dead_state);
+        }
+        drawer.draw(LeftHand, (float) (x-dead_state*4 + 90 * scale), (float) v, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand+dead_state);
+        if(game.robot.skin!=0) {
+            drawer.draw(SLeftHand, (float) (x-dead_state*4 + 90 * scale), (float) v, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand+dead_state);
+        }
+        drawer.draw(RightHand, (float) (x+dead_state*4 - 90 * scale), (float) (y+dead_state*4 + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand - 90 + rotate-dead_state);
+        if(game.robot.skin!=0) {
+            drawer.draw(SRightHand, (float) (x+dead_state*4 - 90 * scale), (float) (y+dead_state*4 + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand - 90 + rotate-dead_state);
+        }}
     public void DrawRobot(SpriteBatchRubber drawer, int x, int y, float scale, float rothand, float rothead, float rotleg, float rot, boolean swap, boolean hurt, boolean dead, int rotate) {
         TextureRegion Head = game.robot.H;
         TextureRegion Body = game.robot.B;
@@ -186,9 +208,53 @@ public class Openable implements Screen{
             RightHand = new TextureRegion(game.robot.RightHandDeadt, 300, 300);
         }
         drawer.draw(Head, x, (float) (y + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rothead);
+        if(game.robot.skin!=0 && !dead) {
+            drawer.draw(SHead, x, (float) (y + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rothead);
+        }
+        drawer.draw(Body, x, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rot);
+        if(game.robot.skin!=0 && !dead) {
+            drawer.draw(SBody, x, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rot);
+        }
+        drawer.draw(LeftLeg, (float) (x - 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  -rotleg);
+        if(game.robot.skin!=0 && !dead) {
+            drawer.draw(SLeftLeg, (float) (x - 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, -rotleg);
+        }
+        drawer.draw(RightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rotleg);
+        if(game.robot.skin!=0 && !dead) {
+            drawer.draw(SRightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rotleg);
+        }
+        drawer.draw(LeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand);
+        if(game.robot.skin!=0 && !dead) {
+            drawer.draw(SLeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand);
+        }
+        drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand - 90 + rotate);
+        if(game.robot.skin!=0 && !dead) {
+            drawer.draw(SRightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand - 90 + rotate);
+        }
+    }
+    public void DrawRobotJetpack(SpriteBatchRubber drawer, int x, int y, float scale, float rothand, float rothead, float rotleg, float rot, int rotate, int fire_state, int jetpack_state ) {
+        TextureRegion Head = game.robot.H;
+        TextureRegion Body = game.robot.B;
+        TextureRegion LeftLeg = game.robot.LL;
+        TextureRegion RightLeg = game.robot.RL;
+        TextureRegion LeftHand = game.robot.LH;
+        TextureRegion RightHand = game.robot.RH;
+        TextureRegion SHead = game.robot.SH;
+        TextureRegion SBody = game.robot.SB;
+        TextureRegion SLeftLeg = game.robot.SLL;
+        TextureRegion SRightLeg = game.robot.SRL;
+        TextureRegion SLeftHand = game.robot.SLH;
+        TextureRegion SRightHand = game.robot.SRH;
+        TextureRegion jetpack_1 = new TextureRegion(game.robot.jetpack_1[fire_state], 300, 300);
+        TextureRegion jetpack_2 = new TextureRegion(game.robot.jetpack_2[fire_state], 300, 300);
+        TextureRegion jetpack_3 = new TextureRegion(game.robot.jetpack_3, 300, 300);
+        drawer.draw(Head, x, (float) (y + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rothead);
         if(game.robot.skin!=0) {
             drawer.draw(SHead, x, (float) (y + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rothead);
         }
+        drawer.draw(jetpack_1, x-(jetpack_state-30)*scale, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rot);
+        drawer.draw(jetpack_2, x+(jetpack_state-30)*scale, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rot);
+        drawer.draw(jetpack_3, (float)(x+(200-jetpack_state)/2), (float) (y + 170 * scale), 150, 25, (float) (jetpack_state * scale ), (float) (jetpack_state * scale ), 1, 1,  rot);
         drawer.draw(Body, x, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rot);
         if(game.robot.skin!=0) {
             drawer.draw(SBody, x, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rot);
@@ -425,28 +491,33 @@ public class Openable implements Screen{
             RightHand = new TextureRegion(game.robot.RightHandDeadt, 300, 300);
         }
         drawer.draw(Head, x, (float) (y + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rothead);
-        if(game.robot.Eskin!=0) {
+        if(game.robot.Eskin!=0 && !dead) {
             drawer.draw(SHead, x, (float) (y + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rothead);
         }
         drawer.draw(Body, x, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rot);
-        if(game.robot.Eskin!=0) {
+        if(game.robot.Eskin!=0 && !dead) {
             drawer.draw(SBody, x, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rot);
         }
         drawer.draw(LeftLeg, (float) (x - 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  -rotleg);
-        if(game.robot.Eskin!=0) {
+        if(game.robot.Eskin!=0 && !dead) {
             drawer.draw(SLeftLeg, (float) (x - 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, -rotleg);
         }
         drawer.draw(RightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rotleg);
-        if(game.robot.Eskin!=0) {
+        if(game.robot.Eskin!=0 && !dead) {
             drawer.draw(SRightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rotleg);
         }
         drawer.draw(LeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand);
-        if(game.robot.Eskin!=0) {
+        if(game.robot.Eskin!=0 && !dead) {
             drawer.draw(SLeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand);
         }
         drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand - 90 + rot);
-        if(game.robot.Eskin!=0) {
+        if(game.robot.Eskin!=0 && !dead) {
             drawer.draw(SRightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand - 90 + rot);
+        }
+    }
+    public void DrawEnergyCircle(SpriteBatchRubber drawer, int x, int y, float scale, TextureRegion circle, int size, float rotate, boolean robot_circle){
+        if(robot_circle) {
+            drawer.draw(circle, x - (size - 200 * scale) / 2, (float) (y - (size - 200 * scale) / 2 + 170 * scale), size / 2, size / 2, (float) size, (float) size, 1, 1, rotate);
         }
     }
     public void DrawRobotIcon(SpriteBatchRubber drawer, int x, int y, float scale, int health) {
@@ -519,20 +590,7 @@ public class Openable implements Screen{
         }
     }
 
-    public void CheckCustomOpen(SpriteBatchRubber drawer){
-        if(!isOpen) {
-            if(open_x < 180 ) {
-                drawer.draw(door_custom_right, open_x, 0, width, height);
-                drawer.draw(door_custom_left, width - open_x, 0, width, height);
-            }
-        }
-    }
-    public void CheckCustomClose(SpriteBatchRubber drawer){
-        if (willClose) {
-            drawer.draw(door_custom_left, -open_x, 0, width, height);
-            drawer.draw(door_custom_right, open_x, 0, width, height);
-        }
-    }
+
     public void Sleep(int time){
         try {
             Thread.sleep(time);
