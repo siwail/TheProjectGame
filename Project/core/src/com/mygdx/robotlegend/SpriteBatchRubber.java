@@ -11,6 +11,7 @@ public class SpriteBatchRubber {
     Random random = new Random();
     double wpw;
     double hph;
+    float scale_shake = 1.0f;
     float shake_x = 0.0f;
     float shake_y = 0.0f;
     int boost_px = 0;
@@ -25,19 +26,62 @@ public class SpriteBatchRubber {
             shake = true;
             Thread anime = new Thread(){
                 public void run(){
+                    while(scale_shake<1.1f){
+                        scale_shake+=0.02f;
+                        try{
+                            Thread.sleep(10);
+                        }catch(Exception ignored){}
+                    }
+                    int will_move = 5;
+                    float last_shake_x = shake_x;
+                    float last_shake_y = shake_y;
+                    while(will_move>0){
+                        float will_x = shake_x + (float)random.nextInt(10)-5;
+                        float will_y = shake_y + (float)random.nextInt(10)-5;
+                        while(will_x!=shake_x && will_y!=shake_y){
+                            if(will_move!=1) {
+                                if (will_x > shake_x) {
+                                    shake_x -= 0.02f;
+                                }
+                                if (will_x < shake_x) {
+                                    shake_x += 0.02f;
+                                }
+                                if (will_y > shake_y) {
+                                    shake_y -= 0.02f;
+                                }
+                                if (will_y < shake_y) {
+                                    shake_y += 0.02f;
+                                }
+                            }else{
+                                if(last_shake_x>shake_x){
+                                    shake_x-=0.02f;
+                                }
+                                if(last_shake_x<shake_x){
+                                    shake_x+=0.02f;
+                                }
+                                if(last_shake_y>shake_y){
+                                    shake_y-=0.02f;
+                                }
+                                if(last_shake_y<shake_y){
+                                    shake_y+=0.02f;
+                                }
+                            }
+                            try{
+                                Thread.sleep(50);
+                            }catch(Exception ignored){}
+                        }
+                        will_move--;
 
-                    while(boost_px<10){
-                        boost_px+=1;
-                        try {
-                            Thread.sleep(5);
-                        } catch (Exception ignored) { }
                     }
-                    while(boost_px>0){
-                        boost_px-=1;
-                        try {
-                            Thread.sleep(5);
-                        } catch (Exception ignored) { }
+                    while(scale_shake>1.0f){
+                        scale_shake-=0.02f;
+                        try{
+                            Thread.sleep(10);
+                        }catch(Exception ignored){}
                     }
+                    shake_x = 0;
+                    shake_y = 0;
+                    scale_shake = 1.0f;
                     shake = false;
                 }
             };
@@ -45,16 +89,16 @@ public class SpriteBatchRubber {
         }
     }
     public void draw (Texture texture, float x, float y, float width, float height) {
-        batch.draw(texture, (float)((double)x*wpw)+shake_x-boost_px/2, (float)((double)y*hph)+shake_y-boost_px/2, (float)((double)width*wpw)+boost_px, (float)((double)height*hph)+boost_px);
+        batch.draw(texture, (float)((double)x*wpw), (float)((double)y*hph), (float)((double)width*wpw), (float)((double)height*hph));
     }
     public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
                       float scaleX, float scaleY, float rotation) {
-        batch.draw(region, (float)((double)x*wpw)+shake_x-boost_px/2, (float)((double)y*hph)+shake_y-boost_px/2, (float)((double)originX*wpw)+boost_px/2, (float)((double)originY*hph)+boost_px/2, (float)((double)width*wpw)+boost_px, (float)((double)height*hph)+boost_px, scaleX, scaleY, rotation);
+        batch.draw(region, (float)((double)x*wpw), (float)((double)y*hph), (float)((double)originX*wpw), (float)((double)originY*hph), (float)((double)width*wpw), (float)((double)height*hph), scaleX, scaleY, rotation);
     }
     public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
                       float scaleX, float scaleY, float rotation, boolean circle) {
         if(circle) {
-            batch.draw(region, (float) ((double) x * wpw)+shake_x-boost_px/2, (float) ((double) y * hph)+shake_y-boost_px/2, (float) ((double) originX * hph)+boost_px/2, (float) ((double) originY * hph)+boost_px/2, (float) ((double) width * hph)+boost_px, (float) ((double) height * hph)+boost_px, scaleX, scaleY, rotation);
+            batch.draw(region, (float) ((double) x * wpw), (float) ((double) y * hph), (float) ((double) originX * hph), (float) ((double) originY * hph), (float) ((double) width * hph), (float) ((double) height * hph), scaleX, scaleY, rotation);
         }
     }
 }

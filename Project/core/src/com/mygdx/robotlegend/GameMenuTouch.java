@@ -48,9 +48,20 @@ public class GameMenuTouch implements InputProcessor {
             }
         }
         if(gameMenu.istutorial && gameMenu.tutorial_scene<=gameMenu.max_tutorial_scene && !gameMenu.resize_scene){
-            gameMenu.plus_height = 20;
-            gameMenu.plus_width = 20;
+            if(screenX >= SX(50) && screenX <= SX(450) && screenY >= SY(gameMenu.height-650) && screenY <= SY(gameMenu.height-150)){
+                gameMenu.icon_1_touch = true;
+            }
+            if(screenX >= SX(450) && screenX <= SX(850) && screenY >= SY(gameMenu.height-650) && screenY <= SY(gameMenu.height-150)){
+                gameMenu.icon_2_touch = true;
+            }
+            if(screenX >= SX(850) && screenX <= SX(1250) && screenY >= SY(gameMenu.height-650) && screenY <= SY(gameMenu.height-150)){
+                gameMenu.icon_3_touch = true;
+            }
+            if(screenX >= SX(1250) && screenX <= SX(1650) && screenY >= SY(gameMenu.height-650) && screenY <= SY(gameMenu.height-150)){
+                gameMenu.icon_4_touch = true;
+            }
         }
+
         if (screenX >= SX(450) && screenX <= SX(600) && screenY <= SY(gameMenu.height-435) && screenY >= SY(gameMenu.height-635) && !gameMenu.istutorial) {
             gameMenu.right_touched = true;
         }
@@ -77,6 +88,10 @@ public class GameMenuTouch implements InputProcessor {
         gameMenu.play_touch = false;
         gameMenu.tutorial_touch = false;
         gameMenu.multiplayer_touch = false;
+        gameMenu.icon_1_touch = false;
+        gameMenu.icon_2_touch = false;
+        gameMenu.icon_3_touch = false;
+        gameMenu.icon_4_touch = false;
         if(!gameMenu.istutorial && !gameMenu.resize_scene && !gameMenu.search_planet && !gameMenu.isTv) {
             if (screenX >= SX(50) && screenX <= SX(550) && screenY <= SY(gameMenu.height) && screenY >= SY(gameMenu.height - 250)) {
                 Gdx.app.exit();

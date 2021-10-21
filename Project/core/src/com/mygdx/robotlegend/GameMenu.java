@@ -13,6 +13,8 @@ public class GameMenu extends Openable implements Screen{
     Thread anime_grass;
     Thread ring_anime;
     Thread space_anime;
+    Thread TutorialAnime;
+    Thread TutorialIconAnime;
     Sound[] hush = new Sound[3];
     Texture camp;
     Texture play;
@@ -62,12 +64,21 @@ public class GameMenu extends Openable implements Screen{
     Texture level_front;
     Texture level_line;
     Texture location_2_planet_texture;
+    Texture tutorial_button_close;
+    Texture[] tutorial_icon = new Texture[4];
+    Texture[] tutorial_frame_color = new Texture[12];
     Texture[] background = new Texture[8];
     Texture[] smoke = new Texture[4];
     Texture[] birds = new Texture[5];
     TextureRegion location_2_planet;
     TextureRegion location_2_space;
     TextureRegion location_2_space_2;
+    int tutorial_icon_1_resize = 0;
+    int tutorial_icon_2_resize = 0;
+    int tutorial_icon_3_resize = 0;
+    int tutorial_icon_4_resize = 0;
+    int tutorial_plus_color = 0;
+    int tutorial_anime = 0;
     int last_level;
     int tv_size = 10;
     int prob_y = 400;
@@ -115,6 +126,10 @@ public class GameMenu extends Openable implements Screen{
     boolean bird_swap = false;
     boolean swap_planet = false;
     boolean scan = false;
+    boolean icon_1_touch = false;
+    boolean icon_2_touch = false;
+    boolean icon_3_touch = false;
+    boolean icon_4_touch = false;
     int scene_size = 0;
     int tutorial_scene = 0;
     int max_tutorial_scene = 7;
@@ -193,6 +208,24 @@ public class GameMenu extends Openable implements Screen{
         6 - 7px and 35%
 
         game.robot.UpdateParameters();*/
+        tutorial_button_close = new Texture("Tutorial/button_close.png");
+
+        tutorial_icon[0] = new Texture("Tutorial/icon_1_0_0.png");
+        tutorial_icon[1] = new Texture("Tutorial/icon_2_0_0.png");
+        tutorial_icon[2] = new Texture("Tutorial/icon_3_0_0.png");
+        tutorial_icon[3] = new Texture("Tutorial/icon_4_0_0.png");
+        tutorial_frame_color[0] = new Texture("Tutorial/frame_touch_1_1.png");
+        tutorial_frame_color[1] = new Texture("Tutorial/frame_touch_1_2.png");
+        tutorial_frame_color[2] = new Texture("Tutorial/frame_touch_1_3.png");
+        tutorial_frame_color[3] = new Texture("Tutorial/frame_touch_2_1.png");
+        tutorial_frame_color[4] = new Texture("Tutorial/frame_touch_2_2.png");
+        tutorial_frame_color[5] = new Texture("Tutorial/frame_touch_2_3.png");
+        tutorial_frame_color[6] = new Texture("Tutorial/frame_touch_3_1.png");
+        tutorial_frame_color[7] = new Texture("Tutorial/frame_touch_3_2.png");
+        tutorial_frame_color[8] = new Texture("Tutorial/frame_touch_3_3.png");
+        tutorial_frame_color[9] = new Texture("Tutorial/frame_touch_4_1.png");
+        tutorial_frame_color[10] = new Texture("Tutorial/frame_touch_4_2.png");
+        tutorial_frame_color[11] = new Texture("Tutorial/frame_touch_4_3.png");
         last_level = game.robot.level;
         level_circle =  new Texture("Object/level_circle.png");
         level_back =  new Texture("Object/level_backline.png");
@@ -214,7 +247,7 @@ public class GameMenu extends Openable implements Screen{
         multiplayer = new Texture("Button/button3.png");
         tutorial = new Texture("Button/button_tutorial.png");
         tutorials = new Texture("Interface/back.png");
-        ring = new Texture("Object/ring.png");
+        ring = new Texture("Object/ring" + game.robot.color + ".png");
         throne = new Texture("Object/stand.png");
         smoke[0] = new Texture("Object/smoke1.png");
         smoke[1] = new Texture("Object/smoke2.png");
@@ -283,6 +316,62 @@ public class GameMenu extends Openable implements Screen{
         setRandomAnime();
         game.robot.UpdateSkins();
         batch = new SpriteBatch();
+       TutorialAnime = new Thread(){
+            @Override
+            public void run(){
+                while(!closed){
+                        tutorial_anime++;
+                        if(tutorial_anime >= 3){
+                            tutorial_anime = 0;
+                        }
+
+                    Sleep(70);
+                    }
+
+                }
+        };
+        TutorialIconAnime = new Thread(){
+            @Override
+            public void run(){
+                while(!closed){
+                    if(icon_1_touch && tutorial_icon_1_resize < 100){
+                        tutorial_icon_1_resize += 5;
+
+                    }
+                    if(icon_2_touch && tutorial_icon_2_resize < 100){
+                        tutorial_icon_2_resize += 5;
+
+                    }
+                    if(icon_3_touch && tutorial_icon_3_resize < 100){
+                        tutorial_icon_3_resize += 5;
+
+                    }
+                    if(icon_4_touch && tutorial_icon_4_resize < 100){
+                        tutorial_icon_4_resize += 5;
+
+                    }
+
+                    if(!icon_1_touch && tutorial_icon_1_resize > 0){
+                        tutorial_icon_1_resize -= 5;
+
+                    }
+                    if(!icon_2_touch && tutorial_icon_2_resize > 0){
+                        tutorial_icon_2_resize -= 5;
+
+                    }
+                    if(!icon_3_touch && tutorial_icon_3_resize > 0){
+                        tutorial_icon_3_resize -= 5;
+
+                    }
+                    if(!icon_4_touch && tutorial_icon_4_resize > 0){
+                        tutorial_icon_4_resize -= 5;
+
+                    }
+                    Sleep(10);
+                }
+
+            }
+        };
         anime_grass = new Thread(){
             @Override
             public void run(){
@@ -422,7 +511,8 @@ public class GameMenu extends Openable implements Screen{
         };
         drawer = new SpriteBatchRubber(this, batch);
         ring_anime.start();
-
+        TutorialAnime.start();
+        TutorialIconAnime.start();
             anime_grass.start();
             anime_smoke.start();
             space_anime.start();
@@ -598,9 +688,9 @@ public class GameMenu extends Openable implements Screen{
             drawer.draw(bulb, 275, 200-prob_y, 150, 150);
             drawer.draw(metall, width-425, 200-prob_y, 150, 150);
             item_font.draw(batch, game.robot.chip_chance[game.robot.level-1]+"%", (int)(155.0*wpw), (int)((110-prob_y)*hph));
-            item_font.draw(batch, game.robot.bulb_chance[game.robot.level-1]+"%", (int)((width-275+30)*wpw), (int)((110-prob_y)*hph));
-            item_font.draw(batch, game.robot.metal_chance[game.robot.level-1]+"%", (int)(380*wpw), (int)((110-prob_y)*hph));
-            item_font.draw(batch, game.robot.gear_chance[game.robot.level-1]+"%", (int)((width-500+30)*wpw), (int)((110-prob_y)*hph));
+            item_font.draw(batch, game.robot.gear_chance[game.robot.level-1]+"%", (int)((width-275+30)*wpw), (int)((110-prob_y)*hph));
+            item_font.draw(batch, game.robot.bulb_chance[game.robot.level-1]+"%", (int)(380*wpw), (int)((110-prob_y)*hph));
+            item_font.draw(batch, game.robot.metal_chance[game.robot.level-1]+"%", (int)((width-500+30)*wpw), (int)((110-prob_y)*hph));
         }
 
         if(isTv){
@@ -624,6 +714,17 @@ public class GameMenu extends Openable implements Screen{
 
         if(istutorial || resize_scene){
                 drawer.draw(tutorials, scene_size - width - 10, 0, width, height);
+
+                drawer.draw(tutorial_frame_color[tutorial_anime], 0, 150, 500, 500);
+                drawer.draw(tutorial_frame_color[tutorial_anime+3], 400, 150, 500, 500);
+                drawer.draw(tutorial_frame_color[tutorial_anime+6], 800, 150, 500, 500);
+                drawer.draw(tutorial_frame_color[tutorial_anime+9], 1200, 150, 500, 500);
+
+                drawer.draw(tutorial_icon[0], tutorial_icon_1_resize/2, 150+tutorial_icon_1_resize/2, 500-tutorial_icon_1_resize, 500-tutorial_icon_1_resize);
+                drawer.draw(tutorial_icon[1], 400+tutorial_icon_2_resize/2, 150+tutorial_icon_2_resize/2, 500-tutorial_icon_2_resize, 500-tutorial_icon_2_resize);
+                drawer.draw(tutorial_icon[2], 800+tutorial_icon_3_resize/2, 150+tutorial_icon_3_resize/2, 500-tutorial_icon_3_resize, 500-tutorial_icon_3_resize);
+                drawer.draw(tutorial_icon[3], 1200+tutorial_icon_4_resize/2, 150+tutorial_icon_4_resize/2, 500-tutorial_icon_4_resize, 500-tutorial_icon_4_resize);
+                /*
                 if(which_select<9) {
                     drawer.draw(background[which_select - 1], scene_size - width - 10, height - 610, width, 610);
                 }else{
@@ -712,7 +813,10 @@ public class GameMenu extends Openable implements Screen{
                 tutorial_font.draw(drawer.batch, "Сделает противник!", (int)((100+scene_size - width-select_x)*wpw), (int)((height-400)*hph));
                 tutorial_font.draw(drawer.batch, "Выбрать скин можно в главном меню.", (int)((100+scene_size - width+select_x)*wpw), (int)((height-475)*hph));
             }
+            */
         }
+
+
         CheckClose(drawer);
         CheckOpen(drawer);
         batch.end();
@@ -933,6 +1037,7 @@ public class GameMenu extends Openable implements Screen{
             game.robot.index_skin += 1;
             game.robot.skin = game.robot.skins_open[game.robot.index_skin];
             game.robot.UpdateSkins();
+            SetRing();
         }
     }
     public void NextLeftSkin(){
@@ -957,7 +1062,13 @@ public class GameMenu extends Openable implements Screen{
             game.robot.index_skin -= 1;
             game.robot.skin = game.robot.skins_open[game.robot.index_skin];
             game.robot.UpdateSkins();
+            SetRing();
+
         }
+    }
+    public void SetRing(){
+        ring.dispose();
+        ring = new Texture("Object/ring" + game.robot.color + ".png");
     }
     public void SceneTutorial(){
         Thread anime = new Thread(){
@@ -966,14 +1077,8 @@ public class GameMenu extends Openable implements Screen{
                 if(istutorial){
                     if(which_select<8){
                         resize_scene=true;
-                        select_x=0;
-                        while(select_x<200){
-                            select_x+=2;
-                            Sleep(1);
-                        }
                         resize_scene=false;
                         which_select+=1;
-                        select_x=0;
                     }else{
                         resize_scene = true;
                         while(scene_size>0){
@@ -1217,6 +1322,9 @@ public class GameMenu extends Openable implements Screen{
         level_back.dispose();
         level_front.dispose();
         level_line.dispose();
+        tutorial_button_close.dispose();
         location_2_planet_texture.dispose();
+        for(int i = 0; i<11; i++) tutorial_frame_color[i].dispose();
+        for(int i = 0; i<3; i++) tutorial_icon[i].dispose();
     }
 }

@@ -21,6 +21,7 @@ public class RoboStructure {
     int EBmove_speed = 0;
     int EBattack_speed = 0;
     int EBenergy_speed = 0;
+    int jetpack = 1;
     int Hid = 1;
     int Bid = 1;
     int RHid = 1; //Правая рука
@@ -33,6 +34,9 @@ public class RoboStructure {
     int move_speed;
     int energy_speed;
     int experience = 0;
+    int Ecolor = 2;
+    int color = 2;
+    int fire_damage = 2;
     boolean exp_process = false;
     int[] metal_chance = new int[4];
     int[] chip_chance = new int[4];
@@ -67,6 +71,12 @@ public class RoboStructure {
     Texture RightLegDeadt;
     Texture LeftHandDeadt;
     Texture RightHandDeadt;
+    Texture HeadEnergyt;
+    Texture BodyEnergyt;
+    Texture LeftLegEnergyt;
+    Texture RightLegEnergyt;
+    Texture LeftHandEnergyt;
+    Texture RightHandEnergyt;
     Texture HeadSelectt;
     Texture BodySelectt;
     Texture LeftLegSelectt;
@@ -182,6 +192,8 @@ public class RoboStructure {
         Safe();
     }
     public void UpdateParameters(){
+        EClearSkinBust();
+        ClearSkinBust();
         energy_speed = 90-Hid*10;
         Eenergy_speed = 90-EHid*10;
         attack_speed = 8-Bid;
@@ -192,9 +204,8 @@ public class RoboStructure {
         Edamage = ERHid*2+ELHid*2;
         health = Hid*10+Bid*15+RHid*5+LHid*5+RLid*5+LLid*5;
         Ehealth = EHid*10+EBid*15+ERHid*5+ELHid*5+ERLid*5+ELLid*5;
-        ClearSkinBust();
+
         ChangeSkinBust();
-        EClearSkinBust();
         EChangeSkinBust();
     }
     public void SetWorkMenuTextures(){
@@ -206,31 +217,46 @@ public class RoboStructure {
         RightHandSelectt = new Texture("Robot/hand_select.png");
     }
     public void ChangeSkinBust(){
+        if(skin == 0){
+            color = 2;
+        }
         if(skin == 1){
+            color = 5;
             Bhealth = 40;
             Battack_speed = 1;
         }
         if(skin == 2){
+            color = 1;
             Bmove_speed = 1;
             Battack_speed = 2;
         }
         if(skin == 3){
+            color = 2;
             Bhealth = 30;
             Benergy_speed = 10;
         }
         if(skin == 4){
+            color = 2;
             Bdamage = 2;
             Battack_speed = 1;
         }
         if(skin == 5){
+            color = 1;
             Bdamage = 4;
             Benergy_speed = 20;
         }
         if(skin == 6){
+            color = 3;
             Bhealth = 50;
             Benergy_speed = 5;
         }
+        if(skin == 7){
+            color = 3;
+            Bhealth = 20;
+            Bdamage = 4;
+        }
         if(skin == 8){
+            color = 5;
             Bhealth = 30;
             Bdamage = 6;
         }
@@ -241,31 +267,46 @@ public class RoboStructure {
         energy_speed+=Benergy_speed;
     }
     public void EChangeSkinBust(){
+        if(Eskin == 0){
+            Ecolor = 2;
+        }
         if(Eskin == 1){
+            Ecolor = 5;
             EBhealth = 40;
             EBattack_speed = 1;
         }
         if(Eskin == 2){
+            Ecolor = 1;
             EBmove_speed = 1;
             EBattack_speed = 2;
         }
         if(Eskin == 3){
+            Ecolor = 2;
             EBhealth = 30;
             EBenergy_speed = 10;
         }
         if(Eskin == 4){
+            Ecolor = 2;
             EBdamage = 2;
             EBattack_speed = 1;
         }
         if(Eskin == 5){
+            Ecolor = 1;
             EBdamage = 4;
             EBenergy_speed = 20;
         }
         if(Eskin == 6){
+            Ecolor = 3;
             EBhealth = 50;
             EBenergy_speed = 5;
         }
+        if(Eskin == 7){
+            Ecolor = 3;
+            EBhealth = 20;
+            EBdamage = 4;
+        }
         if(Eskin == 8){
+            Ecolor = 5;
             EBhealth = 30;
             EBdamage = 6;
         }
@@ -349,13 +390,15 @@ public class RoboStructure {
         Ball_1 = new TextureRegion(Ball_1t, 300, 300);
         Ball_2 = new TextureRegion(Ball_2t, 300, 300);
         Cross = new Texture("Object/aim.png");
+        EBullet.dispose();
+        Bullet.dispose();
+        EBullet = new Texture("Object/bullet" + Ecolor + ".png");
+        Bullet = new Texture("Object/bullet" + color + ".png");
         Energy = new Texture("Interface/energy.png");
         EnergyBack = new Texture("Interface/back_energy.png");
         EnergyFront = new Texture("Interface/front_energy.png");
         EnergyWarning1 = new Texture("Interface/front_energy_w1.png");
         EnergyWarning2 = new Texture("Interface/front_energy_w2.png");
-        EBullet = new Texture("Object/bullet.png");
-        Bullet = new Texture("Object/bullet2.png");
         ESelect = new Texture("Interface/select.png");
         Select = new Texture("Interface/select2.png");
         BackHealth = new Texture("Interface/back_health.png");
@@ -383,15 +426,22 @@ public class RoboStructure {
         RightLegDeadt = new Texture("Robot/leg_dead.png");
         LeftHandDeadt = new Texture("Robot/hand_dead.png");
         RightHandDeadt = new Texture("Robot/hand_dead.png");
-        jetpack_1[0] = new Texture("Robot/jetpack_left.png");
-        jetpack_1[1] = new Texture("Robot/jetpack_left_1.png");
-        jetpack_1[2] = new Texture("Robot/jetpack_left_2.png");
-        jetpack_1[3] = new Texture("Robot/jetpack_left_3.png");
-        jetpack_2[0] = new Texture("Robot/jetpack_right.png");
-        jetpack_2[1] = new Texture("Robot/jetpack_right_1.png");
-        jetpack_2[2] = new Texture("Robot/jetpack_right_2.png");
-        jetpack_2[3] = new Texture("Robot/jetpack_right_3.png");
-        jetpack_3 = new Texture("Robot/jetpack.png");
+        HeadEnergyt = new Texture("Robot/head_energy.png");
+        BodyEnergyt = new Texture("Robot/body_energy.png");
+        LeftLegEnergyt = new Texture("Robot/leg_energy.png");
+        RightLegEnergyt = new Texture("Robot/leg_energy.png");
+        LeftHandEnergyt = new Texture("Robot/hand_energy.png");
+        RightHandEnergyt = new Texture("Robot/hand_energy.png");
+
+        jetpack_1[0] = new Texture("Robot/jetpack_" + jetpack + "_left.png");
+        jetpack_1[1] = new Texture("Robot/jetpack_" + jetpack + "_left_1.png");
+        jetpack_1[2] = new Texture("Robot/jetpack_" + jetpack + "_left_2.png");
+        jetpack_1[3] = new Texture("Robot/jetpack_" + jetpack + "_left_3.png");
+        jetpack_2[0] = new Texture("Robot/jetpack_" + jetpack + "_right.png");
+        jetpack_2[1] = new Texture("Robot/jetpack_" + jetpack + "_right_1.png");
+        jetpack_2[2] = new Texture("Robot/jetpack_" + jetpack + "_right_2.png");
+        jetpack_2[3] = new Texture("Robot/jetpack_" + jetpack + "_right_3.png");
+        jetpack_3 = new Texture("Robot/jetpack_" + jetpack + ".png");
     }
     public void UpdatePuck() {
         puck.dispose();
@@ -417,7 +467,15 @@ public class RoboStructure {
             ESLL = new TextureRegion(ESLLt, 300, 300);
             ESH = new TextureRegion(ESHt, 300, 300);
             ESB = new TextureRegion(ESBt, 300, 300);
+
+
+            UpdateParameters();
+        }else{
+            Ecolor = 2;
         }
+        EBullet.dispose();
+        EBullet = new Texture("Object/bullet" + Ecolor + ".png");
+
     }
     public void UpdateSkin(){
         if(skin != 0) {
@@ -439,7 +497,13 @@ public class RoboStructure {
             SLL = new TextureRegion(SLLt, 300, 300);
             SH = new TextureRegion(SHt, 300, 300);
             SB = new TextureRegion(SBt, 300, 300);
+
+            UpdateParameters();
+        }else{
+            color = 2;
         }
+        Bullet.dispose();
+        Bullet = new Texture("Object/bullet" + color + ".png");
     }
     public void UpdateSkins(){
         UpdatePuck();
@@ -507,6 +571,12 @@ public class RoboStructure {
         RightLegDeadt.dispose();
         LeftHandDeadt.dispose();
         RightHandDeadt.dispose();
+        HeadEnergyt.dispose();
+        BodyEnergyt.dispose();
+        LeftLegEnergyt.dispose();
+        RightLegEnergyt.dispose();
+        LeftHandEnergyt.dispose();
+        RightHandEnergyt.dispose();
         jetpack_1[0].dispose();
         jetpack_1[1].dispose();
         jetpack_1[2].dispose();
@@ -537,6 +607,8 @@ public class RoboStructure {
         bulb_chance[1] = 10;
         bulb_chance[2] = 50;
         bulb_chance[3] = 30;
+        EBullet = new Texture("Object/bullet" + Ecolor + ".png");
+        Bullet = new Texture("Object/bullet" + color + ".png");
         alert = new Texture("Interface/alert.png");
         contrast = new Texture("Interface/contrast.png");
         level_win = TakeSafe("level");
