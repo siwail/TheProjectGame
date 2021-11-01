@@ -88,10 +88,7 @@ public class GameMenuTouch implements InputProcessor {
         gameMenu.play_touch = false;
         gameMenu.tutorial_touch = false;
         gameMenu.multiplayer_touch = false;
-        gameMenu.icon_1_touch = false;
-        gameMenu.icon_2_touch = false;
-        gameMenu.icon_3_touch = false;
-        gameMenu.icon_4_touch = false;
+
         if(!gameMenu.istutorial && !gameMenu.resize_scene && !gameMenu.search_planet && !gameMenu.isTv) {
             if (screenX >= SX(50) && screenX <= SX(550) && screenY <= SY(gameMenu.height) && screenY >= SY(gameMenu.height - 250)) {
                 Gdx.app.exit();
@@ -138,10 +135,30 @@ public class GameMenuTouch implements InputProcessor {
             gameMenu.NextLeftSkin();
         }
         if(gameMenu.istutorial && gameMenu.tutorial_scene<=gameMenu.max_tutorial_scene && !gameMenu.resize_scene && !gameMenu.search_planet){
-            gameMenu.SceneTutorial();
-            gameMenu.plus_height = 0;
-            gameMenu.plus_width = 0;
+            if(!gameMenu.icon_1_touch && !gameMenu.icon_2_touch && !gameMenu.icon_3_touch && !gameMenu.icon_4_touch) {
+                if(gameMenu.icon_num_1 == 0) {
+                    gameMenu.SceneTutorial();
+                }else {
+                    gameMenu.SetTutorial(0, true);
+                }
+            }
+            if(screenX >= SX(50) && screenX <= SX(450) && screenY >= SY(gameMenu.height-650) && screenY <= SY(gameMenu.height-150) && gameMenu.tutorial_icon_1_resize >= 100){
+                gameMenu.SetTutorial(1, false);
+            }
+            if(screenX >= SX(450) && screenX <= SX(850) && screenY >= SY(gameMenu.height-650) && screenY <= SY(gameMenu.height-150) && gameMenu.tutorial_icon_2_resize >= 100){
+                gameMenu.SetTutorial(2, false);
+            }
+            if(screenX >= SX(850) && screenX <= SX(1250) && screenY >= SY(gameMenu.height-650) && screenY <= SY(gameMenu.height-150) && gameMenu.tutorial_icon_3_resize >= 100){
+                gameMenu.SetTutorial(3, false);
+            }
+            if(screenX >= SX(1250) && screenX <= SX(1650) && screenY >= SY(gameMenu.height-650) && screenY <= SY(gameMenu.height-150) && gameMenu.tutorial_icon_4_resize >= 100){
+                gameMenu.SetTutorial(4, false);
+            }
         }
+        gameMenu.icon_1_touch = false;
+        gameMenu.icon_2_touch = false;
+        gameMenu.icon_3_touch = false;
+        gameMenu.icon_4_touch = false;
         return false;
     }
     public int SX(int x){

@@ -3538,13 +3538,13 @@ public class GamePlay extends Openable implements Screen{
                                 } else {
                                     if(!robotboom) {
                                         if (game.robot.jetpack == 2) {
-                                            robot_x += (15 - game.robot.attack_speed) * dir_x;
+                                            robot_x += (12 + game.robot.attack_speed) * dir_x;
                                         }
                                         if (game.robot.jetpack == 1) {
-                                            robot_x += (11 - game.robot.attack_speed) * dir_x;
+                                            robot_x += (8 + game.robot.attack_speed) * dir_x;
                                         }
                                     }else{
-                                        robot_x += 9 * dir_x;
+                                        robot_x += 18 * dir_x;
                                     }
                                 }
 

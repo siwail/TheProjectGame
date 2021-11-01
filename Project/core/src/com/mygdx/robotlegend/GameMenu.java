@@ -64,20 +64,22 @@ public class GameMenu extends Openable implements Screen{
     Texture level_front;
     Texture level_line;
     Texture location_2_planet_texture;
-    Texture tutorial_button_close;
+    Texture tutorial_circlet;
     Texture[] tutorial_icon = new Texture[4];
     Texture[] tutorial_frame_color = new Texture[12];
     Texture[] background = new Texture[8];
     Texture[] smoke = new Texture[4];
     Texture[] birds = new Texture[5];
+    TextureRegion tutorial_circle;
     TextureRegion location_2_planet;
     TextureRegion location_2_space;
     TextureRegion location_2_space_2;
+    int icon_num_1 = 0;
+    int icon_num_2 = 0;
     int tutorial_icon_1_resize = 0;
     int tutorial_icon_2_resize = 0;
     int tutorial_icon_3_resize = 0;
     int tutorial_icon_4_resize = 0;
-    int tutorial_plus_color = 0;
     int tutorial_anime = 0;
     int last_level;
     int tv_size = 10;
@@ -85,14 +87,16 @@ public class GameMenu extends Openable implements Screen{
     int planet_id = 1;
     float scan_height = 0.0f;
     int scan_y = 0;
-    int select_x = 0;
-    int which_select = 1;
     int box_size = 200;
     int ring_1_xy = 0;
     int ring_2_xy = 100;
     int skin_y = 0;
-    int plus_width = 0;
-    int plus_height = 0;
+    int last_touched = 0;
+    int icon_color_1 = 1;
+    int icon_color_2 = 2;
+    int icon_color_3 = 3;
+    int icon_color_4 = 4;
+    int tutorial_circle_size = 0;
     float bird_scale = 1.0f;
     float rotation_hand = 0.0f;
     float scale = 1.05f;
@@ -104,6 +108,9 @@ public class GameMenu extends Openable implements Screen{
     float location_2_space_rotate = 0.0f;
     float location_2_space_2_rotate = 0.0f;
     float location_2_space_3_rotate = 0.0f;
+    float tutorial_circle_rotate = 0.0f;
+    boolean last_back = false;
+    boolean need_to_update_icons = false;
     boolean zoom_planet = false;
     boolean NeedUpdatePlanet = false;
     boolean NeedUpdatePlanetPart = false;
@@ -130,6 +137,7 @@ public class GameMenu extends Openable implements Screen{
     boolean icon_2_touch = false;
     boolean icon_3_touch = false;
     boolean icon_4_touch = false;
+    int tutorial_scene_size;
     int scene_size = 0;
     int tutorial_scene = 0;
     int max_tutorial_scene = 7;
@@ -208,7 +216,9 @@ public class GameMenu extends Openable implements Screen{
         6 - 7px and 35%
 
         game.robot.UpdateParameters();*/
-        tutorial_button_close = new Texture("Tutorial/button_close.png");
+
+        tutorial_circlet = new Texture("Tutorial/back_0.png");
+        tutorial_circle = new TextureRegion(tutorial_circlet, 400, 400);
 
         tutorial_icon[0] = new Texture("Tutorial/icon_1_0_0.png");
         tutorial_icon[1] = new Texture("Tutorial/icon_2_0_0.png");
@@ -367,7 +377,11 @@ public class GameMenu extends Openable implements Screen{
                         tutorial_icon_4_resize -= 5;
 
                     }
-                    Sleep(10);
+                    tutorial_circle_rotate-=0.15f;
+                    if(tutorial_circle_rotate < 0.0f){
+                        tutorial_circle_rotate = 360.0f;
+                    }
+                    Sleep(5);
                 }
 
             }
@@ -706,114 +720,39 @@ public class GameMenu extends Openable implements Screen{
             drawer.draw(button_ship, width - 160, height - 110, 100, 100);
         }
         if(bird_swap){
-            if(game.robot.level == 3 || game.robot.level == 4 ) {
+                if(game.robot.level == 3 || game.robot.level == 4 ) {
                 TextureRegion bird_region = new TextureRegion(birds[bird_anime], 400, 400);
                 drawer.draw(bird_region, birdx, birdy, 0, 0, 250.0f*bird_scale, 250.0f*bird_scale, 1, 1, (birdy - height / 2) / 5);
             }
         }
 
         if(istutorial || resize_scene){
-                drawer.draw(tutorials, scene_size - width - 10, 0, width, height);
-
-                drawer.draw(tutorial_frame_color[tutorial_anime], 0, 150, 500, 500);
-                drawer.draw(tutorial_frame_color[tutorial_anime+3], 400, 150, 500, 500);
-                drawer.draw(tutorial_frame_color[tutorial_anime+6], 800, 150, 500, 500);
-                drawer.draw(tutorial_frame_color[tutorial_anime+9], 1200, 150, 500, 500);
-
-                drawer.draw(tutorial_icon[0], tutorial_icon_1_resize/2, 150+tutorial_icon_1_resize/2, 500-tutorial_icon_1_resize, 500-tutorial_icon_1_resize);
-                drawer.draw(tutorial_icon[1], 400+tutorial_icon_2_resize/2, 150+tutorial_icon_2_resize/2, 500-tutorial_icon_2_resize, 500-tutorial_icon_2_resize);
-                drawer.draw(tutorial_icon[2], 800+tutorial_icon_3_resize/2, 150+tutorial_icon_3_resize/2, 500-tutorial_icon_3_resize, 500-tutorial_icon_3_resize);
-                drawer.draw(tutorial_icon[3], 1200+tutorial_icon_4_resize/2, 150+tutorial_icon_4_resize/2, 500-tutorial_icon_4_resize, 500-tutorial_icon_4_resize);
-                /*
-                if(which_select<9) {
-                    drawer.draw(background[which_select - 1], scene_size - width - 10, height - 610, width, 610);
-                }else{
-                    drawer.draw(background[7], scene_size - width - 10, height - 610, width, 610);
+                drawer.draw(tutorials, tutorial_scene_size - width - 10, 0, width+10, height);
+                if(tutorial_circle_size>=5) {
+                    drawer.draw(tutorial_circle, width / 2 - tutorial_circle_size / 2 + tutorial_scene_size - width - 10, height / 2 - tutorial_circle_size / 2, tutorial_circle_size / 2, tutorial_circle_size / 2, tutorial_circle_size, tutorial_circle_size, 1, 1, tutorial_circle_rotate);
                 }
-                drawer.draw(frame, scene_size - width + 50, 0, 200,200);
-                drawer.draw(frame, scene_size - width + 250, 0, 200, 200);
-                drawer.draw(frame, scene_size - width + 450, 0, 200, 200);
-                drawer.draw(frame, scene_size - width + 650, 0, 200, 200);
-                drawer.draw(frame, scene_size - width + 850, 0, 200, 200);
-                drawer.draw(frame, scene_size - width + 1050, 0, 200, 200);
-                drawer.draw(frame, scene_size - width + 1250, 0, 200, 200);
-                drawer.draw(frame, scene_size - width + 1450, 0, 200, 200);
-                drawer.draw(planet, scene_size - width + 50, 0, 200,200);
-                drawer.draw(gear, scene_size - width + 250, 0, 200, 200);
-                drawer.draw(aim, scene_size - width + 450, 0, 200, 200);
-                drawer.draw(speed, scene_size - width + 650, 0, 200, 200);
-                drawer.draw(damage, scene_size - width + 850, 0, 200, 200);
-                drawer.draw(med, scene_size - width + 1050, 0, 200, 200);
-                drawer.draw(head, scene_size - width + 1250, 0, 200, 200);
-                drawer.draw(puck, scene_size - width + 1450, 0, 200, 200);
+                drawer.draw(tutorial_frame_color[tutorial_anime+(icon_color_1-1)*3], width-scene_size, 150+width-scene_size, 500, 500);
+                drawer.draw(tutorial_frame_color[tutorial_anime+(icon_color_2-1)*3], 400-width+scene_size, 150-width+scene_size, 500, 500);
+                drawer.draw(tutorial_frame_color[tutorial_anime+(icon_color_3-1)*3], 800+width-scene_size, 150+width-scene_size, 500, 500);
+                drawer.draw(tutorial_frame_color[tutorial_anime+(icon_color_4-1)*3], 1200-width+scene_size, 150-width+scene_size, 500, 500);
 
-                drawer.draw(front_break, scene_size - width / 2, 0, width, height);
-                if(which_select<9) {
-                    drawer.draw(select, scene_size - width + 200 * (which_select - 1) + 50+select_x, 0, 200, 200);
+                drawer.draw(tutorial_icon[0], tutorial_icon_1_resize/2+width-scene_size, 150+tutorial_icon_1_resize/2+width-scene_size, 500-tutorial_icon_1_resize, 500-tutorial_icon_1_resize);
+                drawer.draw(tutorial_icon[1], 400+tutorial_icon_2_resize/2-width+scene_size, 150+tutorial_icon_2_resize/2-width+scene_size, 500-tutorial_icon_2_resize, 500-tutorial_icon_2_resize);
+                drawer.draw(tutorial_icon[2], 800+tutorial_icon_3_resize/2+width-scene_size, 150+tutorial_icon_3_resize/2+width-scene_size, 500-tutorial_icon_3_resize, 500-tutorial_icon_3_resize);
+                drawer.draw(tutorial_icon[3], 1200+tutorial_icon_4_resize/2-width+scene_size, 150+tutorial_icon_4_resize/2-width+scene_size, 500-tutorial_icon_4_resize, 500-tutorial_icon_4_resize);
+
+                if(need_to_update_icons){
+                    need_to_update_icons = false;
+
+                        tutorial_circlet.dispose();
+                        tutorial_circlet = new Texture("Tutorial/back_" + icon_num_1 + ".png");
+                        tutorial_circle = new TextureRegion(tutorial_circlet, 400, 400);
+
+                    for(int i = 0; i<4; i++){
+                        tutorial_icon[i].dispose();
+                        tutorial_icon[i] = new Texture("Tutorial/icon_" + (i+1) + "_" + icon_num_1 + "_" + icon_num_2 + ".png");
+                    }
                 }
-            if(which_select == 1) {
-                tutorial_font.draw(drawer.batch, "Приветствуем!", (int)((100+scene_size - width-select_x)*wpw), (int)((height-100)*hph));
-                tutorial_font.draw(drawer.batch, "Вы попали в мир, который поглотила", (int)((100+scene_size - width+select_x)*wpw), (int)((height-175)*hph));
-                tutorial_font.draw(drawer.batch, "цивилизация боевых машин.", (int)((100+scene_size - width-select_x)*wpw), (int)((height-250)*hph));
-                tutorial_font.draw(drawer.batch, "Цель - выжить, улучшая собственного робота", (int)((100+scene_size - width+select_x)*wpw), (int)((height-325)*hph));
-                tutorial_font.draw(drawer.batch, "за запчасти.", (int)((100+scene_size - width-select_x)*wpw), (int)((height-400)*hph));
-                tutorial_font.draw(drawer.batch, "Чтож, давайте посмотрим дальше!", (int)((100+scene_size - width+select_x)*wpw), (int)((height-475)*hph));
-            }
-            if(which_select == 2) {
-                tutorial_font.draw(drawer.batch, "Запчасти выпадают в конце боя,", (int)((100+scene_size - width-select_x)*wpw), (int)((height-100)*hph));
-                tutorial_font.draw(drawer.batch, "в случае победы.", (int)((100+scene_size - width+select_x)*wpw), (int)((height-175)*hph));
-                tutorial_font.draw(drawer.batch, "Они являются неотъемлемой частью игры.", (int)((100+scene_size - width-select_x)*wpw), (int)((height-250)*hph));
-                tutorial_font.draw(drawer.batch, "Виды запчастей:", (int)((100+scene_size - width+select_x)*wpw), (int)((height-325)*hph));
-                tutorial_font.draw(drawer.batch, "Шестерёнки, микросхемы, металл, лампочки.", (int)((100+scene_size - width-select_x)*wpw), (int)((height-400)*hph));
-            }
-            if(which_select == 3) {
-                tutorial_font.draw(drawer.batch, "В бою вам предстоит сразиться с", (int)((100+scene_size - width-select_x)*wpw), (int)((height-100)*hph));
-                tutorial_font.draw(drawer.batch, "искусственным интеллектом или другом по сети.", (int)((100+scene_size - width+select_x )*wpw), (int)((height-175)*hph));
-                tutorial_font.draw(drawer.batch, "Игровая локация всегда случайная.", (int)((100+scene_size - width-select_x)*wpw), (int)((height-250)*hph));
-                tutorial_font.draw(drawer.batch, "Уровень повышается при выигрыше.", (int)((100+scene_size - width+select_x)*wpw), (int)((height-325)*hph));
-                tutorial_font.draw(drawer.batch, "Чем выше уровень - тем сильнее противник.", (int)((100+scene_size - width-select_x)*wpw), (int)((height-400)*hph));
-            }
-            if(which_select == 4) {
-                tutorial_font.draw(drawer.batch, "Передвижение осуществляется при помощи кнопок.", (int)((100+scene_size - width-select_x)*wpw), (int)((height-100)*hph));
-                tutorial_font.draw(drawer.batch, "Персонаж двигается только по диагонали.", (int)((100+scene_size - width+select_x )*wpw), (int)((height-175)*hph));
-                tutorial_font.draw(drawer.batch, "В зависимости от того, куда направлен персонаж", (int)((100+scene_size - width-select_x)*wpw), (int)((height-250)*hph));
-                tutorial_font.draw(drawer.batch, "осуществляется передвижение. Скорость зависит от", (int)((100+scene_size - width+select_x)*wpw), (int)((height-325)*hph));
-                tutorial_font.draw(drawer.batch, "уровня ног. Уклоняйтесь от выстрелов противника", (int)((100+scene_size - width-select_x)*wpw), (int)((height-400)*hph));
-                tutorial_font.draw(drawer.batch, "и неопознанных объектов!", (int)((100+scene_size - width+select_x)*wpw), (int)((height-475)*hph));
-            }
-            if(which_select == 5) {
-                tutorial_font.draw(drawer.batch, "Ваши выстрелы повреждают только противника.", (int)((100+scene_size - width-select_x)*wpw), (int)((height-100)*hph));
-                tutorial_font.draw(drawer.batch, "Стрелять можно, нажимая кнопку справа снизу.", (int)((100+scene_size - width +select_x)*wpw), (int)((height-175)*hph));
-                tutorial_font.draw(drawer.batch, "Урон зависит от уровня пушек.", (int)((100+scene_size - width-select_x)*wpw), (int)((height-250)*hph));
-                tutorial_font.draw(drawer.batch, "Скорость стрельбы (Динамика) зависит", (int)((100+scene_size - width+select_x)*wpw), (int)((height-325)*hph));
-                tutorial_font.draw(drawer.batch, "от уровня туловища.", (int)((100+scene_size - width-select_x)*wpw), (int)((height-400)*hph));
-                tutorial_font.draw(drawer.batch, "Пуля летит в сторону направления робота.", (int)((100+scene_size - width+select_x)*wpw), (int)((height-475)*hph));
-            }
-            if(which_select == 6) {
-                tutorial_font.draw(drawer.batch, "Игровые ньюансы: Подобрав аптечку,", (int)((100+scene_size - width-select_x)*wpw), (int)((height-100)*hph));
-                tutorial_font.draw(drawer.batch, "можно восстановить 25% здоровья.", (int)((100+scene_size - width +select_x)*wpw), (int)((height-175)*hph));
-                tutorial_font.draw(drawer.batch, "Опасайтесь метеоритов, ракет и прочих", (int)((100+scene_size - width-select_x)*wpw), (int)((height-250)*hph));
-                tutorial_font.draw(drawer.batch, "предметов, выпадающих на игровое поле.", (int)((100+scene_size - width+select_x)*wpw), (int)((height-325)*hph));
-                tutorial_font.draw(drawer.batch, "На разных локациях выделяют разные", (int)((100+scene_size - width-select_x)*wpw), (int)((height-400)*hph));
-                tutorial_font.draw(drawer.batch, "особенности.", (int)((100+scene_size - width+select_x)*wpw), (int)((height-475)*hph));
-            }
-            if(which_select == 7) {
-                tutorial_font.draw(drawer.batch, "Прокачивая детали, повышаются различные", (int)((100+scene_size - width-select_x)*wpw), (int)((height-100)*hph));
-                tutorial_font.draw(drawer.batch, "характеристики. Например:", (int)((100+scene_size - width +select_x)*wpw), (int)((height-175)*hph));
-                tutorial_font.draw(drawer.batch, "Прокачивая руки: Здоровье, урон.", (int)((100+scene_size - width-select_x)*wpw), (int)((height-250)*hph));
-                tutorial_font.draw(drawer.batch, "Прокачивая ноги: Здоровье, скорость", (int)((100+scene_size - width+select_x)*wpw), (int)((height-325)*hph));
-                tutorial_font.draw(drawer.batch, "Прокачивая туловище: Здоровье, динамика", (int)((100+scene_size - width-select_x)*wpw), (int)((height-400)*hph));
-                tutorial_font.draw(drawer.batch, "Прокачивая голову: Здоровье, Энергия.", (int)((100+scene_size - width+select_x)*wpw), (int)((height-475)*hph));
-            }
-            if(which_select == 8) {
-                tutorial_font.draw(drawer.batch, "Регулярно на поле боя выпадают скины.", (int)((100+scene_size - width-select_x)*wpw), (int)((height-100)*hph));
-                tutorial_font.draw(drawer.batch, "Скины ни на что не влияют.", (int)((100+scene_size - width +select_x)*wpw), (int)((height-175)*hph));
-                tutorial_font.draw(drawer.batch, "Они разукрашивают игровой процесс.", (int)((100+scene_size - width-select_x)*wpw), (int)((height-250)*hph));
-                tutorial_font.draw(drawer.batch, "Успейте подобрать их быстрее, чем это", (int)((100+scene_size - width-+select_x)*wpw), (int)((height-325)*hph));
-                tutorial_font.draw(drawer.batch, "Сделает противник!", (int)((100+scene_size - width-select_x)*wpw), (int)((height-400)*hph));
-                tutorial_font.draw(drawer.batch, "Выбрать скин можно в главном меню.", (int)((100+scene_size - width+select_x)*wpw), (int)((height-475)*hph));
-            }
-            */
         }
 
 
@@ -1070,33 +1009,91 @@ public class GameMenu extends Openable implements Screen{
         ring.dispose();
         ring = new Texture("Object/ring" + game.robot.color + ".png");
     }
+    public void SetTutorial(int touched, boolean back) {
+        if (istutorial && !resize_scene) {
+            resize_scene = true;
+            last_touched = touched;
+            last_back = back;
+            Thread anime = new Thread() {
+                @Override
+                public void run() {
+                    while (scene_size < width*1.5) {
+                        if(icon_num_1==0 || last_back) {
+                            if (tutorial_circle_size < width * 1.75) {
+                                tutorial_circle_size += 13;
+                            }
+                        }
+                        scene_size += 5;
+                        Sleep(2);
+                    }
+
+                    if(!last_back) {
+                        if (icon_num_1 == 0) {
+                            icon_num_1 = last_touched;
+                        } else {
+                            icon_num_2 = last_touched;
+                        }
+
+                        icon_color_1 = icon_num_1;
+                        icon_color_2 = icon_num_1;
+                        icon_color_3 = icon_num_1;
+                        icon_color_4 = icon_num_1;
+                    }else{
+                        icon_color_1 = 1;
+                        icon_color_2 = 2;
+                        icon_color_3 = 3;
+                        icon_color_4 = 4;
+                        if (icon_num_2 != 0) {
+                            icon_num_2 = 0;
+                        } else {
+                            icon_num_1 = 0;
+                        }
+                    }
+                    scene_size = (int)(width*0.5);
+                    need_to_update_icons = true;
+                    while (scene_size < width) {
+                        if(last_back){
+                            if(tutorial_circle_size>0){
+                                tutorial_circle_size-=20;
+                            }
+                        }
+                        scene_size += 5;
+                        Sleep(2);
+                    }
+                    resize_scene = false;
+                }
+            };
+            anime.start();
+
+        }
+    }
     public void SceneTutorial(){
         Thread anime = new Thread(){
             @Override
-            public void run(){
-                if(istutorial){
-                    if(which_select<8){
-                        resize_scene=true;
-                        resize_scene=false;
-                        which_select+=1;
-                    }else{
+            public void run() {
+                if (!resize_scene) {
+                    if (istutorial) {
+                            resize_scene = true;
+                            while (tutorial_scene_size > 0) {
+                                scene_size -= 5;
+                                tutorial_scene_size -= 5;
+                                Sleep(2);
+                            }
+                            resize_scene = false;
+                            istutorial = false;
+                   }  else {
                         resize_scene = true;
-                        while(scene_size>0){
-                            scene_size-=5;
-                            Sleep(1);
+                        while (tutorial_scene_size < width) {
+                            if(tutorial_circle_size>0){
+                                tutorial_circle_size-=10;
+                            }
+                            scene_size += 5;
+                            tutorial_scene_size += 5;
+                            Sleep(2);
                         }
                         resize_scene = false;
-                        istutorial = false;
-                        which_select=1;
+                        istutorial = true;
                     }
-                }else{
-                    resize_scene = true;
-                    while(scene_size<width){
-                        scene_size+=5;
-                        Sleep(1 );
-                    }
-                    resize_scene = false;
-                    istutorial = true;
                 }
             }
         };
@@ -1322,9 +1319,9 @@ public class GameMenu extends Openable implements Screen{
         level_back.dispose();
         level_front.dispose();
         level_line.dispose();
-        tutorial_button_close.dispose();
+        tutorial_circlet.dispose();
         location_2_planet_texture.dispose();
         for(int i = 0; i<11; i++) tutorial_frame_color[i].dispose();
-        for(int i = 0; i<3; i++) tutorial_icon[i].dispose();
+        for(int i = 0; i<4; i++) tutorial_icon[i].dispose();
     }
 }

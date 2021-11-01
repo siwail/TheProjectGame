@@ -8,9 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class FirstMenu  extends Openable implements Screen{
 	SpriteBatch batch;
 	Texture[] backs = new Texture[5];
-	Texture button_play;
 	Texture[] head = new Texture[3];
-	Texture button_exit;
 	Texture robo_texture;
 	Texture white;
 	Texture play;
@@ -19,8 +17,15 @@ public class FirstMenu  extends Openable implements Screen{
 	Texture planet;
 	Texture space_1;
 	Texture space_2;
+	Texture button_left_part;
+	Texture button_right_part;
+	Texture button_center_part;
+	Texture button_exit_icon;
+	Texture button_play_icon;
+	Texture back_light;
 	TextureRegion robo;
 	TextureRegion space_2_r;
+	Thread button_anime;
 	Thread anime;
 	Thread leg;
 	Thread anime_trailer;
@@ -32,6 +37,8 @@ public class FirstMenu  extends Openable implements Screen{
 	boolean trailer_started = false;
 	float rotate = 0;
 	float trailer_scale = 1.0f;
+	int button_exit_state = 0;
+	int button_play_state = 0;
 	int a = 0;
 	int dir_rotate = 0;
 	int h = 1; //Анимация головы
@@ -53,16 +60,6 @@ public class FirstMenu  extends Openable implements Screen{
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		if (close_touch) {
-			button_exit = white;
-		} else {
-			button_exit = exit;
-		}
-		if (play_touch) {
-			button_play = white;
-		} else {
-			button_play = play;
-		}
 		batch.begin();
 				try {
 					drawer.draw(backs[a - 1], 0, 0, width, height);
@@ -70,9 +67,13 @@ public class FirstMenu  extends Openable implements Screen{
 			if(h!=3) {
 				drawer.draw(head[h], ((float) width - 500), 50, 500, 500);
 			}
-			drawer.draw(button_exit, 100.0f, ((float) height / 2 + 100), 500, 250);
+
+
+		DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_exit_icon, button_exit_state, 150, height/2+80, 400);
 			drawer.draw(robo, -150, -150, 100, 100, 750, 750, 1, 1, rotate - 30);
-			drawer.draw(button_play, ((float) width / 2 + 300), ((float) height / 2 + 100), 500, 250);
+		DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_play_icon, button_play_state,  width / 2 + 350, height/2+80, 400);
+
+
 		if (is_trailer && trailer_state >= 9){
 
 			drawer.draw(trailer, -((int)( (float)width * trailer_scale) - width) / 2, -((int) ((float)height * trailer_scale) - height) / 2, (int)((float)width * trailer_scale), (int)((float)height * trailer_scale));
@@ -99,6 +100,12 @@ public class FirstMenu  extends Openable implements Screen{
 
 		game.MusicSwap(3);
 		batch = new SpriteBatch();
+		button_left_part = new Texture("Button/button_left_part.png");
+		button_right_part = new Texture("Button/button_right_part.png");
+		button_center_part = new Texture("Button/button_center_part.png");
+		back_light= new Texture("Interface/back_light.png");
+		button_exit_icon= new Texture("Interface/icon_exit.png");
+		button_play_icon= new Texture("Interface/icon_play.png");
 		planet = new Texture("Object/planet_3.png");
 		space_1 = new Texture("Decoration/space_1.png");
 		space_2 = new Texture("Decoration/space_2.png");
@@ -116,6 +123,28 @@ public class FirstMenu  extends Openable implements Screen{
 		head[2] = new Texture("Object/logo_4.png");
 		robo = new TextureRegion(robo_texture, 500, 500);
 		Gdx.input.setInputProcessor(new FirstMenuTouch(game, this));
+		button_anime = new Thread() {
+			@Override
+			public void run() {
+				while (!closed) {
+					if(close_touch && button_exit_state<100){
+						button_exit_state +=1;
+					}else{
+						if(button_exit_state>0 && !close_touch){
+							button_exit_state -=1;
+						}
+					}
+					if(play_touch && button_play_state<100){
+						button_play_state +=1;
+					}else{
+						if(button_play_state>0 && !play_touch){
+							button_play_state -=1;
+						}
+					}
+					Sleep( 1);
+				}
+			}
+		};
 		anime = new Thread() {
 			@Override
 			public void run() {
@@ -253,7 +282,7 @@ public class FirstMenu  extends Openable implements Screen{
 		}
 	};
 		drawer = new SpriteBatchRubber(this, batch);
-
+		button_anime.start();
 		anime_space.start();
 		leg.start();
 		anime.start();
@@ -266,8 +295,6 @@ public class FirstMenu  extends Openable implements Screen{
 		robo_texture.dispose();
 		for(Texture texture: backs){ texture.dispose(); }
 		for(Texture texture: head){ texture.dispose(); }
-		button_play.dispose();
-		button_exit.dispose();
 		door_right.dispose();
 		door_left.dispose();
 		exit.dispose();
@@ -275,5 +302,11 @@ public class FirstMenu  extends Openable implements Screen{
 		planet.dispose();
 		space_1.dispose();
 		space_2.dispose();
+		button_left_part.dispose();
+		button_right_part.dispose();
+		button_center_part.dispose();
+		back_light.dispose();
+		button_exit_icon.dispose();
+		button_play_icon.dispose();
 	}
 }

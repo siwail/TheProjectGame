@@ -642,7 +642,20 @@ public class Openable implements Screen{
         }
     }
 
+    public void DrawDefaultButton(SpriteBatchRubber drawer, Texture left_part, Texture center_part, Texture right_part, Texture back_light, Texture icon, int state, int x, int y, int size){
+        int rstatex = (int)(size*state/100.0f);
+        int rstatey = 0;
+        if(state >= 80) {
+             rstatey = (int) (size*2.0f * (state-80) / 100.0f);
+        }
+        drawer.draw(center_part, x+rstatex/2, y+rstatey/2, size-rstatex, size/1.5f-rstatey);
+        drawer.draw(left_part, x-size/5+rstatex/2, y+rstatey/2, size/4, size/1.5f-rstatey);
+        drawer.draw(right_part, x+size*0.95f-rstatex/2, y+rstatey/2, size/4, size/1.5f-rstatey);
+        state*=2;
+        drawer.draw(back_light, x+size/2-rstatey, y+size/3-rstatey, rstatey*2, rstatey*2);
+        drawer.draw(icon, x+size/2-size/3.0f-state/2, y-state/2, state+size/1.5f, state+size/1.5f);
 
+    }
     public void Sleep(int time){
         try {
             Thread.sleep(time);
@@ -665,5 +678,7 @@ public class Openable implements Screen{
     @Override
     public void hide() { }
     @Override
-    public void dispose(){ }
+    public void dispose(){
+
+    }
 }
