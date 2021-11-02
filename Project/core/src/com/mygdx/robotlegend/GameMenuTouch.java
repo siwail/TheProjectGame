@@ -91,15 +91,18 @@ public class GameMenuTouch implements InputProcessor {
 
         if(!gameMenu.istutorial && !gameMenu.resize_scene && !gameMenu.search_planet && !gameMenu.isTv) {
             if (screenX >= SX(50) && screenX <= SX(550) && screenY <= SY(gameMenu.height) && screenY >= SY(gameMenu.height - 250)) {
+                gameMenu.close_touch = true;
                 Gdx.app.exit();
             }
             if (screenX >= SX(620) && screenX <= SX(1020) && screenY <= SY(200) && screenY >= SY(0)) {
                 if (gameMenu.isOpen) {
+                    gameMenu.work_touch = true;
                     gameMenu.DoorClose(1);
                 }
             }
             if (screenX >= SX(gameMenu.width - 550) && screenX <= SX(gameMenu.width - 50) && screenY >= SY(gameMenu.height - 250) && screenY <= SY(gameMenu.height)) {
                 if (gameMenu.isOpen) {
+                    gameMenu.play_touch = true;
                     gameMenu.DoorClose(2);
                 }
             }
@@ -108,6 +111,7 @@ public class GameMenuTouch implements InputProcessor {
             }
             if (screenX >= SX(gameMenu.width / 2 - 300) && screenX <= SX(gameMenu.width / 2) && screenY >= SY(gameMenu.height - 150) && screenY <= SY(gameMenu.height)) {
                 if (gameMenu.isOpen) {
+                    gameMenu.tutorial_touch = true;
                     gameMenu.SceneTutorial();
                 }
             }
@@ -116,6 +120,7 @@ public class GameMenuTouch implements InputProcessor {
             }
             if (screenX >= SX(gameMenu.width/2) && screenX <= SX(gameMenu.width/2+300) && screenY >= SY(gameMenu.height-150) && screenY <= SY(gameMenu.height) && !gameMenu.istutorial){
                 if(gameMenu.isOpen) {
+                    gameMenu.multiplayer_touch = true;
                     gameMenu.DoorClose(3);
                 }
             }

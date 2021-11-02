@@ -1332,6 +1332,7 @@ public class GamePlay extends Openable implements Screen{
         game.robot.ERHt = new Texture("Robot/hand_" + game.robot.ERHid + ".png");
         game.robot.ELHt = new Texture("Robot/hand_" + game.robot.ELHid + ".png");
         game.robot.ERLt = new Texture("Robot/leg_" + game.robot.ERLid + ".png");
+        game.robot.ERLt = new Texture("Robot/leg_" + game.robot.ERLid + ".png");
         game.robot.ELLt = new Texture("Robot/leg_" + game.robot.ELLid + ".png");
         game.robot.EHt = new Texture("Robot/head_" + game.robot.EHid + ".png");
         game.robot.EBt = new Texture("Robot/body_" + game.robot.EBid + ".png");
@@ -2611,20 +2612,19 @@ public class GamePlay extends Openable implements Screen{
                 robotboom = true;
                 health = health/2;
                 robot_speed_bonus = 1;
-                front_energy_scale=width*2;
-
+                front_energy_scale=(int)(width*1.25f);
                 Thread anime = new Thread() {
                     @Override
                     public void run() {
                         while (front_energy_scale>0) {
-                            front_energy_scale-=5;
+                            front_energy_scale-=2;
                             Sleep(  3);
                         }
 
                         Sleep(10000);
 
-                        while (front_energy_scale<width*2) {
-                            front_energy_scale+=5;
+                        while (front_energy_scale<width*1.25f) {
+                            front_energy_scale+=2;
                             Sleep(  3);
                         }
                         robot_speed_bonus = 0;

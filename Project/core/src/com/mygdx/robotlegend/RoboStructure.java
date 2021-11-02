@@ -223,32 +223,32 @@ public class RoboStructure {
         if(skin == 1){
             color = 5;
             Bhealth = 40;
-            Battack_speed = 1;
+            Battack_speed = -1;
         }
         if(skin == 2){
             color = 1;
-            Bmove_speed = 1;
-            Battack_speed = 2;
+            Bmove_speed = -1;
+            Battack_speed = -2;
         }
         if(skin == 3){
             color = 2;
             Bhealth = 30;
-            Benergy_speed = 10;
+            Benergy_speed = -10;
         }
         if(skin == 4){
             color = 2;
             Bdamage = 2;
-            Battack_speed = 1;
+            Battack_speed = -1;
         }
         if(skin == 5){
             color = 1;
             Bdamage = 4;
-            Benergy_speed = 20;
+            Benergy_speed = -20;
         }
         if(skin == 6){
             color = 3;
             Bhealth = 50;
-            Benergy_speed = 5;
+            Benergy_speed = -5;
         }
         if(skin == 7){
             color = 3;
@@ -273,32 +273,32 @@ public class RoboStructure {
         if(Eskin == 1){
             Ecolor = 5;
             EBhealth = 40;
-            EBattack_speed = 1;
+            EBattack_speed = -1;
         }
         if(Eskin == 2){
             Ecolor = 1;
-            EBmove_speed = 1;
-            EBattack_speed = 2;
+            EBmove_speed = -1;
+            EBattack_speed = -2;
         }
         if(Eskin == 3){
             Ecolor = 2;
             EBhealth = 30;
-            EBenergy_speed = 10;
+            EBenergy_speed = -10;
         }
         if(Eskin == 4){
             Ecolor = 2;
             EBdamage = 2;
-            EBattack_speed = 1;
+            EBattack_speed = -1;
         }
         if(Eskin == 5){
             Ecolor = 1;
             EBdamage = 4;
-            EBenergy_speed = 20;
+            EBenergy_speed = -20;
         }
         if(Eskin == 6){
             Ecolor = 3;
             EBhealth = 50;
-            EBenergy_speed = 5;
+            EBenergy_speed = -5;
         }
         if(Eskin == 7){
             Ecolor = 3;

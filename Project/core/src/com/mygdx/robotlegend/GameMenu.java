@@ -15,24 +15,25 @@ public class GameMenu extends Openable implements Screen{
     Thread space_anime;
     Thread TutorialAnime;
     Thread TutorialIconAnime;
+    Thread button_anime;
     Sound[] hush = new Sound[3];
+    Texture button_left_part;
+    Texture button_right_part;
+    Texture button_center_part;
+    Texture button_exit_icon;
+    Texture button_fight_icon;
+    Texture button_online_icon;
+    Texture button_workshop_icon;
+    Texture button_tutorial_icon;
+    Texture back_light;
     Texture camp;
-    Texture play;
-    Texture close;
     Texture music;
     Texture music_stop;
-    Texture workspace;
     Texture grass;
     Texture gear;
     Texture chip;
     Texture metall;
     Texture bulb;
-    Texture white;
-    Texture exit;
-    Texture work;
-    Texture go;
-    Texture multiplayer;
-    Texture tutorial;
     Texture front_break;
     Texture ring;
     Texture throne;
@@ -67,13 +68,17 @@ public class GameMenu extends Openable implements Screen{
     Texture tutorial_circlet;
     Texture[] tutorial_icon = new Texture[4];
     Texture[] tutorial_frame_color = new Texture[12];
-    Texture[] background = new Texture[8];
     Texture[] smoke = new Texture[4];
     Texture[] birds = new Texture[5];
     TextureRegion tutorial_circle;
     TextureRegion location_2_planet;
     TextureRegion location_2_space;
     TextureRegion location_2_space_2;
+    int button_exit_state = 0;
+    int button_fight_state = 0;
+    int button_tutorial_state = 0;
+    int button_online_state = 0;
+    int button_workshop_state = 0;
     int icon_num_1 = 0;
     int icon_num_2 = 0;
     int tutorial_icon_1_resize = 0;
@@ -252,10 +257,7 @@ public class GameMenu extends Openable implements Screen{
         location_2_space_2 = new TextureRegion(space, 1280, 720);
         frame_green_1 =  new Texture("Object/frame_2.png");
         frame_green_2 =  new Texture("Object/frame_1.png");
-        tv =  new Texture("Object/gold.png");
         button_ship = new Texture("Button/button_ship.png");
-        multiplayer = new Texture("Button/button3.png");
-        tutorial = new Texture("Button/button_tutorial.png");
         tutorials = new Texture("Interface/back.png");
         ring = new Texture("Object/ring" + game.robot.color + ".png");
         throne = new Texture("Object/stand.png");
@@ -291,13 +293,17 @@ public class GameMenu extends Openable implements Screen{
         }else{
             game.robot.Eskin = 0;
         }
-        for(int i = 0; i<8; i++) background[i] = new Texture("Tutorial/tutorial_" + (i+1) + ".png");
-        work = new Texture("Button/work.png");
+        button_left_part = new Texture("Button/button_left_part.png");
+        button_right_part = new Texture("Button/button_right_part.png");
+        button_center_part = new Texture("Button/button_center_part.png");
+        back_light= new Texture("Interface/back_light.png");
+        button_exit_icon= new Texture("Interface/icon_exit.png");
+        button_workshop_icon= new Texture("Interface/icon_workshop.png");
+        button_fight_icon= new Texture("Interface/icon_fight.png");
+        button_online_icon= new Texture("Interface/icon_online.png");
+        button_tutorial_icon= new Texture("Interface/icon_tutorial.png");
         location_2_planet_texture = new Texture("Object/planet_3.png");
         front_break = new Texture("Interface/break.png");
-        exit = new Texture("Button/exit.png");
-        go = new Texture("Button/button.png");
-        white = new Texture("Button/button_white.png");
         grass = new Texture("Location/grass_" + game.robot.level + ".png");
         metall = new Texture("Item/metall.png");
         chip = new Texture("Item/chip.png");
@@ -339,6 +345,50 @@ public class GameMenu extends Openable implements Screen{
                     }
 
                 }
+        };
+        button_anime = new Thread(){
+            @Override
+            public void run(){
+                while(!closed){
+                    if(close_touch && button_exit_state<100){
+                        button_exit_state +=1;
+                    }else{
+                        if(button_exit_state>0 && !close_touch){
+                            button_exit_state -=1;
+                        }
+                    }
+                    if(play_touch && button_fight_state<100){
+                        button_fight_state +=1;
+                    }else{
+                        if(button_fight_state>0 && !play_touch){
+                            button_fight_state -=1;
+                        }
+                    }
+                    if(tutorial_touch && button_tutorial_state<100){
+                        button_tutorial_state +=1;
+                    }else{
+                        if(button_tutorial_state>0 && !tutorial_touch){
+                            button_tutorial_state -=1;
+                        }
+                    }
+                    if(multiplayer_touch && button_online_state<100){
+                        button_online_state +=1;
+                    }else{
+                        if(button_online_state>0 && !multiplayer_touch){
+                            button_online_state -=1;
+                        }
+                    }
+                    if(work_touch && button_workshop_state<100){
+                        button_workshop_state +=1;
+                    }else{
+                        if(button_workshop_state>0 && !work_touch){
+                            button_workshop_state -=1;
+                        }
+                    }
+                    Sleep(3);
+                }
+
+            }
         };
         TutorialIconAnime = new Thread(){
             @Override
@@ -531,6 +581,7 @@ public class GameMenu extends Openable implements Screen{
             anime_smoke.start();
             space_anime.start();
         anime_hand.start();
+        button_anime.start();
         DoorOpen();
     }
     @Override
@@ -595,31 +646,9 @@ public class GameMenu extends Openable implements Screen{
         }else{
             drawer.draw(button_left, 110, 435 + skin_y / 2+10, 130, 130);
         }
-        if(close_touch){
-            close = white;
-        }else{
-            close = exit;
-        }
-        if(work_touch){
-            workspace = white;
-        }else{
-            workspace = work;
-        }
-        if(play_touch){
-            play= white;
-        }else{
-            play= go;
-        }
-        if(tutorial_touch){
-            drawer.draw(white, width/2-300, 0, 300, 150);
-        }else{
-            drawer.draw(tutorial, width/2-300, 0, 300, 150);
-        }
-        if(multiplayer_touch){
-            drawer.draw(white, width/2, 10, 300, 130);
-        }else{
-            drawer.draw(multiplayer, width/2, 10, 300, 130);
-        }
+
+        DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_tutorial_icon, button_tutorial_state, width/2-250, 25, 200);
+        DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_online_icon, button_online_state, width/2+50, 25, 200);
 
         if(NeedUpdatePlanetPart){
             NeedUpdatePlanetPart = false;
@@ -662,9 +691,12 @@ public class GameMenu extends Openable implements Screen{
             }
             camp = new Texture("Interface/camp_" + game.robot.level + ".png");
         }
-        drawer.draw(close, 50, 0, 500, 250);
-        drawer.draw(play, width-550, 0, 500, 250);
-        drawer.draw(workspace, 620, height-200, 400, 200);
+        DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_exit_icon, button_exit_state, 100, -20, 400);
+
+        DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_fight_icon, button_fight_state, width-500, -20, 400);
+
+        DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_workshop_icon, button_workshop_state, 670, height-185, 300);
+
         if (game.music_play) {
             drawer.draw(music, 1020, height - 100, 100, 100);
         } else {
@@ -1259,7 +1291,6 @@ public class GameMenu extends Openable implements Screen{
     }
     @Override
     public void dispose () {
-        for(int i = 0; i<8; i++) background[i].dispose();
         button_ship.dispose();
         hush[0].dispose();
         hush[1].dispose();
@@ -1273,24 +1304,16 @@ public class GameMenu extends Openable implements Screen{
         birds[1].dispose();
         birds[2].dispose();
         birds[3].dispose();
-        go.dispose();
-        exit.dispose();
-        close.dispose();
-        white.dispose();
         birds[4].dispose();
-        work.dispose();
         camp.dispose();
         door_left.dispose();
         door_right.dispose();
-        play.dispose();
-        workspace.dispose();
         music.dispose();
         music_stop.dispose();
         bulb.dispose();
         gear.dispose();
         metall.dispose();
         chip.dispose();
-        tutorial.dispose();
         front_break.dispose();
         throne.dispose();
         ring.dispose();
@@ -1305,8 +1328,6 @@ public class GameMenu extends Openable implements Screen{
         head.dispose();
         puck.dispose();
         select.dispose();
-        multiplayer.dispose();
-        tv.dispose();
         space.dispose();
         space2.dispose();
         frame_green_1.dispose();
@@ -1321,6 +1342,15 @@ public class GameMenu extends Openable implements Screen{
         level_line.dispose();
         tutorial_circlet.dispose();
         location_2_planet_texture.dispose();
+        button_left_part.dispose();
+        button_right_part.dispose();
+        button_center_part.dispose();
+        back_light.dispose();
+        button_exit_icon.dispose();
+        button_workshop_icon.dispose();
+        button_fight_icon.dispose();
+        button_online_icon.dispose();
+        button_tutorial_icon.dispose();
         for(int i = 0; i<11; i++) tutorial_frame_color[i].dispose();
         for(int i = 0; i<4; i++) tutorial_icon[i].dispose();
     }

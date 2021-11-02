@@ -10,9 +10,6 @@ public class FirstMenu  extends Openable implements Screen{
 	Texture[] backs = new Texture[5];
 	Texture[] head = new Texture[3];
 	Texture robo_texture;
-	Texture white;
-	Texture play;
-	Texture exit;
 	Texture trailer;
 	Texture planet;
 	Texture space_1;
@@ -69,9 +66,9 @@ public class FirstMenu  extends Openable implements Screen{
 			}
 
 
-		DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_exit_icon, button_exit_state, 150, height/2+80, 400);
+		DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_exit_icon, button_exit_state, 120, height/2+80, 400);
 			drawer.draw(robo, -150, -150, 100, 100, 750, 750, 1, 1, rotate - 30);
-		DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_play_icon, button_play_state,  width / 2 + 350, height/2+80, 400);
+		DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_play_icon, button_play_state,  width / 2 + 370, height/2+80, 400);
 
 
 		if (is_trailer && trailer_state >= 9){
@@ -110,9 +107,6 @@ public class FirstMenu  extends Openable implements Screen{
 		space_1 = new Texture("Decoration/space_1.png");
 		space_2 = new Texture("Decoration/space_2.png");
 		space_2_r = new TextureRegion(space_2, 960, 540);
-		exit = new Texture("Button/exit.png");
-		play = new Texture("Button/button2.png");
-		white = new Texture("Button/button_white.png");
 		robo_texture = new Texture("Object/logo_1.png");
 		trailer = new Texture("Decoration/trailer.png");
 		for(int i=0;i<5;i++){
@@ -141,7 +135,7 @@ public class FirstMenu  extends Openable implements Screen{
 							button_play_state -=1;
 						}
 					}
-					Sleep( 1);
+					Sleep( 3);
 				}
 			}
 		};
@@ -241,7 +235,7 @@ public class FirstMenu  extends Openable implements Screen{
 						trailer_started = true;
 						anime_trailer.start();
 					}
-					Sleep(5);
+					Sleep(4);
 				}
 
 			}
@@ -249,9 +243,9 @@ public class FirstMenu  extends Openable implements Screen{
 		anime_trailer = new Thread() {
 			@Override
 			public void run() {
-				Sleep(2000);
+				Sleep(1500);
 				while (trailer_scale < 47.0f) {
-					trailer_scale += 0.05f;
+					trailer_scale += 0.075f;
 					if(trailer_scale>35.0f){
 						can_touch = true;
 					}
@@ -290,14 +284,11 @@ public class FirstMenu  extends Openable implements Screen{
 	@Override
 	public void dispose () {
 		batch.dispose();
-		play.dispose();
-		white.dispose();
 		robo_texture.dispose();
 		for(Texture texture: backs){ texture.dispose(); }
 		for(Texture texture: head){ texture.dispose(); }
 		door_right.dispose();
 		door_left.dispose();
-		exit.dispose();
 		trailer.dispose();
 		planet.dispose();
 		space_1.dispose();
