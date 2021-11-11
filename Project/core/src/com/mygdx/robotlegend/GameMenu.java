@@ -131,7 +131,7 @@ public class GameMenu extends Openable implements Screen{
     boolean BirdFly;
     boolean work_touch = false;
     boolean isJump = false;
-    double robot_x;
+    float robot_x;
     boolean tutorial_touch = false;
     boolean istutorial = false;
     boolean resize_scene = false;
@@ -524,7 +524,7 @@ public class GameMenu extends Openable implements Screen{
                 int time = game.random.nextInt(10)+6;
                 while(true){
                     if(dir==1){
-                        robot_x+=0.1;
+                        robot_x+=0.1f;
                         scale-=0.0008f;
                         rotation_head+=0.2f;
                         rotation_hand-=0.1f;
@@ -533,7 +533,7 @@ public class GameMenu extends Openable implements Screen{
                             time = game.random.nextInt(10)+6;
                         }
                     }else{
-                        robot_x-=0.1;
+                        robot_x-=0.1f;
                         scale+=0.0008f;
                         rotation_head-=0.2f;
                         rotation_hand+=0.1f;
@@ -631,7 +631,6 @@ public class GameMenu extends Openable implements Screen{
             level_big_font.draw(batch, Integer.toString(game.robot.level_win), (int) ((width / 2 - 200.0) * wpw), (int) ((215) * hph));
         }
         level_font.draw(batch, game.robot.experience + " / " + game.robot.level_win*100, (int)((width/2-110.0)*wpw), (int)((205)*hph));
-       // DrawRobotBall(drawer, (int)robot_x, robot_y, scale, rotation_hand+90, rotation_head, rotation_leg, 0 ,  test_ball);
         drawer.draw(ring, 250+(200-ring_1_xy)/2, 230+(int)((double)(200-ring_1_xy)*1.25), ring_1_xy, ring_1_xy);
         drawer.draw(ring, 250+(200-ring_2_xy)/2, 230+(int)((double)(200-ring_2_xy)*1.25), ring_2_xy, ring_2_xy);
         drawer.draw(game.robot.puck, 250+(200-box_size)/2, 385+skin_y+(200-box_size)/2, box_size, box_size);

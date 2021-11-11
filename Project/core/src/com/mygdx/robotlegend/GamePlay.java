@@ -65,8 +65,6 @@ public class GamePlay extends Openable implements Screen{
     Texture Frontground;
     Texture Wineffect;
     Texture Darkeffect;
-    Texture Openlevel_1;
-    Texture Openlevel_2;
     Texture MedSwap;
     Texture gear;
     Texture chip;
@@ -86,16 +84,13 @@ public class GamePlay extends Openable implements Screen{
     Texture level_back;
     Texture level_front;
     Texture level_line;
-    Texture energy_circle_texture;
     Texture jetpack;
     Texture jetpack_touched;
     Texture[] fire_location = new Texture[3];
-    Texture[] achivement = new Texture[4];
     Texture[] med = new Texture[5];
     Texture[] booms = new Texture[3];
     Texture[] begin_left = new Texture[3];
     Texture[] begin_right = new Texture[3];
-    TextureRegion energy_circle;
     TextureRegion planet;
     TextureRegion Meteor;
     TextureRegion Effect;
@@ -206,10 +201,7 @@ public class GamePlay extends Openable implements Screen{
     int show_exp_x = -500;
     boolean up_cant = false;
     boolean down_cant = false;
-    boolean Eup_cant = false;
-    boolean Edown_cant = false;
     boolean fire_cant = false;
-    boolean Efire_cant = false;
     boolean robot_circle = false;
     boolean Erobot_circle = false;
     boolean needOnlineChanges = false;
@@ -263,8 +255,6 @@ public class GamePlay extends Openable implements Screen{
     boolean alert_location = false;
     boolean resizing=false;
     boolean show_exp;
-    boolean Ejetpack_clicked=false;
-    boolean Ejetpack_touch=false;
     boolean Ejetpack_flying=false;
     boolean jetpack_clicked=false;
     boolean jetpack_touch=false;
@@ -328,8 +318,6 @@ public class GamePlay extends Openable implements Screen{
         begin_right[2] = new Texture("Interface/openlevel_right_3.png");
         big_grass= new Texture("Location/grass_" + game.robot.level + "_2.png");
 
-        energy_circle_texture = new Texture("Object/energy_circle.png");
-        energy_circle = new TextureRegion(energy_circle_texture, 300, 300);
 
         metall = new Texture("Item/metall.png");
         chip = new Texture("Item/chip.png");
@@ -344,10 +332,6 @@ public class GamePlay extends Openable implements Screen{
 
             FrontLevel2 = new Texture("Location/background_4_front.png");
         }
-        achivement[0] = new Texture("Object/swap.png");
-        achivement[1] = new Texture("Object/gold.png");
-        achivement[2] = new Texture("Object/silver.png");
-        achivement[3] = new Texture("Object/bronze.png");
         energy = game.robot.energy;
         Darkeffect = new Texture("Interface/dark.png");
         Wineffect = new Texture("Interface/gameplay_effect_1.png");
@@ -361,8 +345,6 @@ public class GamePlay extends Openable implements Screen{
         Effect = new TextureRegion(Wineffect, 300, 300);
         Frontground = new Texture("Interface/frontground.png");
         Front_energy = new Texture("Interface/frontground_energy.png");
-        Openlevel_1 = new Texture("Interface/openlevel_1.png");
-        Openlevel_2 = new Texture("Interface/openlevel_2.png");
         Bluefire = new Texture("Object/bluefire.png");
         MedSwap = new Texture("Object/health_swap.png");
         if (game.robot.level != 2 && game.robot.level != 1) {
@@ -1643,7 +1625,7 @@ public class GamePlay extends Openable implements Screen{
                 if(!dead){
                     DrawRobotJetpack(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, 0, 0, fire_anime, jetpack_state, swap, hurt);
                 }else{
-                    DrawRobot(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, swap, hurt, dead, 0);
+                    DrawRobot(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, swap, hurt, true, 0);
                 }
             }
         }
@@ -1690,7 +1672,7 @@ public class GamePlay extends Openable implements Screen{
                     if (!dead) {
                         DrawRobotJetpack(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, 0, 0, fire_anime, jetpack_state, swap, hurt);
                     }else{
-                        DrawRobot(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, swap, hurt, dead, 0);
+                        DrawRobot(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, swap, hurt, true, 0);
                     }
                 }
         }
@@ -1736,7 +1718,7 @@ public class GamePlay extends Openable implements Screen{
                 if(!dead){
                     DrawRobotJetpack(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, 0, 0, fire_anime, jetpack_state, swap, hurt);
                 }else{
-                    DrawRobot(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, swap, hurt, dead, 0);
+                    DrawRobot(drawer, x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, swap, hurt, true, 0);
                 }
             }
         }
@@ -1822,7 +1804,7 @@ public class GamePlay extends Openable implements Screen{
         }else{
             button_font.draw(batch, "ХАРД", (int) ((680.0-(double)pos_interface) * wpw * scale_inteface), (int) ((85.0-(double)pos_interface) * hph * scale_inteface));
         }
-        //drawer.draw(achivement[type_achivement], , height-100, (int)(100*scale_inteface), (int)(100*scale_inteface));
+
         if(win != 0){
             drawer.draw(Darkeffect, 0, 0, width, height);
             drawer.draw(Effect, (float) (width/2.0-(double)win_scale/2.0), (float) (height/2.0-(double)win_scale/2.0), (float)win_scale/2.0f, (float)win_scale/2.0f, (float)win_scale, (float)win_scale, 1, 1, win_rot);
@@ -3317,7 +3299,7 @@ public class GamePlay extends Openable implements Screen{
                             }
                         }
                         if(Erobot_speed_bonus == 0) {
-                            Sleep(  (int)(((double)game.robot.Eattack_speed/1.20)*speed));
+                            Sleep(  (int)(((float)game.robot.Eattack_speed/1.20f)*speed));
                         }else{
                             Sleep(  (int)(2*speed));
                         }
@@ -3354,7 +3336,7 @@ public class GamePlay extends Openable implements Screen{
                             }
                         }
                         if(robot_speed_bonus == 0) {
-                            Sleep(  (int)(((double)game.robot.attack_speed/1.20)*speed));
+                            Sleep(  (int)(((float)game.robot.attack_speed/1.20f)*speed));
                         }else{
                             Sleep(  (int)(2*speed));
                         }
@@ -3657,8 +3639,6 @@ public class GamePlay extends Openable implements Screen{
         grass.dispose();
         game.robot.DisposeGamePlayTextures();
         Frontground.dispose();
-        Openlevel_1.dispose();
-        Openlevel_2.dispose();
         Splash.dispose();
         Fire.dispose();
         Meteort.dispose();                          //Очистка памяти.
@@ -3693,10 +3673,6 @@ public class GamePlay extends Openable implements Screen{
         booms[1].dispose();
         booms[2].dispose();
         Front_energy.dispose();
-        achivement[0].dispose();
-        achivement[1].dispose();
-        achivement[2].dispose();
-        achivement[3].dispose();
         begin_left[0].dispose();
         begin_left[1].dispose();
         begin_left[2].dispose();
@@ -3717,7 +3693,6 @@ public class GamePlay extends Openable implements Screen{
             fire_location[1].dispose();
             fire_location[2].dispose();
         }
-        energy_circle_texture.dispose();
         if(game.robot.level == 2 || game.robot.level == 4){
             FrontLevel2.dispose();
         }

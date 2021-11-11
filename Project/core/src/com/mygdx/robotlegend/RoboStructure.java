@@ -98,8 +98,7 @@ public class RoboStructure {
     Texture BackHealth;
     Texture RobotIcon;
     Texture EnemyIcon;
-    Texture EnemyDetect;
-    Texture RobotDetect;
+
     Texture RobotHealth;
     Texture EnemyHealth;
     Texture puck;
@@ -406,8 +405,6 @@ public class RoboStructure {
         EnemyIcon = new Texture("Interface/enemy.png");
         RobotHealth = new Texture("Interface/friend_health.png");
         EnemyHealth = new Texture("Interface/enemy_health.png");
-        RobotDetect = new Texture("Interface/friend_detect.png");
-        EnemyDetect = new Texture("Interface/enemy_detect.png");
         HeadSwapt = new Texture("Robot/head_swap.png");
         BodySwapt = new Texture("Robot/body_swap.png");
         LeftLegSwapt = new Texture("Robot/leg_swap.png");
@@ -551,8 +548,6 @@ public class RoboStructure {
         EnemyIcon.dispose();
         RobotHealth.dispose();
         EnemyHealth.dispose();
-        RobotDetect.dispose();
-        EnemyDetect.dispose();
         HeadSwapt.dispose();
         BodySwapt.dispose();
         LeftLegSwapt.dispose();
