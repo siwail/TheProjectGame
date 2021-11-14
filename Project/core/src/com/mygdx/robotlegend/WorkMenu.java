@@ -46,24 +46,26 @@ public class WorkMenu extends Openable implements Screen {
     Texture leg_ld;
     Texture leg_rd;
     Texture leg_cd;
+    Texture saw_texture;
     Texture[] fire = new Texture[4];
     TextureRegion lamp;
     TextureRegion[] light = new TextureRegion[2];
-    double x = 0.0;
+    TextureRegion saw;
+    float x = 0.0f;
     int y = 0;
     int type_1 = 0;
     int type_2 = 0;
     int number_1 = 0;
     int number_2 = 0;
-    double scale_frame = 1.0;
+    float scale_frame = 1.0f;
     float scale = 1.35f;
     float rotlamp = 0.0f;
     float rothand = 0;
     float rothead = 0;
     float rotleg = 0;
     float rot = 0;
-
-
+    float saw_rotate = 0;
+    float saw_scale = 0.0f;
     int y_ld = 0;
     int y_rd = 0;
     int y_cd = 0;
@@ -71,7 +73,6 @@ public class WorkMenu extends Openable implements Screen {
     int y_ru = 0;
     int y_cu = 0;
 
-    int fire_anime = 1;
 
 
     int which_select = 0;
@@ -148,6 +149,9 @@ public class WorkMenu extends Openable implements Screen {
         leg_ld = new Texture("Object/leg_ld.png");
         leg_rd = new Texture("Object/leg_rd.png");
         leg_cd = new Texture("Object/leg_cd.png");
+
+        saw_texture = new Texture("Object/saw.png");
+        saw = new TextureRegion(saw_texture, 300, 300);
 
         open_x = 0;
         anime  = new Thread(){
@@ -228,10 +232,10 @@ public class WorkMenu extends Openable implements Screen {
         drawer.draw(gear, 10, height - 500, 150, 150);
         drawer.draw(chip, 10, height - 650, 150, 150);
         drawer.draw(bulb, 10, height - 800, 150, 150);
-        item_font.draw(batch, Integer.toString(game.robot.metal), (int)(170.0*wpw), (int)(((double)height - 310.0)*hph));
-        item_font.draw(batch, Integer.toString(game.robot.gears), (int)(170.0*wpw), (int)(((double)height - 450.0)*hph));
-        item_font.draw(batch, Integer.toString(game.robot.microchips), (int)(170.0*wpw), (int)(((double)height - 600.0)*hph));
-        item_font.draw(batch, Integer.toString(game.robot.lamps), (int)(170.0*wpw),(int)(((double)height - 750.0)*hph));
+        item_font.draw(batch, Integer.toString(game.robot.metal), (int)(170.0*wpw), (int)(((float)height - 310.0)*hph));
+        item_font.draw(batch, Integer.toString(game.robot.gears), (int)(170.0*wpw), (int)(((float)height - 450.0)*hph));
+        item_font.draw(batch, Integer.toString(game.robot.microchips), (int)(170.0*wpw), (int)(((float)height - 600.0)*hph));
+        item_font.draw(batch, Integer.toString(game.robot.lamps), (int)(170.0*wpw),(int)(((float)height - 750.0)*hph));
         drawer.draw(metal, RS(width - 600), RS(0), RS(600), RS(height));
         if(!max_level) {
             if (upgrade_can && which_select != 0) {
@@ -277,8 +281,8 @@ public class WorkMenu extends Openable implements Screen {
                 } else {
                     drawer.draw(not, RS(width - 175), RS(220), RS(100), RS(100));
                 }
-                item_font.draw(batch, number_1 + "", RS((int) (((double) width - 500.0) * wpw)), RS((int) (225.0 * hph)));
-                item_font.draw(batch, number_2 + "", RS((int) (((double) width - 250.0) * wpw)), RS((int) (225.0 * hph)));
+                item_font.draw(batch, number_1 + "", RS((int) (((float) width - 500.0) * wpw)), RS((int) (225.0 * hph)));
+                item_font.draw(batch, number_2 + "", RS((int) (((float) width - 250.0) * wpw)), RS((int) (225.0 * hph)));
             }
             if (which_select != 0) {
                 if (!upgrade_can || which_select == 0) {
@@ -302,115 +306,115 @@ public class WorkMenu extends Openable implements Screen {
         }
         drawer.draw(health, RS(width-500), RS(550), RS(150), RS(150));
         if(which_select!=0) {
-            item_font.draw(batch, "Здоровье", RS((int) (((double) width - 350.0) * wpw)), RS((int) (650.0 * hph)));
+            item_font.draw(batch, "Здоровье", RS((int) (((float) width - 350.0) * wpw)), RS((int) (650.0 * hph)));
         }
         if(which_select == 0){
             drawer.draw(blue_back, RS(width - 595), RS(370), RS(600), RS(160));
-            item_font.draw(batch, "Параметры", RS((int)(((double)width-540.0)*wpw)), RS((int)(780.0*hph)));
-            item_font.draw(batch, (game.robot.Hid*10)+(game.robot.Bid*15)+(game.robot.RHid*5)+(game.robot.LHid*5)+(game.robot.RLid*5)+(game.robot.LLid*5) +"", RS((int)(((double)width-500.0)*wpw)), RS((int)(570.0*hph)));
+            item_font.draw(batch, "Параметры", RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
+            item_font.draw(batch, (game.robot.Hid*10)+(game.robot.Bid*15)+(game.robot.RHid*5)+(game.robot.LHid*5)+(game.robot.RLid*5)+(game.robot.LLid*5) +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
             if(game.robot.Bhealth != 0){
-                item_green_font.draw(batch,  " +" + game.robot.Bhealth, RS((int)(((double)width-440.0)*wpw)), RS((int)(570.0*hph)));
+                item_green_font.draw(batch,  " +" + game.robot.Bhealth, RS((int)(((float)width-440.0)*wpw)), RS((int)(570.0*hph)));
             }
             drawer.draw(energy, RS(width-250), RS(550), RS(150), RS(150));
-            item_font.draw(batch, (game.robot.Hid*10)+"", RS((int)(((double)width-250.0)*wpw)), RS((int)(570.0*hph)));
+            item_font.draw(batch, (game.robot.Hid*10)+"", RS((int)(((float)width-250.0)*wpw)), RS((int)(570.0*hph)));
             if(game.robot.Benergy_speed != 0){
-                item_green_font.draw(batch,  " +" + game.robot.Benergy_speed, RS((int)(((double)width-190.0)*wpw)), RS((int)(570.0*hph)));
+                item_green_font.draw(batch,  " +" + game.robot.Benergy_speed, RS((int)(((float)width-190.0)*wpw)), RS((int)(570.0*hph)));
             }
             drawer.draw(move_speed, RS(width-500), RS(380), RS(150), RS(150));
-            item_font.draw(batch, (game.robot.LLid+game.robot.RLid) +"", RS((int)(((double)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, (game.robot.LLid+game.robot.RLid) +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
             if(game.robot.Bmove_speed != 0){
-                item_green_font.draw(batch,  " +" + game.robot.Bmove_speed, RS((int)(((double)width-440.0)*wpw)), RS((int)(400.0*hph)));
+                item_green_font.draw(batch,  " +" + game.robot.Bmove_speed, RS((int)(((float)width-440.0)*wpw)), RS((int)(400.0*hph)));
             }
 
             drawer.draw(attack_speed, RS(width-250), RS(380), RS(150), RS(150));
-            item_font.draw(batch, (game.robot.Bid)+"", RS((int)(((double)width-250.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, (game.robot.Bid)+"", RS((int)(((float)width-250.0)*wpw)), RS((int)(400.0*hph)));
             if(game.robot.Battack_speed != 0){
-                item_green_font.draw(batch,  " +" + game.robot.Battack_speed, RS((int)(((double)width-190.0)*wpw)), RS((int)(400.0*hph)));
+                item_green_font.draw(batch,  " +" + game.robot.Battack_speed, RS((int)(((float)width-190.0)*wpw)), RS((int)(400.0*hph)));
             }
             drawer.draw(damage, RS(width-375), RS(210), RS(150), RS(150));
-            item_font.draw(batch, (game.robot.LHid+game.robot.RHid)*2+"", RS((int)(((double)width-375.0)*wpw)), RS((int)(230.0*hph)));
+            item_font.draw(batch, (game.robot.LHid+game.robot.RHid)*2+"", RS((int)(((float)width-375.0)*wpw)), RS((int)(230.0*hph)));
             if(game.robot.Bdamage != 0){
-                item_green_font.draw(batch,  " +" + game.robot.Bdamage, RS((int)(((double)width-315.0)*wpw)), RS((int)(230.0*hph)));
+                item_green_font.draw(batch,  " +" + game.robot.Bdamage, RS((int)(((float)width-315.0)*wpw)), RS((int)(230.0*hph)));
             }
         }
         if(which_select == 1){
-            item_font.draw(batch, "Мозг робота Ур. " + game.robot.Hid, RS((int)(((double)width-540.0)*wpw)), RS((int)(780.0*hph)));
-            item_font.draw(batch, game.robot.Hid*10 +"", RS((int)(((double)width-500.0)*wpw)), RS((int)(570.0*hph)));
+            item_font.draw(batch, "Мозг робота Ур. " + game.robot.Hid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
+            item_font.draw(batch, game.robot.Hid*10 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
             drawer.draw(energy, RS(width-500), RS(380), RS(150), RS(150));
-            item_font.draw(batch, "Энергия", RS((int)(((double)width-350.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (game.robot.Hid*10)+"", RS((int)(((double)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, "Энергия", RS((int)(((float)width-350.0)*wpw)), RS((int)(480.0*hph)));
+            item_font.draw(batch, (game.robot.Hid*10)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
         }
         if(which_select == 2){
-            item_font.draw(batch, "Корпус Ур. " + game.robot.Bid, RS((int)(((double)width-540.0)*wpw)), RS((int)(780.0*hph)));
-            item_font.draw(batch, game.robot.Bid*15 +"", RS((int)(((double)width-500.0)*wpw)), RS((int)(570.0*hph)));
+            item_font.draw(batch, "Корпус Ур. " + game.robot.Bid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
+            item_font.draw(batch, game.robot.Bid*15 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
             drawer.draw(attack_speed, RS(width-500), RS(380), RS(150), RS(150));
-            item_font.draw(batch, "Динамика", RS((int)(((double)width-340.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (game.robot.Bid)+"", RS((int)(((double)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, "Динамика", RS((int)(((float)width-340.0)*wpw)), RS((int)(480.0*hph)));
+            item_font.draw(batch, (game.robot.Bid)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
         }
         if(which_select == 3){
-            item_font.draw(batch, "Механо-нога Ур. " + game.robot.LLid, RS((int)(((double)width-540.0)*wpw)), RS((int)(780.0*hph)));
-            item_font.draw(batch, game.robot.LLid*5 +"", RS((int)(((double)width-500.0)*wpw)), RS((int)(570.0*hph)));
+            item_font.draw(batch, "Механо-нога Ур. " + game.robot.LLid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
+            item_font.draw(batch, game.robot.LLid*5 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
             drawer.draw(move_speed, RS(width-500),RS( 380),RS( 150), RS(150));
-            item_font.draw(batch, "Скорость", RS((int)(((double)width-340.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (game.robot.LLid)+"", RS((int)(((double)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, "Скорость", RS((int)(((float)width-340.0)*wpw)), RS((int)(480.0*hph)));
+            item_font.draw(batch, (game.robot.LLid)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
         }
         if(which_select == 4){
-            item_font.draw(batch, "Механо-нога Ур. " + game.robot.RLid, RS((int)(((double)width-540.0)*wpw)), RS((int)(780.0*hph)));
-            item_font.draw(batch, game.robot.RLid*5 +"", RS((int)(((double)width-500.0)*wpw)), RS((int)(570.0*hph)));
+            item_font.draw(batch, "Механо-нога Ур. " + game.robot.RLid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
+            item_font.draw(batch, game.robot.RLid*5 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
             drawer.draw(move_speed, RS(width-500), RS(380), RS(150), RS(150));
-            item_font.draw(batch, "Скорость", RS((int)(((double)width-340.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (game.robot.RLid)+"", RS((int)(((double)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, "Скорость", RS((int)(((float)width-340.0)*wpw)), RS((int)(480.0*hph)));
+            item_font.draw(batch, (game.robot.RLid)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
         }
         if(which_select == 5){
-            item_font.draw(batch, "Бластер Ур. " + game.robot.LHid, RS((int)(((double)width-540.0)*wpw)), RS((int)(780.0*hph)));
-            item_font.draw(batch, game.robot.LHid*5 +"", RS((int)(((double)width-500.0)*wpw)), RS((int)(570.0*hph)));
+            item_font.draw(batch, "Бластер Ур. " + game.robot.LHid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
+            item_font.draw(batch, game.robot.LHid*5 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
             drawer.draw(damage, RS(width-500), RS(380), RS(150), RS(150));
-            item_font.draw(batch, "Урон", RS((int)(((double)width-340.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (game.robot.LHid)*2+"", RS((int)(((double)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, "Урон", RS((int)(((float)width-340.0)*wpw)), RS((int)(480.0*hph)));
+            item_font.draw(batch, (game.robot.LHid)*2+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
         }
         if(which_select == 6){
-            item_font.draw(batch, "Бластер Ур. " + game.robot.RHid, RS((int)(((double)width-540.0)*wpw)), RS((int)(780.0*hph)));
-            item_font.draw(batch, game.robot.RHid*5 +"", RS((int)(((double)width-500.0)*wpw)), RS((int)(570.0*hph)));
+            item_font.draw(batch, "Бластер Ур. " + game.robot.RHid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
+            item_font.draw(batch, game.robot.RHid*5 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
             drawer.draw(damage, RS(width-500), RS(380), RS(150), RS(150));
-            item_font.draw(batch, "Урон", RS((int)(((double)width-340.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (game.robot.RHid)*2+"", RS((int)(((double)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, "Урон", RS((int)(((float)width-340.0)*wpw)), RS((int)(480.0*hph)));
+            item_font.draw(batch, (game.robot.RHid)*2+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
         }
         DrawRobot(drawer, (int)x, y, scale, rothand, rothead, rotleg, rot, false, false, false, 90);
         DrawSelect(drawer, (int)x, y, scale, rothand, rothead, rotleg, rot, which_select_will);
         if(cu){
             drawer.draw(leg_cu, (int)x-(int)(50*scale), height-y_cu, 400, 400);
             if(y_cu>=300){
-                drawer.draw(fire[fire_anime-1], (int)x-(int)(50*scale)+50, height-50-y_cu+50, 300, 300);
+                drawer.draw(saw, (int)x-(int)(50*scale)+50, height-50-y_cu+50, 150*saw_scale, 150*saw_scale, (float) (300*saw_scale), (float) (300*saw_scale), 1, 1,  saw_rotate);
             }
         }
         if(cd){
             drawer.draw(leg_cd, (int)x-(int)(50*scale), y_cd-400, 400, 400);
             if(y_cd>=400){
-                drawer.draw(fire[fire_anime-1], (int)x-(int)(50*scale)+50, y_cd-350+50, 300, 300);
+                drawer.draw(saw, (int)x-(int)(50*scale)+50, y_cd-350+50, 150*saw_scale, 150*saw_scale, (float) (300*saw_scale), (float) (300*saw_scale), 1, 1,  saw_rotate);
             }
         }
         if(ld){
             drawer.draw(leg_ld, (int)x-(int)(100*scale), y_ld-300, 400, 400);
             if(y_ld>=300){
-                drawer.draw(fire[fire_anime-1], (int)x-(int)(100*scale)+50, y_ld-250+50, 300, 300);
+                drawer.draw(saw, (int)x-(int)(100*scale)+50, y_ld-250+50, 150*saw_scale, 150*saw_scale, (float) (300*saw_scale), (float) (300*saw_scale), 1, 1,  saw_rotate);
             }
         }
         if(rd){
             drawer.draw(leg_rd, (int)x+(int)(10*scale), y_rd-300, 400, 400);
             if(y_rd>=300){
-                drawer.draw(fire[fire_anime-1], (int)x+(int)(10*scale)+50, y_rd-250+50, 300, 300);
+                drawer.draw(saw, (int)x+(int)(10*scale)+50, y_rd-250+50, 150*saw_scale, 150*saw_scale, (float) (300*saw_scale), (float) (300*saw_scale), 1, 1,  saw_rotate);
             }
         }
         if(lu){
             drawer.draw(leg_lu, (int)x-(int)(170*scale), height-y_lu, 500, 500);
             if(y_lu>=500){
-                drawer.draw(fire[fire_anime-1], (int)x-(int)(170*scale)+100, height-y_lu-80+100, 300, 300);
+                drawer.draw(saw, (int)x-(int)(170*scale)+100, height-y_lu-80+100, 150*saw_scale, 150*saw_scale, (float) (300*saw_scale), (float) (300*saw_scale), 1, 1,  saw_rotate);
             }
         }
         if(ru){
             drawer.draw(leg_ru, (int)x+(int)(30*scale)-10, height-y_ru, 500, 500);
             if(y_ru>=500){
-                drawer.draw(fire[fire_anime-1], (int)x+(int)(20*scale)-10+100, height-y_ru-80+100, 300, 300);
+                drawer.draw(saw, (int)x+(int)(20*scale)-10+100, height-y_ru-80+100, 150*saw_scale, 150*saw_scale, (float) (300*saw_scale), (float) (300*saw_scale), 1, 1,  saw_rotate);
             }
         }
         if(light_anime<3) {
@@ -519,7 +523,7 @@ public class WorkMenu extends Openable implements Screen {
         anime.start();
     }
     public int RS(int value){ //right scale
-        return (int)((double)value*scale_frame)-(int)((1.0-scale_frame)*400);
+        return (int)((float)value*scale_frame)-(int)((1.0-scale_frame)*400);
     }
     public void AddLeg(int leg){
         if(leg == 1) {
@@ -635,16 +639,29 @@ public class WorkMenu extends Openable implements Screen {
         boolean can_anime;
         can_anime= !fire_now;
                 int anime = 0;
-                while (anime < 30) {
+                while (anime < 300) {
                     if(can_anime) {
-                        fire_anime++;
-                        if (fire_anime > 4) {
-                            fire_anime = 1;
+
+                        if(saw_rotate<360.0f){
+                            saw_rotate+=1.2f;
+                        }else{
+                            saw_rotate=0.0f;
+                        }
+                        if(anime>250){
+                            if(saw_scale>0.0f){
+                                saw_scale-=0.02f;
+                            }
+                        }else{
+                            if(saw_scale<1.0f){
+                                saw_scale+=0.02f;
+                            }
                         }
                     }
+
                     anime++;
-                    Sleep(50);
+                    Sleep(5);
                 }
+
 
     }
     public void upgrade() {

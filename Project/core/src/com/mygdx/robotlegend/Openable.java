@@ -32,8 +32,8 @@ public class Openable implements Screen{
     int type_close = 0;
     int width;
     int height;
-    double wpw;
-    double hph;
+    float wpw;
+    float hph;
     int open_x = 0;
     public void Start(){
         door_left =  new Texture("Interface/door_1.png");
@@ -42,8 +42,8 @@ public class Openable implements Screen{
         width = 1741;
         height = 810;
         open_x = width/2;
-        wpw = (double)Gdx.graphics.getWidth()/(double)width;
-        hph = (double)Gdx.graphics.getHeight()/(double)height;
+        wpw = (float)Gdx.graphics.getWidth()/(float)width;
+        hph = (float)Gdx.graphics.getHeight()/(float)height;
         parameter.size = (int)(35.0*wpw);
         parameter.characters = FONT_CHARACTERS;
         alert_font = generator.generateFont(parameter);
@@ -91,7 +91,7 @@ public class Openable implements Screen{
             front = game.robot.EnergyWarning2;
         }
         drawer.draw(game.robot.EnergyBack, x, y, (int)(200*scale), (int)(200*scale));
-        drawer.draw(game.robot.Energy, x+(game.robot.energy-energy)/3, y, (int)(200*((double)energy/(double)game.robot.energy)*scale), (int)(200*scale));
+        drawer.draw(game.robot.Energy, x+(game.robot.energy-energy)/3, y, (int)(200*((float)energy/(float)game.robot.energy)*scale), (int)(200*scale));
         drawer.draw(front, x, y, (int)(200*scale), (int)(200*scale));
 
     }
@@ -368,7 +368,7 @@ public class Openable implements Screen{
                     if (game.robot.skin != 0) {
                         drawer.draw(SRightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) ((200 - 200 * ball) * scale), (float) ((200 - 200 * ball) * scale), 1, 1, rotleg - ball * 180.0f * -1);
                     }
-                    final double v = y + (170.0f - (170 * ball)) * scale;
+                    final float v = y + (170.0f - (170 * ball)) * scale;
                     drawer.draw(LeftHand, (float) (x + 90 * scale), (float) v, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand - ball * 180.0f * -1);
                     if (game.robot.skin != 0) {
                         drawer.draw(SLeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) ((200 - 200 * ball) * scale), (float) ((200 - 200 * ball) * scale), 1, 1, rothand - ball * 180.0f * -1);
@@ -436,7 +436,7 @@ public class Openable implements Screen{
             if (game.robot.Eskin != 0) {
                 drawer.draw(SRightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) ((200 - 200 * ball) * scale), (float) ((200 - 200 * ball) * scale), 1, 1, rotleg - ball * 180.0f * -1);
             }
-            final double v = y + (170.0f - (170 * ball)) * scale;
+            final float v = y + (170.0f - (170 * ball)) * scale;
             drawer.draw(LeftHand, (float) (x + 90 * scale), (float) v, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand - ball * 180.0f * -1);
             if (game.robot.Eskin != 0) {
                 drawer.draw(SLeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) ((200 - 200 * ball) * scale), (float) ((200 - 200 * ball) * scale), 1, 1, rothand - ball * 180.0f * -1);
@@ -575,22 +575,22 @@ public class Openable implements Screen{
     public void DrawRobotIcon(SpriteBatchRubber drawer, int x, int y, float scale, int health) {
         if(y+510*scale>=height-70*scale){
             drawer.draw(game.robot.BackHealth, x, (float) (height-45*scale), (float) (200 * scale), (float) (70 * scale));
-            drawer.draw(game.robot.RobotHealth, x, (float) (height-45*scale), (float) (200 * scale * ((double)health / (double)game.robot.health)), (float) (70 * scale));
+            drawer.draw(game.robot.RobotHealth, x, (float) (height-45*scale), (float) (200 * scale * ((float)health / (float)game.robot.health)), (float) (70 * scale));
             drawer.draw(game.robot.RobotIcon, x, (float) (height-45*scale), (float) (200 * scale), (float) (70 * scale));
         }else {
             drawer.draw(game.robot.BackHealth, x, (float) (y + 510 * scale), (float) (200 * scale), (float) (70 * scale));
-            drawer.draw(game.robot.RobotHealth, x, (float) (y + 510 * scale), (float) (200 * scale * ((double)health / (double)game.robot.health)), (float) (70 * scale));
+            drawer.draw(game.robot.RobotHealth, x, (float) (y + 510 * scale), (float) (200 * scale * ((float)health / (float)game.robot.health)), (float) (70 * scale));
             drawer.draw(game.robot.RobotIcon, x, (float) (y + 510 * scale), (float) (200 * scale), (float) (70 * scale));
         }
     }
     public void DrawEnemyIcon(SpriteBatchRubber drawer, int x, int y, float scale, int health) {
         if(y+510*scale>=height-70*scale){
             drawer.draw(game.robot.BackHealth, x, (float) (height-45*scale), (float) (200 * scale), (float) (70 * scale));
-            drawer.draw(game.robot.EnemyHealth, x, (float) (height-45*scale), (float) (200 * scale * ((double)health / (double)game.robot.Ehealth)), (float) (70 * scale));
+            drawer.draw(game.robot.EnemyHealth, x, (float) (height-45*scale), (float) (200 * scale * ((float)health / (float)game.robot.Ehealth)), (float) (70 * scale));
             drawer.draw(game.robot.EnemyIcon, x, (float) (height-45*scale), (float) (200 * scale), (float) (70 * scale));
         }else {
             drawer.draw(game.robot.BackHealth, x, (float) (y + 510 * scale), (float) (200 * scale), (float) (70 * scale));
-            drawer.draw(game.robot.EnemyHealth, x, (float) (y + 510 * scale), (float) (200 * scale * ((double)health / (double)game.robot.Ehealth)), (float) (70 * scale));
+            drawer.draw(game.robot.EnemyHealth, x, (float) (y + 510 * scale), (float) (200 * scale * ((float)health / (float)game.robot.Ehealth)), (float) (70 * scale));
             drawer.draw(game.robot.EnemyIcon, x, (float) (y + 510 * scale), (float) (200 * scale), (float) (70 * scale));
         }
     }

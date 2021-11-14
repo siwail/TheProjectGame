@@ -227,7 +227,7 @@ public class RoboStructure {
         if(skin == 2){
             color = 1;
             Bmove_speed = -1;
-            Battack_speed = -2;
+            Battack_speed = -1;
         }
         if(skin == 3){
             color = 2;
@@ -277,7 +277,7 @@ public class RoboStructure {
         if(Eskin == 2){
             Ecolor = 1;
             EBmove_speed = -1;
-            EBattack_speed = -2;
+            EBattack_speed = -1;
         }
         if(Eskin == 3){
             Ecolor = 2;
