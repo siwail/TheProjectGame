@@ -19,8 +19,16 @@ public class Openable implements Screen{
     BitmapFont level_font;
     Texture door_left;
     Texture door_right;
-
+    Texture white_1;
+    Texture white_2;
+    Texture white_3;
+    Texture white_4;
+    Texture white_5;
+    Texture machine_2;
+    Texture machine_3;
+    Texture machine_4;
     Thread door;
+    Thread door2;
     SpriteBatchRubber drawer;
     FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Decoration/main_font.ttf"));
     FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -29,19 +37,32 @@ public class Openable implements Screen{
     boolean willClose = false;
     boolean isOpen = false;
     boolean pause = true;
+    int wd10;
     int type_close = 0;
     int width;
     int height;
     float wpw;
     float hph;
-    int open_x = 0;
+    int open_x_1 = -wd10;
+    int open_x_2 = -wd10;
+    int open_x_3 = -wd10;
+    int open_x_4 = -wd10;
+    int open_x_5 = -wd10;
+
     public void Start(){
         door_left =  new Texture("Interface/door_1.png");
         door_right=  new Texture("Interface/door_2.png");
-
+        white_1 =  new Texture("Interface/white_1.png");
+        white_2 =  new Texture("Interface/white_2.png");
+        white_3 =  new Texture("Interface/white_3.png");
+        white_4 =  new Texture("Interface/white_4.png");
+        white_5 =  new Texture("Interface/white_5.png");
+        machine_2 = new Texture("Object/machine_2.png");
+        machine_3 = new Texture("Object/machine_3.png");
+        machine_4 = new Texture("Object/machine_4.png");
         width = 1741;
         height = 810;
-        open_x = width/2;
+        wd10 = width/10;
         wpw = (float)Gdx.graphics.getWidth()/(float)width;
         hph = (float)Gdx.graphics.getHeight()/(float)height;
         parameter.size = (int)(35.0*wpw);
@@ -595,20 +616,111 @@ public class Openable implements Screen{
         }
     }
     public void DoorOpen(){
-        door = new Thread(){
+        door2 = new Thread(){
             @Override
             public void run(){
-                game.opened.play(0.5f);
-                Sleep(50);
-                while(open_x < width/2) {
-                    open_x += 5;
-                    Sleep( 3);
+                open_x_1 = wd10;
+                open_x_2 = wd10*2;
+                open_x_3 = wd10*3;
+                open_x_4 = wd10*4;
+                open_x_5 = wd10*5;
+                isOpen = false;
+
+
+
+
+                game.opened.play(0.1f);
+                while(open_x_5 > wd10*4 ){
+                    open_x_5-=2;
+                    Sleep(2);
                 }
+                game.opened.play(0.1f);
+                while(open_x_4 > wd10*3 ){
+                    open_x_4-=2;
+                    open_x_5-=2;
+                    Sleep(2);
+                }
+                game.opened.play(0.1f);
+                while(open_x_3 > wd10*2 ){
+                    open_x_3-=2;
+                    open_x_4-=2;
+                    open_x_5-=2;
+                    Sleep(2);
+                }
+                game.opened.play(0.1f);
+                while(open_x_2 > wd10 ){
+                    open_x_2-=2;
+                    open_x_3-=2;
+                    open_x_4-=2;
+                    open_x_5-=2;
+                    Sleep(2);
+                }
+                game.opened.play(0.1f);
+                while(open_x_1 > -wd10 ){
+                    open_x_1-=2;
+                    open_x_2-=2;
+                    open_x_3-=2;
+                    open_x_4-=2;
+                    open_x_5-=2;
+                    Sleep(2);
+                }
+                Sleep(50);
                 isOpen = true;
             }
         };
-        door.start();
+        door2.start();
     }
+
+    public void DoorClose(int type_close){
+        this.type_close = type_close;
+        if(!willClose) {
+            willClose = true;
+            door = new Thread() {
+                @Override
+                public void run() {
+
+                    game.closed.play(0.1f);
+                    while(open_x_1 < wd10 ){
+                        open_x_1+=2;
+                        open_x_2+=2;
+                        open_x_3+=2;
+                        open_x_4+=2;
+                        open_x_5+=2;
+                        Sleep(2);
+                    }
+                    game.closed.play(0.1f);
+                    while(open_x_2 < wd10*2 ){
+                        open_x_2+=2;
+                        open_x_3+=2;
+                        open_x_4+=2;
+                        open_x_5+=2;
+                        Sleep(2);
+                    }
+                    game.closed.play(0.1f);
+                    while(open_x_3 < wd10*3 ){
+                        open_x_3+=2;
+                        open_x_4+=2;
+                        open_x_5+=2;
+                        Sleep(2);
+                    }
+                    game.closed.play(0.1f);
+                    while(open_x_4 < wd10*4 ){
+                        open_x_4+=2;
+                        open_x_5+=2;
+                        Sleep(2);
+                    }
+                    while(open_x_5 < wd10*5 ){
+                        open_x_5+=2;
+                        Sleep(2);
+                    }
+                    Sleep(50);
+                    closed = true;
+                }
+            };
+
+            door.start();
+        }
+    }/*
     public void DoorClose(int type_close){
         this.type_close = type_close;
         if(!willClose) {
@@ -630,19 +742,97 @@ public class Openable implements Screen{
             door.start();
         }
     }
+      public void SceneOpen(){
+          Thread door = new Thread() {
+              @Override
+              public void run() {
+                  while(open_scene_state!= 100) {
+                      open_scene_state+=1;
+                      Sleep(20);
+                  }
+                  open_scene_state=0;
+              }
+          };
+
+          door.start();
+      }
+      public void CheckNextScene(SpriteBatchRubber drawer){
+          if(open_scene_state <= 20 && open_scene_state>0){
+              drawer.draw(white_2, width/20*(20-open_scene_state), 0, width, height);
+              drawer.draw(white_1, 0, height/-20*(20-open_scene_state), width, height);
+          }
+          if(open_scene_state > 20 && open_scene_state <= 40) {
+              drawer.draw(white_1, 0, 0, width, height);
+              drawer.draw(white_2, 0, 0, width, height);
+              drawer.draw(white_3, 0, height/20*(40-open_scene_state), width, height);
+              drawer.draw(white_3, width/20*(40-open_scene_state), 0, width, height);
+          }
+          if(open_scene_state > 40 && open_scene_state <= 60) {
+              drawer.draw(white_1, 0, 0, width, height);
+              drawer.draw(white_2, 0, 0, width, height);
+              drawer.draw(white_4, -width/4*(open_scene_state-40), -height/4*(open_scene_state-40), width+width/2*(open_scene_state-40),height+height/2*(open_scene_state-40));
+          }
+
+      }
+      }
+    
+
     public void CheckOpen(SpriteBatchRubber drawer){
         if(!isOpen) {
-            drawer.draw(door_right, open_x, 0, width, height);
-            drawer.draw(door_left, -open_x, 0, width, height);
+            drawer.draw(machine_1, open_x, 0, width / 8, width / 8);
+            drawer.draw(machine_1, width - (open_x), 0, width / 8, width / 8);
+        }
+    }*/
+    public void CheckOpen(SpriteBatchRubber drawer){
+        if(!isOpen) {
+            /*
+            for(int i=0;i<5;i++) drawer.draw(machine_1, open_x_4, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, open_x_3, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, open_x_2, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, open_x_1, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_5-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_4-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_3-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_2-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_1-wd10, (wd10)*i, wd10, wd10);
+             */
+            for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_5-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_2, open_x_4-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_3-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_2, open_x_2-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_1-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_5, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_3, width-open_x_4, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_3, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_3, width-open_x_2, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_1, (wd10)*i, wd10, wd10);
         }
     }
     public void CheckClose(SpriteBatchRubber drawer){
         if (willClose) {
-            drawer.draw(door_left, -open_x, 0, width, height);
-            drawer.draw(door_right, open_x, 0, width, height);
+           /*
+           for(int i=0;i<5;i++) drawer.draw(machine_1, open_x_4, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, open_x_3, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, open_x_2, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, open_x_1, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_5-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_4-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_3-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_2-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_1-wd10, (wd10)*i, wd10, wd10);
+            */
+            for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_5-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_2, open_x_4-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_3-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_2, open_x_2-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_1-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_5, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_3, width-open_x_4, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_3, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_3, width-open_x_2, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_1, (wd10)*i, wd10, wd10);
         }
     }
-
     public void DrawDefaultButton(SpriteBatchRubber drawer, Texture left_part, Texture center_part, Texture right_part, Texture back_light, Texture icon, int state, int x, int y, int size){
         int rstatex = (int)((float)size*state/100.0f);
         int rstatey = 0;

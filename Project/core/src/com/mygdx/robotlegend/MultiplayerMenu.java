@@ -102,7 +102,6 @@ public class MultiplayerMenu  extends Openable implements Screen{
         batch = new SpriteBatch();
         Start();
         Gdx.input.setInputProcessor(new MultiplayerMenuTouch(game, this));
-        open_x = 0;
         white = new Texture("Button/button_white.png");
         close = new Texture("Button/button_close.png");
         close_touched = new Texture("Button/button_close_touched.png");

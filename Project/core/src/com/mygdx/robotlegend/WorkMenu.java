@@ -47,7 +47,6 @@ public class WorkMenu extends Openable implements Screen {
     Texture leg_rd;
     Texture leg_cd;
     Texture saw_texture;
-    Texture[] fire = new Texture[4];
     TextureRegion lamp;
     TextureRegion[] light = new TextureRegion[2];
     TextureRegion saw;
@@ -138,10 +137,6 @@ public class WorkMenu extends Openable implements Screen {
         gear = new Texture("Item/gear.png");
         chip = new Texture("Item/chip.png");
         bulb = new Texture("Item/bulb.png");
-        fire[0] = new Texture("Object/fire_1.png");
-        fire[1] = new Texture("Object/fire_2.png");
-        fire[2] = new Texture("Object/fire_3.png");
-        fire[3] = new Texture("Object/fire_4.png");
 
         leg_lu = new Texture("Object/leg_lu.png");
         leg_ru = new Texture("Object/leg_ru.png");
@@ -153,7 +148,7 @@ public class WorkMenu extends Openable implements Screen {
         saw_texture = new Texture("Object/saw.png");
         saw = new TextureRegion(saw_texture, 300, 300);
 
-        open_x = 0;
+
         anime  = new Thread(){
             @Override
             public void run(){
@@ -312,29 +307,29 @@ public class WorkMenu extends Openable implements Screen {
             drawer.draw(blue_back, RS(width - 595), RS(370), RS(600), RS(160));
             item_font.draw(batch, "Параметры", RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, (game.robot.Hid*10)+(game.robot.Bid*15)+(game.robot.RHid*5)+(game.robot.LHid*5)+(game.robot.RLid*5)+(game.robot.LLid*5) +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
-            if(game.robot.Bhealth != 0){
-                item_green_font.draw(batch,  " +" + game.robot.Bhealth, RS((int)(((float)width-440.0)*wpw)), RS((int)(570.0*hph)));
+            if(Math.abs(game.robot.Bhealth) != 0){
+                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Bhealth), RS((int)(((float)width-440.0)*wpw)), RS((int)(570.0*hph)));
             }
             drawer.draw(energy, RS(width-250), RS(550), RS(150), RS(150));
             item_font.draw(batch, (game.robot.Hid*10)+"", RS((int)(((float)width-250.0)*wpw)), RS((int)(570.0*hph)));
-            if(game.robot.Benergy_speed != 0){
-                item_green_font.draw(batch,  " +" + game.robot.Benergy_speed, RS((int)(((float)width-190.0)*wpw)), RS((int)(570.0*hph)));
+            if(Math.abs(game.robot.Benergy_speed) != 0){
+                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Benergy_speed), RS((int)(((float)width-190.0)*wpw)), RS((int)(570.0*hph)));
             }
             drawer.draw(move_speed, RS(width-500), RS(380), RS(150), RS(150));
             item_font.draw(batch, (game.robot.LLid+game.robot.RLid) +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
-            if(game.robot.Bmove_speed != 0){
-                item_green_font.draw(batch,  " +" + game.robot.Bmove_speed, RS((int)(((float)width-440.0)*wpw)), RS((int)(400.0*hph)));
+            if(Math.abs(game.robot.Bmove_speed) != 0){
+                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Bmove_speed), RS((int)(((float)width-440.0)*wpw)), RS((int)(400.0*hph)));
             }
 
             drawer.draw(attack_speed, RS(width-250), RS(380), RS(150), RS(150));
             item_font.draw(batch, (game.robot.Bid)+"", RS((int)(((float)width-250.0)*wpw)), RS((int)(400.0*hph)));
-            if(game.robot.Battack_speed != 0){
-                item_green_font.draw(batch,  " +" + game.robot.Battack_speed, RS((int)(((float)width-190.0)*wpw)), RS((int)(400.0*hph)));
+            if(Math.abs(game.robot.Battack_speed) != 0){
+                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Battack_speed), RS((int)(((float)width-190.0)*wpw)), RS((int)(400.0*hph)));
             }
             drawer.draw(damage, RS(width-375), RS(210), RS(150), RS(150));
             item_font.draw(batch, (game.robot.LHid+game.robot.RHid)*2+"", RS((int)(((float)width-375.0)*wpw)), RS((int)(230.0*hph)));
-            if(game.robot.Bdamage != 0){
-                item_green_font.draw(batch,  " +" + game.robot.Bdamage, RS((int)(((float)width-315.0)*wpw)), RS((int)(230.0*hph)));
+            if(Math.abs(game.robot.Bdamage) != 0){
+                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Bdamage), RS((int)(((float)width-315.0)*wpw)), RS((int)(230.0*hph)));
             }
         }
         if(which_select == 1){
@@ -384,37 +379,37 @@ public class WorkMenu extends Openable implements Screen {
         if(cu){
             drawer.draw(leg_cu, (int)x-(int)(50*scale), height-y_cu, 400, 400);
             if(y_cu>=300){
-                drawer.draw(saw, (int)x-(int)(50*scale)+50, height-50-y_cu+50, 150*saw_scale, 150*saw_scale, (float) (300*saw_scale), (float) (300*saw_scale), 1, 1,  saw_rotate);
+                drawer.draw(saw, (int)x-(int)(50*scale)+50, height-50-y_cu+50, 150*saw_scale, 150*saw_scale,  (300*saw_scale),  (300*saw_scale), 1, 1,  saw_rotate);
             }
         }
         if(cd){
             drawer.draw(leg_cd, (int)x-(int)(50*scale), y_cd-400, 400, 400);
             if(y_cd>=400){
-                drawer.draw(saw, (int)x-(int)(50*scale)+50, y_cd-350+50, 150*saw_scale, 150*saw_scale, (float) (300*saw_scale), (float) (300*saw_scale), 1, 1,  saw_rotate);
+                drawer.draw(saw, (int)x-(int)(50*scale)+50, y_cd-350+50, 150*saw_scale, 150*saw_scale,  (300*saw_scale),  (300*saw_scale), 1, 1,  saw_rotate);
             }
         }
         if(ld){
             drawer.draw(leg_ld, (int)x-(int)(100*scale), y_ld-300, 400, 400);
             if(y_ld>=300){
-                drawer.draw(saw, (int)x-(int)(100*scale)+50, y_ld-250+50, 150*saw_scale, 150*saw_scale, (float) (300*saw_scale), (float) (300*saw_scale), 1, 1,  saw_rotate);
+                drawer.draw(saw, (int)x-(int)(100*scale)+50, y_ld-250+50, 150*saw_scale, 150*saw_scale,  (300*saw_scale),  (300*saw_scale), 1, 1,  saw_rotate);
             }
         }
         if(rd){
             drawer.draw(leg_rd, (int)x+(int)(10*scale), y_rd-300, 400, 400);
             if(y_rd>=300){
-                drawer.draw(saw, (int)x+(int)(10*scale)+50, y_rd-250+50, 150*saw_scale, 150*saw_scale, (float) (300*saw_scale), (float) (300*saw_scale), 1, 1,  saw_rotate);
+                drawer.draw(saw, (int)x+(int)(10*scale)+50, y_rd-250+50, 150*saw_scale, 150*saw_scale,  (300*saw_scale),  (300*saw_scale), 1, 1,  saw_rotate);
             }
         }
         if(lu){
             drawer.draw(leg_lu, (int)x-(int)(170*scale), height-y_lu, 500, 500);
             if(y_lu>=500){
-                drawer.draw(saw, (int)x-(int)(170*scale)+100, height-y_lu-80+100, 150*saw_scale, 150*saw_scale, (float) (300*saw_scale), (float) (300*saw_scale), 1, 1,  saw_rotate);
+                drawer.draw(saw, (int)x-(int)(170*scale)+100, height-y_lu-80+100, 150*saw_scale, 150*saw_scale,  (300*saw_scale),  (300*saw_scale), 1, 1,  saw_rotate);
             }
         }
         if(ru){
             drawer.draw(leg_ru, (int)x+(int)(30*scale)-10, height-y_ru, 500, 500);
             if(y_ru>=500){
-                drawer.draw(saw, (int)x+(int)(20*scale)-10+100, height-y_ru-80+100, 150*saw_scale, 150*saw_scale, (float) (300*saw_scale), (float) (300*saw_scale), 1, 1,  saw_rotate);
+                drawer.draw(saw, (int)x+(int)(20*scale)-10+100, height-y_ru-80+100, 150*saw_scale, 150*saw_scale,  (300*saw_scale),  (300*saw_scale), 1, 1,  saw_rotate);
             }
         }
         if(light_anime<3) {
@@ -752,6 +747,9 @@ public class WorkMenu extends Openable implements Screen {
     public void hide() { }
     @Override
     public void dispose() {
+        machine_4.dispose();
+        machine_2.dispose();
+        machine_3.dispose();
         red_touched.dispose();
         upgrade.dispose();
         game.robot.DisposeWorkMenuTextures();
@@ -780,11 +778,11 @@ public class WorkMenu extends Openable implements Screen {
         close.dispose();
         close_touched.dispose();
         max.dispose();
-        fire[0].dispose();
-        fire[1].dispose();
-        fire[2].dispose();
-        fire[3].dispose();
-
+        white_1.dispose();
+        white_2.dispose();
+        white_3.dispose();
+        white_4.dispose();
+        white_5.dispose();
         leg_lu.dispose();
         leg_ru.dispose();
         leg_cu.dispose();

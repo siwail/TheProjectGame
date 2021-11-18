@@ -201,6 +201,7 @@ public class GamePlay extends Openable implements Screen{
     int udp = 26980;
     int anime_begin = 1;
     int show_exp_x = -500;
+    int jetpack_distance = 5;
     float energy_circle_scale;
     float energy_circle_rotate;
     boolean up_cant = false;
@@ -542,7 +543,7 @@ public class GamePlay extends Openable implements Screen{
         }
         background = new Texture("Location/background_" + game.robot.level + ".png");
         floor = new Texture("Location/grass_alpha_" + game.robot.level + ".png");
-        open_x = 0;
+
         front_energy_scale = height * 2;
         batch = new SpriteBatch();
         AddSkins = new Thread() {
@@ -774,7 +775,7 @@ public class GamePlay extends Openable implements Screen{
                                 boom_anime = 1;
                             }
                             CheckBoom();
-                            Sleep(50);
+                            Sleep(60);
                         }
                         while (boom_height > 0) {
                             boom_height -= 8;
@@ -1210,7 +1211,7 @@ public class GamePlay extends Openable implements Screen{
                         if (closed) {
                             break;
                         }
-                        Sleep((int) (50 * speed));
+                        Sleep((int) ((game.robot.Eenergy_speed-15) * speed));
                     }
                 }
             }
@@ -1735,7 +1736,7 @@ public class GamePlay extends Openable implements Screen{
             DrawEnemyDead(drawer, Ex * (width / 10) + (int) Erobot_x, (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y - boom_anime*10, Escale * (1.0f - 0.03f * Ey), Erothand + 90, Erothead, Erotleg, Erot, 0, Edead_state);
         }
         if(isboom){
-            drawer.draw(booms[boom_anime-1], boom_x*(width/10)-250,  (height/5)*boom_y-60-10*boom_y+(height-boom_height), 500, boom_height);
+            drawer.draw(booms[boom_anime-1], boom_x*(width/10)-275,  (height/5)*boom_y-60-10*boom_y+(height-boom_height), 550, boom_height);
         }
         if(resized>0 || resizing){
             if(game.robot.level==4) {
@@ -1916,7 +1917,7 @@ public class GamePlay extends Openable implements Screen{
             }
             while(fire_state_1[ x ]<width/10*1.5f){
                 if(fire_x_1[ x ] == 0){
-                    broke_plus = 3;
+                    broke_plus = 1;
                 }
                 if(grass_fired){
                     grass_1_scale[ x ]-=0.01f;
@@ -1928,11 +1929,11 @@ public class GamePlay extends Openable implements Screen{
                 if(this.Ex==x && this.Ey==y && !Ejetpack_flying && fire_x_1[ x ] != 0){
                     DamageEnemy(game.robot.fire_damage);
                 }
-                Sleep(10);
+                Sleep(3);
             }
             while(fire_state_1[ x ]>1){
                 if(fire_x_1[ x ] == 0){
-                    broke_plus = 3;
+                    broke_plus = 1;
                 }
                 if(grass_fired){
                     grass_1_scale[ x ]-=0.05f;
@@ -1944,7 +1945,7 @@ public class GamePlay extends Openable implements Screen{
                 if(this.Ex==x && this.Ey==y && !Ejetpack_flying && fire_x_1[ x ] != 0){
                     DamageEnemy(game.robot.fire_damage);
                 }
-                Sleep(10);
+                Sleep(15);
             }
             if(grass_fired && grass_1_scale[ x-1 ] <= 0.1f){
                 grass_1_type[ x-1 ] = 0;
@@ -1960,7 +1961,7 @@ public class GamePlay extends Openable implements Screen{
             }
             while(fire_state_2[ x ]<width/10*1.5f){
                 if(fire_x_2[ x ] == 0){
-                    broke_plus = 3;
+                    broke_plus = 1;
                 }
                 if(grass_fired){
                     grass_2_scale[ x ]-=0.01f;
@@ -1972,11 +1973,11 @@ public class GamePlay extends Openable implements Screen{
                 if(this.Ex==x && this.Ey==y && !Ejetpack_flying && fire_x_2[ x ] != 0){
                     DamageEnemy(game.robot.fire_damage);
                 }
-                Sleep(10);
+                Sleep(3);
             }
             while(fire_state_2[ x ]>1){
                 if(fire_x_2[ x ] == 0){
-                    broke_plus = 3;
+                    broke_plus = 1;
                 }
                 if(grass_fired){
                     grass_1_scale[ x ]-=0.05f;
@@ -1988,7 +1989,7 @@ public class GamePlay extends Openable implements Screen{
                 if(this.Ex==x && this.Ey==y && !Ejetpack_flying && fire_x_2[ x ] != 0){
                     DamageEnemy(game.robot.fire_damage);
                 }
-                Sleep(10);
+                Sleep(15);
             }
             if(grass_fired && grass_2_scale[ x-1 ] <= 0.1f){
                 grass_2_type[ x-1 ] = 0;
@@ -2004,7 +2005,7 @@ public class GamePlay extends Openable implements Screen{
             }
             while(fire_state_3[ x ]<width/10*1.5f){
                 if(fire_x_3[ x ] == 0){
-                    broke_plus = 3;
+                    broke_plus = 1;
                 }
                 if(grass_fired){
                     grass_3_scale[ x ]-=0.01f;
@@ -2016,11 +2017,11 @@ public class GamePlay extends Openable implements Screen{
                 if(this.Ex==x && this.Ey==y && !Ejetpack_flying && fire_x_3[ x ] != 0){
                     DamageEnemy(game.robot.fire_damage);
                 }
-                Sleep(10);
+                Sleep(3);
             }
             while(fire_state_3[ x ]>1){
                 if(fire_x_3[ x ] == 0){
-                    broke_plus = 3;
+                    broke_plus = 1;
                 }
                 if(grass_fired){
                     grass_3_scale[ x ]-=0.05f;
@@ -2032,7 +2033,7 @@ public class GamePlay extends Openable implements Screen{
                 if(this.Ex==x && this.Ey==y && !Ejetpack_flying && fire_x_3[ x ] != 0){
                     DamageEnemy(game.robot.fire_damage);
                 }
-                Sleep(10);
+                Sleep(15);
             }
             if(grass_fired && grass_3_scale[ x-1 ] <= 0.1f){
                 grass_3_type[ x-1 ] = 0;
@@ -3422,7 +3423,6 @@ public class GamePlay extends Openable implements Screen{
                    fire_cant = true;
                    int dir_x = dir;
                    int dir_robot_y = 0;
-                   int distance = 5;
                    boolean is_fire_under = false;
                    while(true) {
                        if(y == 1){
@@ -3440,7 +3440,7 @@ public class GamePlay extends Openable implements Screen{
                                is_fire_under = true;
                            }
                        }
-                       if (x + dir_x<9 && x+dir_x>0 && distance >=0 ) {
+                       if (x + dir_x<9 && x+dir_x>0 && jetpack_distance >=0 ) {
 
                            if(robot_y < 50 && !jetpack_flying ){
                                robot_y+=5;
@@ -3509,7 +3509,7 @@ public class GamePlay extends Openable implements Screen{
                                             public void run() {
 
                                                 if (game.robot.jetpack == 1) {
-                                                    SetFire(x, y);
+                                                        SetFire(x, y);
                                                 } else {
                                                     if(y == 1){
                                                         fire_x_1[ x ] = 0;
@@ -3529,7 +3529,7 @@ public class GamePlay extends Openable implements Screen{
                                     UseMed();
                                     x += dir_x;
                                     robot_x = 0;
-                                    distance -= 1;
+                                    jetpack_distance -= 1;
 
                                 } else {
                                     if(!robotboom) {
@@ -3578,6 +3578,7 @@ public class GamePlay extends Openable implements Screen{
                     if(y == 3){
                         fire_x_3[ x ] = 0;
                     }
+
                     fire_cant = false;
                     robot_y = 0;
                     rotleg=0;
@@ -3639,6 +3640,11 @@ public class GamePlay extends Openable implements Screen{
     }
     @Override
     public void dispose (){
+        white_1.dispose();
+        white_2.dispose();
+        white_3.dispose();
+        white_4.dispose();
+        white_5.dispose();
         blaster[0].dispose();
         blaster[1].dispose();
         blaster[2].dispose();
@@ -3702,6 +3708,9 @@ public class GamePlay extends Openable implements Screen{
         level_back.dispose();
         level_front.dispose();
         level_line.dispose();
+        machine_4.dispose();
+        machine_2.dispose();
+        machine_3.dispose();
         energy_circle_texture.dispose();
         if(game.robot.level!=2) {
             fire_location[0].dispose();

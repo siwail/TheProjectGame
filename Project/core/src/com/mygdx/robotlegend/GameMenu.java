@@ -142,6 +142,7 @@ public class GameMenu extends Openable implements Screen{
     boolean icon_2_touch = false;
     boolean icon_3_touch = false;
     boolean icon_4_touch = false;
+
     int tutorial_scene_size;
     int scene_size = 0;
     int tutorial_scene = 0;
@@ -328,7 +329,6 @@ public class GameMenu extends Openable implements Screen{
         camp = new Texture("Interface/camp_" + game.robot.level + ".png");
         Start();
         robot_x = width-400;
-        open_x = 0;
         setRandomAnime();
         game.robot.UpdateSkins();
         batch = new SpriteBatch();
@@ -740,7 +740,7 @@ public class GameMenu extends Openable implements Screen{
 
         if(isTv){
             TextureRegion planet_region = new TextureRegion(planet, 400, 400);
-            drawer.draw(planet_region, width/2-tv_size/2, height/2-tv_size/2, tv_size/2, tv_size/2,  tv_size, tv_size,1.0f, 1.0f, planet_rotate);
+            drawer.draw(planet_region, width/2-tv_size/2, height/2-tv_size/2, tv_size/2, tv_size/2,  tv_size, tv_size,1.0f, 1.0f, planet_rotate, true);
         }
         if(scan){
             drawer.draw(scanner, 0, scan_y, width, scan_height);
@@ -785,7 +785,6 @@ public class GameMenu extends Openable implements Screen{
                     }
                 }
         }
-
 
         CheckClose(drawer);
         CheckOpen(drawer);
@@ -1290,6 +1289,14 @@ public class GameMenu extends Openable implements Screen{
     }
     @Override
     public void dispose () {
+        white_1.dispose();
+        white_2.dispose();
+        white_3.dispose();
+        white_4.dispose();
+        white_5.dispose();
+        machine_4.dispose();
+        machine_2.dispose();
+        machine_3.dispose();
         button_ship.dispose();
         hush[0].dispose();
         hush[1].dispose();

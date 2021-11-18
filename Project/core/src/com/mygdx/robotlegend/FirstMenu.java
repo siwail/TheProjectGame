@@ -284,6 +284,14 @@ public class FirstMenu  extends Openable implements Screen{
 }
 	@Override
 	public void dispose () {
+		white_1.dispose();
+		white_2.dispose();
+		white_3.dispose();
+		white_4.dispose();
+		white_5.dispose();
+		machine_4.dispose();
+		machine_2.dispose();
+		machine_3.dispose();
 		batch.dispose();
 		robo_texture.dispose();
 		for(Texture texture: backs){ texture.dispose(); }
