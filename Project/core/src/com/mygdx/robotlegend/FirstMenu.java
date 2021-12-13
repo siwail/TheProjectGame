@@ -1,17 +1,18 @@
 package com.mygdx.robotlegend;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class FirstMenu  extends Openable implements Screen{
 	SpriteBatch batch;
+	Sound check;
 	Texture[] backs = new Texture[5];
 	Texture[] head = new Texture[3];
 	Texture robo_texture;
 	Texture trailer;
-	Texture planet;
 	Texture space_1;
 	Texture space_2;
 	Texture button_left_part;
@@ -32,6 +33,7 @@ public class FirstMenu  extends Openable implements Screen{
 	boolean play_touch = false;
 	boolean is_trailer = true;
 	boolean trailer_started = false;
+	boolean trailer_dispose_need = false;
 	float rotate = 0;
 	float trailer_scale = 1.0f;
 	int button_exit_state = 0;
@@ -86,8 +88,15 @@ public class FirstMenu  extends Openable implements Screen{
 				drawer.draw(space_2_r, -space_5_px/2, -space_5_px/2, width/2+space_5_px/2, height/2+space_5_px/2, width+space_5_px, height+space_5_px, 1, 1, space_5_rot);
 
 			}
+				if(trailer_dispose_need){
+					trailer_dispose_need = false;
+					trailer.dispose();
+					space_1.dispose();
+					space_2.dispose();
+				}
 
-			CheckClose(drawer);
+
+			CheckDoor(drawer);
 			batch.end();
 			if(closed){
 				game.setGameMenu();
@@ -96,15 +105,16 @@ public class FirstMenu  extends Openable implements Screen{
 	@Override
 	public void show() {
 
-		game.MusicSwap(3);
+		game.MusicSwap(1);
 		batch = new SpriteBatch();
+		check = Gdx.audio.newSound(Gdx.files.internal("Sound/check1.wav"));
+
 		button_left_part = new Texture("Button/button_left_part.png");
 		button_right_part = new Texture("Button/button_right_part.png");
 		button_center_part = new Texture("Button/button_center_part.png");
 		back_light= new Texture("Interface/back_light.png");
 		button_exit_icon= new Texture("Interface/icon_exit.png");
 		button_play_icon= new Texture("Interface/icon_play.png");
-		planet = new Texture("Object/planet_3.png");
 		space_1 = new Texture("Decoration/space_1.png");
 		space_2 = new Texture("Decoration/space_2.png");
 		space_2_r = new TextureRegion(space_2, 960, 540);
@@ -113,6 +123,7 @@ public class FirstMenu  extends Openable implements Screen{
 		for(int i=0;i<5;i++){
 			backs[i] = new Texture("Interface/back" + (i+1) + ".png");
 		}
+
 		head[0] = new Texture("Object/logo_2.png");
 		head[1] = new Texture("Object/logo_3.png");
 		head[2] = new Texture("Object/logo_4.png");
@@ -254,6 +265,7 @@ public class FirstMenu  extends Openable implements Screen{
 				}
 				is_trailer = false;
 				trailer_scale = 1.0f;
+				trailer_dispose_need = true;
 			}
 		};
 	Start();
@@ -284,11 +296,7 @@ public class FirstMenu  extends Openable implements Screen{
 }
 	@Override
 	public void dispose () {
-		white_1.dispose();
-		white_2.dispose();
-		white_3.dispose();
-		white_4.dispose();
-		white_5.dispose();
+		check.dispose();
 		machine_4.dispose();
 		machine_2.dispose();
 		machine_3.dispose();
@@ -296,12 +304,6 @@ public class FirstMenu  extends Openable implements Screen{
 		robo_texture.dispose();
 		for(Texture texture: backs){ texture.dispose(); }
 		for(Texture texture: head){ texture.dispose(); }
-		door_right.dispose();
-		door_left.dispose();
-		trailer.dispose();
-		planet.dispose();
-		space_1.dispose();
-		space_2.dispose();
 		button_left_part.dispose();
 		button_right_part.dispose();
 		button_center_part.dispose();

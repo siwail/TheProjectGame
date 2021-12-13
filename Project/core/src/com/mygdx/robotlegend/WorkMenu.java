@@ -40,6 +40,13 @@ public class WorkMenu extends Openable implements Screen {
     Texture close;
     Texture close_touched;
     Texture max;
+    Texture state_bonus;
+    Texture state_back;
+    Texture state_frame;
+    Texture state_health;
+    Texture state_energy;
+    Texture state_damage;
+    Texture state_speed;
     Texture leg_lu;
     Texture leg_ru;
     Texture leg_cu;
@@ -98,114 +105,117 @@ public class WorkMenu extends Openable implements Screen {
     }
     @Override
     public void show() {
-        game.MusicSwap(4);
-        game.robot.SetWorkMenuTextures();
-        Gdx.input.setInputProcessor(new WorkMenuTouch(game, this));
-        Start();
-        x = width/2-400;
-        game.robot.UpdateParameters();
-        upgrade = Gdx.audio.newSound(Gdx.files.internal("Sound/upgrade.wav"));
-        lightt_1 = new Texture("Interface/light1.png");
-        lightt_2 = new Texture("Interface/light2.png");
-        light[0] = new TextureRegion(lightt_1, 960, 540);
-        light[1] = new TextureRegion(lightt_2, 960, 540);
-        lampt = new Texture("Interface/lamp_full.png");
-        lamp = new TextureRegion(lampt, 960, 540);
-        Frontground = new Texture("Interface/frontground.png");
-        not = new Texture("Interface/cross.png");
-        yes = new Texture("Interface/yes.png");
-        max = new Texture("Object/max.png");
-        frame = new Texture("Interface/frame.png");
-        damage = new Texture("Interface/damage_icon.png");
-        move_speed = new Texture("Interface/speed_move_icon.png");
-        attack_speed = new Texture("Interface/speed_attack_icon.png");
-        health = new Texture("Interface/health_icon.png");
-        energy = new Texture("Interface/energy_icon.png");
-        blue_back = new Texture("Interface/blue.png");
-        green_back = new Texture("Interface/green.png");
-        red_back = new Texture("Interface/red.png");
-        background = new Texture("Interface/back.png");
-        upgrade_1 = new Texture("Button/button_upgrade_1.png");
-        upgrade_2 = new Texture("Button/button_upgrade_2.png");
-        upgrade_touched = new Texture("Button/button_upgrade_touched.png");
-        close = new Texture("Button/button_close.png");
-        close_touched = new Texture("Button/button_close_touched.png");
-        red = new Texture("Button/button_red.png");
-        red_touched = new Texture("Button/button_red_touched.png");
-        metal = new Texture("Interface/metalic.png");
-        metall = new Texture("Item/metall.png");
-        gear = new Texture("Item/gear.png");
-        chip = new Texture("Item/chip.png");
-        bulb = new Texture("Item/bulb.png");
-
-        leg_lu = new Texture("Object/leg_lu.png");
-        leg_ru = new Texture("Object/leg_ru.png");
-        leg_cu = new Texture("Object/leg_cu.png");
-        leg_ld = new Texture("Object/leg_ld.png");
-        leg_rd = new Texture("Object/leg_rd.png");
-        leg_cd = new Texture("Object/leg_cd.png");
-
-        saw_texture = new Texture("Object/saw.png");
-        saw = new TextureRegion(saw_texture, 300, 300);
-
-
-        anime  = new Thread(){
-            @Override
-            public void run(){
-                while(true){
-                    light_anime = 1-light_anime;
-                    if(closed){
-                        break;
+            game.MusicSwap(4);
+            game.robot.SetWorkMenuTextures();
+            Gdx.input.setInputProcessor(new WorkMenuTouch(game, this));
+            Start();
+            x = width/2-400;
+            game.robot.UpdateParameters();
+            upgrade = Gdx.audio.newSound(Gdx.files.internal("Sound/upgrade.wav"));
+            lightt_1 = new Texture("Interface/light1.png");
+            lightt_2 = new Texture("Interface/light2.png");
+            light[0] = new TextureRegion(lightt_1, 960, 540);
+            light[1] = new TextureRegion(lightt_2, 960, 540);
+            lampt = new Texture("Interface/lamp_full.png");
+            lamp = new TextureRegion(lampt, 960, 540);
+            Frontground = new Texture("Interface/frontground.png");
+            not = new Texture("Interface/cross.png");
+            yes = new Texture("Interface/yes.png");
+            max = new Texture("Object/max.png");
+            frame = new Texture("Interface/frame.png");
+            damage = new Texture("Interface/damage_icon.png");
+            move_speed = new Texture("Interface/speed_move_icon.png");
+            attack_speed = new Texture("Interface/speed_attack_icon.png");
+            health = new Texture("Interface/health_icon.png");
+            energy = new Texture("Interface/energy_icon.png");
+            blue_back = new Texture("Interface/blue.png");
+            green_back = new Texture("Interface/green.png");
+            red_back = new Texture("Interface/red.png");
+            background = new Texture("Interface/back.png");
+            upgrade_1 = new Texture("Button/button_upgrade_1.png");
+            upgrade_2 = new Texture("Button/button_upgrade_2.png");
+            upgrade_touched = new Texture("Button/button_upgrade_touched.png");
+            close = new Texture("Button/button_close.png");
+            close_touched = new Texture("Button/button_close_touched.png");
+            red = new Texture("Button/button_red.png");
+            red_touched = new Texture("Button/button_red_touched.png");
+            metal = new Texture("Interface/metalic.png");
+            metall = new Texture("Item/metall.png");
+            gear = new Texture("Item/gear.png");
+            chip = new Texture("Item/chip.png");
+            bulb = new Texture("Item/bulb.png");
+            state_bonus = new Texture("Interface/state_bonus.png");
+            state_back = new Texture("Interface/state_back.png");
+            state_frame = new Texture("Interface/state_frame.png");
+            state_health = new Texture("Interface/state_health.png");
+            state_energy = new Texture("Interface/state_energy.png");
+            state_damage = new Texture("Interface/state_damage.png");
+            state_speed = new Texture("Interface/state_speed.png");
+            leg_lu = new Texture("Object/leg_lu.png");
+            leg_ru = new Texture("Object/leg_ru.png");
+            leg_cu = new Texture("Object/leg_cu.png");
+            leg_ld = new Texture("Object/leg_ld.png");
+            leg_rd = new Texture("Object/leg_rd.png");
+            leg_cd = new Texture("Object/leg_cd.png");
+            saw_texture = new Texture("Object/saw.png");
+            saw = new TextureRegion(saw_texture, 300, 300);
+            anime  = new Thread(){
+                @Override
+                public void run(){
+                    while(true){
+                        light_anime = 1-light_anime;
+                        if(closed){
+                            break;
+                        }
+                        Sleep( 500);
                     }
-                    Sleep( 500);
                 }
-            }
-        };
-        anime_hand = new Thread(){
-            @Override
-            public void run(){
-                int dir = 0;
-                int dir_lamp = 0;
-                int time = game.random.nextInt(10)+6;
-                while(!closed){
-                    if(dir_lamp == 1){
-                        rotlamp+=0.2f;
-                        if(rotlamp>=10){
-                            dir_lamp=0;
+            };
+            anime_hand = new Thread(){
+                @Override
+                public void run(){
+                    int dir = 0;
+                    int dir_lamp = 0;
+                    int time = game.random.nextInt(10)+6;
+                    while(!closed){
+                        if(dir_lamp == 1){
+                            rotlamp+=0.2f;
+                            if(rotlamp>=10){
+                                dir_lamp=0;
+                            }
+                        }else{
+                            rotlamp-=0.2f;
+                            if(rotlamp<=-10){
+                                dir_lamp=1;
+                            }
                         }
-                    }else{
-                        rotlamp-=0.2f;
-                        if(rotlamp<=-10){
-                            dir_lamp=1;
+                        if(dir==1){
+                            x+=0.1;
+                            scale-=0.0008f;
+                            rothead+=0.2f;
+                            rothand-=0.1f;
+                            if(rothead>=4.0f){
+                                dir=2;
+                                time = game.random.nextInt(10)+6;
+                            }
+                        }else{
+                            x-=0.1;
+                            scale+=0.0008f;
+                            rothead-=0.2f;
+                            rothand+=0.1f;
+                            if(rothead<=-4.0f){
+                                dir=1;
+                                time = game.random.nextInt(10)+6;
+                            }
                         }
+                        Sleep( time);
                     }
-                    if(dir==1){
-                        x+=0.1;
-                        scale-=0.0008f;
-                        rothead+=0.2f;
-                        rothand-=0.1f;
-                        if(rothead>=4.0f){
-                            dir=2;
-                            time = game.random.nextInt(10)+6;
-                        }
-                    }else{
-                        x-=0.1;
-                        scale+=0.0008f;
-                        rothead-=0.2f;
-                        rothand+=0.1f;
-                        if(rothead<=-4.0f){
-                            dir=1;
-                            time = game.random.nextInt(10)+6;
-                        }
-                    }
-                    Sleep( time);
                 }
-            }
-        };
-        drawer = new SpriteBatchRubber(this, batch);
-        anime_hand.start();
-        anime.start();
-        DoorOpen();
+            };
+            drawer = new SpriteBatchRubber(this, batch);
+            anime_hand.start();
+            anime.start();
+            DoorOpen();
     }
     @Override
     public void render(float delta) {
@@ -299,52 +309,89 @@ public class WorkMenu extends Openable implements Screen {
                 drawer.draw(not, RS(width - 175), RS(220), RS(100), RS(100));
             }
         }
-        drawer.draw(health, RS(width-500), RS(550), RS(150), RS(150));
         if(which_select!=0) {
             item_font.draw(batch, "Здоровье", RS((int) (((float) width - 350.0) * wpw)), RS((int) (650.0 * hph)));
         }
         if(which_select == 0){
-            drawer.draw(blue_back, RS(width - 595), RS(370), RS(600), RS(160));
             item_font.draw(batch, "Параметры", RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
-            item_font.draw(batch, (game.robot.Hid*10)+(game.robot.Bid*15)+(game.robot.RHid*5)+(game.robot.LHid*5)+(game.robot.RLid*5)+(game.robot.LLid*5) +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
+
+            drawer.draw(state_back, RS(width-550), RS(570), RS(525), RS(75));
+            drawer.draw(state_bonus, RS(width-540), RS(570), RS((int)(525.0f*(game.robot.health)/300.0f)), RS(75));
+            drawer.draw(state_health, RS(width-540), RS(570), RS((int)(525.0f*(game.robot.health-game.robot.Bhealth)/300.0f)), RS(75));
+            drawer.draw(state_frame, RS(width-550), RS(570), RS(525), RS(75));
+            item_font.draw(batch, game.robot.health +"", RS((int)(((float)width-410.0)*wpw)), RS((int)(625.0*hph)));
+            drawer.draw(health, RS(width-560), RS(540), RS(130), RS(130));
             if(Math.abs(game.robot.Bhealth) != 0){
-                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Bhealth), RS((int)(((float)width-440.0)*wpw)), RS((int)(570.0*hph)));
-            }
-            drawer.draw(energy, RS(width-250), RS(550), RS(150), RS(150));
-            item_font.draw(batch, (game.robot.Hid*10)+"", RS((int)(((float)width-250.0)*wpw)), RS((int)(570.0*hph)));
-            if(Math.abs(game.robot.Benergy_speed) != 0){
-                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Benergy_speed), RS((int)(((float)width-190.0)*wpw)), RS((int)(570.0*hph)));
-            }
-            drawer.draw(move_speed, RS(width-500), RS(380), RS(150), RS(150));
-            item_font.draw(batch, (game.robot.LLid+game.robot.RLid) +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
-            if(Math.abs(game.robot.Bmove_speed) != 0){
-                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Bmove_speed), RS((int)(((float)width-440.0)*wpw)), RS((int)(400.0*hph)));
+                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Bhealth), RS((int)(((float)width-180.0)*wpw)), RS((int)(625.0*hph)));
             }
 
-            drawer.draw(attack_speed, RS(width-250), RS(380), RS(150), RS(150));
-            item_font.draw(batch, (game.robot.Bid)+"", RS((int)(((float)width-250.0)*wpw)), RS((int)(400.0*hph)));
-            if(Math.abs(game.robot.Battack_speed) != 0){
-                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Battack_speed), RS((int)(((float)width-190.0)*wpw)), RS((int)(400.0*hph)));
+
+            drawer.draw(state_back, RS(width-550), RS(470), RS(525), RS(75));
+            drawer.draw(state_bonus, RS(width-540), RS(470), RS((int)(525.0f*(90-game.robot.energy_speed)/90.0f)), RS(75));
+            drawer.draw(state_energy, RS(width-540), RS(470), RS((int)(525.0f*((90-game.robot.energy_speed)+game.robot.Benergy_speed)/90.0f)), RS(75));
+            drawer.draw(state_frame, RS(width-550), RS(470), RS(525), RS(75));
+            item_font.draw(batch, (90-game.robot.energy_speed+game.robot.Benergy_speed) +"", RS((int)(((float)width-410.0)*wpw)), RS((int)(525.0*hph)));
+            drawer.draw(energy, RS(width-560), RS(435), RS(150), RS(150));
+            if(Math.abs(game.robot.Benergy_speed) != 0){
+                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Benergy_speed), RS((int)(((float)width-180.0)*wpw)), RS((int)(525.0*hph)));
             }
-            drawer.draw(damage, RS(width-375), RS(210), RS(150), RS(150));
-            item_font.draw(batch, (game.robot.LHid+game.robot.RHid)*2+"", RS((int)(((float)width-375.0)*wpw)), RS((int)(230.0*hph)));
+
+
+
+            drawer.draw(state_back, RS(width-550), RS(370), RS(525), RS(75));
+            drawer.draw(state_bonus, RS(width-540), RS(370), RS((int)(525.0f*(11-game.robot.move_speed)/11.0f)), RS(75));
+            drawer.draw(state_speed, RS(width-540), RS(370), RS((int)(525.0f*((11-game.robot.move_speed)+game.robot.Bmove_speed)/11.0f)), RS(75));
+            drawer.draw(state_frame, RS(width-550), RS(370), RS(525), RS(75));
+            item_font.draw(batch, (11-game.robot.move_speed+game.robot.Bmove_speed) +"", RS((int)(((float)width-410.0)*wpw)), RS((int)(425.0*hph)));
+            drawer.draw(move_speed, RS(width-545), RS(350), RS(120), RS(120));
+            if(Math.abs(game.robot.Bmove_speed) != 0){
+                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Bmove_speed), RS((int)(((float)width-180.0)*wpw)), RS((int)(425.0*hph)));
+            }
+
+
+
+            drawer.draw(state_back, RS(width-550), RS(270), RS(525), RS(75));
+            drawer.draw(state_bonus, RS(width-540), RS(270), RS((int)(525.0f*(8-game.robot.attack_speed)/8.0f)), RS(75));
+            drawer.draw(state_speed, RS(width-540), RS(270), RS((int)(525.0f*((8-game.robot.attack_speed)+game.robot.Battack_speed)/8.0f)), RS(75));
+            drawer.draw(state_frame, RS(width-550), RS(270), RS(525), RS(75));
+            item_font.draw(batch, (8-game.robot.attack_speed+game.robot.Battack_speed) +"", RS((int)(((float)width-410.0)*wpw)), RS((int)(325.0*hph)));
+            drawer.draw(attack_speed, RS(width-545), RS(250), RS(120), RS(120));
+            if(Math.abs(game.robot.Battack_speed) != 0){
+                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Battack_speed), RS((int)(((float)width-180.0)*wpw)), RS((int)(325.0*hph)));
+            }
+
+
+            drawer.draw(state_back, RS(width-550), RS(170), RS(525), RS(75));
+            drawer.draw(state_bonus, RS(width-540), RS(170), RS((int)(525.0f*(game.robot.damage)/30.0f)), RS(75));
+            drawer.draw(state_damage, RS(width-540), RS(170), RS((int)(525.0f*(game.robot.damage-game.robot.Bdamage)/30.0f)), RS(75));
+            drawer.draw(state_frame, RS(width-550), RS(170), RS(525), RS(75));
+            item_font.draw(batch, (game.robot.damage-game.robot.Bdamage) +"", RS((int)(((float)width-410.0)*wpw)), RS((int)(225.0*hph)));
+            drawer.draw(damage, RS(width-560), RS(155), RS(110), RS(110));
             if(Math.abs(game.robot.Bdamage) != 0){
-                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Bdamage), RS((int)(((float)width-315.0)*wpw)), RS((int)(230.0*hph)));
+                item_green_font.draw(batch,  " +" + Math.abs(game.robot.Bdamage), RS((int)(((float)width-180.0)*wpw)), RS((int)(225.0*hph)));
             }
         }
         if(which_select == 1){
             item_font.draw(batch, "Мозг робота Ур. " + game.robot.Hid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, game.robot.Hid*10 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
+            drawer.draw(state_back, RS(width-550), RS(380), RS(525), RS(75));
+            drawer.draw(state_bonus, RS(width-540), RS(380), RS((int)(525.0f*(90-game.robot.energy_speed)/90.0f)), RS(75));
+            drawer.draw(state_energy, RS(width-540), RS(380), RS((int)(525.0f*((90-game.robot.energy_speed)+game.robot.Benergy_speed)/90.0f)), RS(75));
+            drawer.draw(state_frame, RS(width-550), RS(380), RS(525), RS(75));
             drawer.draw(energy, RS(width-500), RS(380), RS(150), RS(150));
             item_font.draw(batch, "Энергия", RS((int)(((float)width-350.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (game.robot.Hid*10)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, (90-game.robot.energy_speed)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
         }
         if(which_select == 2){
             item_font.draw(batch, "Корпус Ур. " + game.robot.Bid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, game.robot.Bid*15 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
+            drawer.draw(state_back, RS(width-550), RS(380), RS(525), RS(75));
+            drawer.draw(state_bonus, RS(width-540), RS(380), RS((int)(525.0f*(90-game.robot.energy_speed)/90.0f)), RS(75));
+            drawer.draw(state_energy, RS(width-540), RS(380), RS((int)(525.0f*((90-game.robot.energy_speed)+game.robot.Benergy_speed)/90.0f)), RS(75));
+            drawer.draw(state_frame, RS(width-550), RS(380), RS(525), RS(75));
             drawer.draw(attack_speed, RS(width-500), RS(380), RS(150), RS(150));
             item_font.draw(batch, "Динамика", RS((int)(((float)width-340.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (game.robot.Bid)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, (8-game.robot.attack_speed)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
         }
         if(which_select == 3){
             item_font.draw(batch, "Механо-нога Ур. " + game.robot.LLid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
@@ -417,8 +464,7 @@ public class WorkMenu extends Openable implements Screen {
         }
         drawer.draw(Frontground, 0, 0, width, height);
         drawer.draw(lamp, -200.0f, -250, (float)(width/2-100), height+350.0f, (float) (width), (float) (height+300), 1, 1, rotlamp);
-        CheckOpen(drawer);
-        CheckClose(drawer);
+        CheckDoor(drawer);
         batch.end();
         if(closed){
             game.setGameMenu();
@@ -759,8 +805,6 @@ public class WorkMenu extends Openable implements Screen {
         red.dispose();
         background.dispose();
         frame.dispose();
-        door_left.dispose();
-        door_right.dispose();
         upgrade_1.dispose();
         upgrade_2.dispose();
         upgrade_touched.dispose();
@@ -778,16 +822,18 @@ public class WorkMenu extends Openable implements Screen {
         close.dispose();
         close_touched.dispose();
         max.dispose();
-        white_1.dispose();
-        white_2.dispose();
-        white_3.dispose();
-        white_4.dispose();
-        white_5.dispose();
         leg_lu.dispose();
         leg_ru.dispose();
         leg_cu.dispose();
         leg_ld.dispose();
         leg_rd.dispose();
         leg_cd.dispose();
+        state_bonus.dispose();
+        state_back.dispose();
+        state_frame.dispose();
+        state_health.dispose();
+        state_energy.dispose();
+        state_damage.dispose();
+        state_speed.dispose();
     }
     }

@@ -17,13 +17,6 @@ public class Openable implements Screen{
     BitmapFont item_green_font;
     BitmapFont level_big_font;
     BitmapFont level_font;
-    Texture door_left;
-    Texture door_right;
-    Texture white_1;
-    Texture white_2;
-    Texture white_3;
-    Texture white_4;
-    Texture white_5;
     Texture machine_2;
     Texture machine_3;
     Texture machine_4;
@@ -50,13 +43,6 @@ public class Openable implements Screen{
     int open_x_5 = -wd10;
 
     public void Start(){
-        door_left =  new Texture("Interface/door_1.png");
-        door_right=  new Texture("Interface/door_2.png");
-        white_1 =  new Texture("Interface/white_1.png");
-        white_2 =  new Texture("Interface/white_2.png");
-        white_3 =  new Texture("Interface/white_3.png");
-        white_4 =  new Texture("Interface/white_4.png");
-        white_5 =  new Texture("Interface/white_5.png");
         machine_2 = new Texture("Object/machine_2.png");
         machine_3 = new Texture("Object/machine_3.png");
         machine_4 = new Texture("Object/machine_4.png");
@@ -94,13 +80,13 @@ public class Openable implements Screen{
         level_big_font.setColor(Color.WHITE);
 
     }
-    public void DrawBullet(SpriteBatchRubber drawer, int x, int y, int type) {
+    public void DrawBullet(SpriteBatchRubber drawer, int x, int y, int type, int size) {
         if(type == 1) {
-            drawer.draw(game.robot.Bullet, x, y, 25, 20);
-            drawer.draw(game.robot.Select, x-5, y-5, 35, 30);
+            drawer.draw(game.robot.Bullet, x, y, size, size-5);
+            drawer.draw(game.robot.Select, x-7, y-5, size+15, size+10);
         }else{
-            drawer.draw(game.robot.EBullet, x, y, 25, 20);
-            drawer.draw(game.robot.ESelect, x-5, y-5, 35, 30);
+            drawer.draw(game.robot.EBullet, x, y, size, size-5);
+            drawer.draw(game.robot.ESelect, x-7, y-5, size+15, size+10);
         }
     }
     public void DrawEnergy(SpriteBatchRubber drawer, int x, int y, float scale, int energy, int energy_warning) {
@@ -664,8 +650,8 @@ public class Openable implements Screen{
                     open_x_5-=2;
                     Sleep(2);
                 }
-                Sleep(50);
                 isOpen = true;
+                Sleep(50);
             }
         };
         door2.start();
@@ -783,8 +769,8 @@ public class Openable implements Screen{
             drawer.draw(machine_1, width - (open_x), 0, width / 8, width / 8);
         }
     }*/
-    public void CheckOpen(SpriteBatchRubber drawer){
-        if(!isOpen) {
+    public void CheckDoor(SpriteBatchRubber drawer){
+        if(!isOpen || willClose) {
             /*
             for(int i=0;i<5;i++) drawer.draw(machine_1, open_x_4, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_1, open_x_3, (wd10)*i, wd10, wd10);
@@ -808,9 +794,9 @@ public class Openable implements Screen{
             for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_1, (wd10)*i, wd10, wd10);
         }
     }
-    public void CheckClose(SpriteBatchRubber drawer){
+   /* public void CheckClose(SpriteBatchRubber drawer){
         if (willClose) {
-           /*
+
            for(int i=0;i<5;i++) drawer.draw(machine_1, open_x_4, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_1, open_x_3, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_1, open_x_2, (wd10)*i, wd10, wd10);
@@ -820,7 +806,7 @@ public class Openable implements Screen{
             for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_3-wd10, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_2-wd10, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_1-wd10, (wd10)*i, wd10, wd10);
-            */
+
             for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_5-wd10, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_2, open_x_4-wd10, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_3-wd10, (wd10)*i, wd10, wd10);
@@ -833,6 +819,7 @@ public class Openable implements Screen{
             for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_1, (wd10)*i, wd10, wd10);
         }
     }
+    */
     public void DrawDefaultButton(SpriteBatchRubber drawer, Texture left_part, Texture center_part, Texture right_part, Texture back_light, Texture icon, int state, int x, int y, int size){
         int rstatex = (int)((float)size*state/100.0f);
         int rstatey = 0;

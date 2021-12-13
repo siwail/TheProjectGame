@@ -11,10 +11,6 @@ import java.util.Random;
 public class MainGame extends Game {
     Preferences safes;
     Music music;
-    Music music_war;
-    Music music_wave;
-    Music music_main;
-    Music music_rl;
     Random random;
     Sound click;
     Sound opened;
@@ -22,9 +18,7 @@ public class MainGame extends Game {
     Server server;
     Client client;
     RoboStructure robot = new RoboStructure(this);
-    int music_type = 1;
-    boolean music_play = true;
-
+    boolean autoplay_enabled = false;
     int max_planet = 4;
     @Override
     public void create() {
@@ -40,169 +34,26 @@ public class MainGame extends Game {
         random = new Random();
         robot.SetFirstChanges();
         robot.UpdateTextures();
-        music_main = Gdx.audio.newMusic(Gdx.files.internal("Sound/wave.wav"));
-        music_main.setVolume(0.3f);
-        music_main.setLooping(true);
-        music_rl = Gdx.audio.newMusic(Gdx.files.internal("Sound/sound.mp3"));
-        music_rl.setVolume(0.3f);
-        music_rl.setLooping(true);
-        music_wave = Gdx.audio.newMusic(Gdx.files.internal("Sound/rl.mp3"));
-        music_wave.setVolume(0.3f);
-        music_wave.setLooping(true);
-        if(random.nextBoolean())
-        music_war = Gdx.audio.newMusic(Gdx.files.internal("Sound/music.mp3"));
-        else music_war = Gdx.audio.newMusic(Gdx.files.internal("Sound/dont.mp3"));
-        music_war.setVolume(0.1f);
-        music_war.setLooping(true);
-        music = Gdx.audio.newMusic(Gdx.files.internal("Sound/rl2.mp3"));
-        music.setVolume(0.2f);
-        music.setLooping(true);
-        music.play();
         robot.level = random.nextInt(4)+1;
         setScreen(new FirstMenu(this));
     }
     public void MusicSwap(int type){
-        if(music_type == 1) {
+        if(type != 1) {
+        if(music.isPlaying()){
             music.stop();
         }
-        if(music_type == 2) {
-            Thread sound_thread = new Thread(){
-                public void run() {
-                    music_war.setVolume(0.15f);
-                    try {
-                        Thread.sleep(150);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    music_war.setVolume(0.05f);
-                    try {
-                        Thread.sleep(150);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    music_war.stop();
-                    music_war.setVolume(0.1f);
-                }
-            };
-            sound_thread.start();
-
+            music.dispose();
         }
-        if(music_type == 3) {
-            Thread sound_thread = new Thread(){
-                public void run() {
-                    music_wave.setVolume(0.2f);
-                    try {
-                        Thread.sleep(150);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    music_wave.setVolume(0.1f);
-                    try {
-                        Thread.sleep(150);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    music_wave.stop();
-                    music_wave.setVolume(0.3f);
-                }
-            };
-            sound_thread.start();
-
-        }
-        if(music_type == 4) {
-            music_main.stop();
-        }
-        if(music_type == 5) {
-            music_rl.stop();
-        }
-        music_type = type;
-        if(music_type == 1) {
-            music.play();
-        }
-        if(music_type == 2) {
-            Thread sound_thread = new Thread(){
-                public void run() {
-                    music_war.setVolume(0.05f);
-                    try {
-                        Thread.sleep(150);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    music_war.setVolume(0.08f);
-                    try {
-                        Thread.sleep(150);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    music_war.setVolume(0.1f);
-                }
-            };
-            sound_thread.start();
-            music_war.play();
-
-        }
-        if(music_type == 3) {
-            Thread sound_thread = new Thread(){
-                public void run() {
-                    music_wave.setVolume(0.08f);
-                    try {
-                        Thread.sleep(150);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    music_wave.setVolume(0.15f);
-                    try {
-                        Thread.sleep(150);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    music_wave.setVolume(0.2f);
-                }
-            };
-            sound_thread.start();
-            music_wave.play();
-        }
-        if(music_type == 4) {
-            music_main.play();
-        }
-        if(music_type == 5) {
-            music_rl.play();
-        }
+        music = Gdx.audio.newMusic(Gdx.files.internal("Sound/music_" + type + ".mp3"));
+        music.setVolume(0.3f);
+        music.setLooping(true);
+        music.play();
     }
     public void MusicSet(){
-        music_play = !music_play;
-        if(!music_play) {
-            if (music_type == 1) {
-                music.pause();
-            }
-            if (music_type == 2) {
-                music_war.pause();
-            }
-            if (music_type == 3) {
-                music_wave.pause();
-            }
-            if(music_type == 4) {
-                music_main.pause();
-            }
-            if(music_type == 5) {
-                music_rl.pause();
-            }
+        if(music.isPlaying()){
+            music.pause();
         }else{
-            if (music_type == 1) {
-                music.play();
-            }
-            if (music_type == 2) {
-                music_war.play();
-            }
-            if (music_type == 3) {
-                music_wave.play();
-            }
-            if(music_type == 4) {
-                music_main.play();
-            }
-            if(music_type == 5) {
-                music_rl.play();
-            }
+            music.play();
         }
     }
     public void setGamePlay(boolean online, boolean host){

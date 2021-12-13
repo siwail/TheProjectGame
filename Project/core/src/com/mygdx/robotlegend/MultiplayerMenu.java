@@ -82,8 +82,7 @@ public class MultiplayerMenu  extends Openable implements Screen{
         }else{
             drawer.draw(white, width-600, height-300, 400, 200);
         }
-        CheckClose(drawer);
-        CheckOpen(drawer);
+        CheckDoor(drawer);
         if(closed){
             if(type_close == 1) {
                 game.setGameMenu();

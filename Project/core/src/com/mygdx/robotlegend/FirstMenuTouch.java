@@ -41,6 +41,14 @@ public class FirstMenuTouch implements InputProcessor {
                 firstMenu.play_touch = true;
                 firstMenu.DoorClose(1);
             }
+            if (screenX >= SX(600) && screenX <= SX(firstMenu.width / 2 + 300) && screenY >= SY(firstMenu.height / 2 - 350) && screenY <= SY(firstMenu.height / 2 - 100)) {
+                game.autoplay_enabled = !game.autoplay_enabled;
+                if(game.autoplay_enabled){
+                    firstMenu.check.play(1.0f);
+                }else{
+                    firstMenu.check.play(0.3f);
+                }
+            }
         }
         return false;
     }

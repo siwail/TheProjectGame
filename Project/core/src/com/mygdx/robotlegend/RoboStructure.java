@@ -28,6 +28,16 @@ public class RoboStructure {
     int LHid = 1; //Левая рука
     int RLid = 1; //Правая нога
     int LLid = 1; //Левая нога
+    int Hl = 1;
+    int Bl = 1;
+    int RHl = 1; //Правая рука
+    int LHl = 1; //Левая рука
+    int RLl = 1; //Правая нога
+    int LLl = 1; //Левая нога
+    int BLeg = 1;
+    int BHand = 1;
+    int BHead = 1;
+    int BBody = 1;
     int health = 0;
     int damage = 2;
     int attack_speed;
@@ -147,6 +157,12 @@ public class RoboStructure {
     int ELHid = 1;
     int ERLid = 1;
     int ELLid = 1;
+    int EHl = 1;
+    int EBl = 1;
+    int ERHl = 1;
+    int ELHl = 1;
+    int ERLl = 1;
+    int ELLl = 1;
     int skin = 0;
     int Ehealth = 100;
     int Edamage;
@@ -206,6 +222,180 @@ public class RoboStructure {
 
         ChangeSkinBust();
         EChangeSkinBust();
+    }
+    //TYPES: 1 - health; 2 - damage; 3 - energy; 4 - attack_speed; 5 - move_speed
+    int TR(int part, int model, int level, int type){ //TakeRatio
+        float lvl = level;
+        float result = 0;
+        if(part == 1){//head
+            if(model == 1){
+                if(type == 1){
+                    result = 12.5f*level;
+                }
+                if(type == 3){
+                    result = 8f*level;
+                }
+            }
+            if(model == 2){
+                if(type == 1){
+                    result = 13.5f*level;
+                }
+                if(type == 3){
+                    result = 8.5f*level;
+                }
+            }
+            if(model == 3){
+                if(type == 1){
+                    result = 14.5f*level;
+                }
+                if(type == 3){
+                    result = 9f*level;
+                }
+            }
+            if(model == 4){
+                if(type == 1){
+                    result = 15.0f*level;
+                }
+                if(type == 3){
+                    result = 9.5f*level;
+                }
+            }
+            if(model == 5){
+                if(type == 1){
+                    result = 16.0f*level;
+                }
+                if(type == 3){
+                    result = 10f*level;
+                }
+            }
+        }
+        if(part == 2){//body
+            if(model == 1){
+                if(type == 1){
+                    result = 29.0f*level;
+                }
+                if(type == 4){
+                    result = 1.0f*level;
+                }
+            }
+            if(model == 2){
+                if(type == 1){
+                    result = 31.0f*level;
+                }
+                if(type == 4){
+                    result = 1.2f*level;
+                }
+            }
+            if(model == 3){
+                if(type == 1){
+                    result = 33.0f*level;
+                }
+                if(type == 4){
+                    result = 1.35f*level;
+                }
+            }
+            if(model == 4){
+                if(type == 1){
+                    result = 36.0f*level;
+                }
+                if(type == 4){
+                    result = 1.4f*level;
+                }
+            }
+            if(model == 5){
+                if(type == 1){
+                    result = 40.0f*level;
+                }
+                if(type == 4){
+                    result = 1.5f*level;
+                }
+            }
+        }
+        if(part == 3){//leg
+            if(model == 1){
+                if(type == 1){
+                    result = 13.0f*level;
+                }
+                if(type == 5){
+                    result = 1.0f*level;
+                }
+            }
+            if(model == 2){
+                if(type == 1){
+                    result = 15.0f*level;
+                }
+                if(type == 5){
+                    result = 1.2f*level;
+                }
+            }
+            if(model == 3){
+                if(type == 1){
+                    result = 16.0f*level;
+                }
+                if(type == 5){
+                    result = 1.25f*level;
+                }
+            }
+            if(model == 4){
+                if(type == 1){
+                    result = 19.0f*level;
+                }
+                if(type == 5){
+                    result = 1.35f*level;
+                }
+            }
+            if(model == 5){
+                if(type == 1){
+                    result = 22.0f*level;
+                }
+                if(type == 5){
+                    result = 1.5f*level;
+                }
+            }
+        }
+        if(part == 4){//hand
+            if(model == 1){
+                if(type == 1){
+                    result = 11.0f*level;
+                }
+                if(type == 2){
+                    result = 3.6f*level;
+                }
+            }
+            if(model == 2){
+                if(type == 1){
+                    result = 13.0f*level;
+                }
+                if(type == 2){
+                    result = 3.9f*level;
+                }
+            }
+            if(model == 3){
+                if(type == 1){
+                    result = 16.5f*level;
+                }
+                if(type == 2){
+                    result = 4.3f*level;
+                }
+            }
+            if(model == 4){
+                if(type == 1){
+                    result = 20.0f*level;
+                }
+                if(type == 2){
+                    result = 4.6f*level;
+                }
+            }
+            if(model == 5){
+                if(type == 1){
+                    result = 22.5f*level;
+                }
+                if(type == 2){
+                    result = 5.0f*level;
+                }
+            }
+        }
+        return (int)result;
     }
     public void SetWorkMenuTextures(){
         HeadSelectt = new Texture("Robot/head_select.png");
@@ -342,32 +532,32 @@ public class RoboStructure {
     public void UpdateRobotTexture(int which_select){
         if(which_select == 1){
             Ht.dispose();
-            Ht = new Texture("Robot/head_" + Hid + ".png");
+            Ht = new Texture("Robot/head_" + Hid + "_" + Hl + ".png");
             H =  new TextureRegion(Ht, 300, 300);
         }
         if(which_select == 2){
             Bt.dispose();
-            Bt = new Texture("Robot/body_" + Bid + ".png");
+            Bt = new Texture("Robot/body_" + Bid + "_" + Bl + ".png");
             B =  new TextureRegion(Bt, 300, 300);
         }
         if(which_select == 6){
             RHt.dispose();
-            RHt = new Texture("Robot/hand_" + RHid + ".png");
+            RHt = new Texture("Robot/hand_" + RHid + "_" + RHl + ".png");
             RH =  new TextureRegion(RHt, 300, 300);
         }
         if(which_select == 5){
             LHt.dispose();
-            LHt = new Texture("Robot/hand_" + LHid + ".png");
+            LHt = new Texture("Robot/hand_" + LHid + "_" + LHl + ".png");
             LH =  new TextureRegion(LHt, 300, 300);
         }
         if(which_select == 4){
             RLt.dispose();
-            RLt = new Texture("Robot/leg_" + RLid + ".png");
+            RLt = new Texture("Robot/leg_" + RLid + "_" + RLl + ".png");
             RL =  new TextureRegion(RLt, 300, 300);
         }
         if(which_select == 3){
             LLt.dispose();
-            LLt = new Texture("Robot/leg_" + LLid + ".png");
+            LLt = new Texture("Robot/leg_" + LLid + "_" + LLl + ".png");
             LL =  new TextureRegion(LLt, 300, 300);
         }
         UpdateParameters();
@@ -507,6 +697,14 @@ public class RoboStructure {
         UpdateSkin();
     }
     public void Safe(){
+        game.safes.clear();
+        game.safes.putInteger("Hl", game.robot.Hl);
+        game.safes.putInteger("Bl", game.robot.Bl);
+        game.safes.putInteger("RHl", game.robot.RHl);
+        game.safes.putInteger("LHl", game.robot.LHl);
+        game.safes.putInteger("LLl", game.robot.LLl);
+        game.safes.putInteger("RLl", game.robot.RLl);
+
         game.safes.putInteger("H", game.robot.Hid);
         game.safes.putInteger("B", game.robot.Bid);
         game.safes.putInteger("RH", game.robot.RHid);
@@ -617,6 +815,12 @@ public class RoboStructure {
         LHid = TakeSafe("LH");
         RLid = TakeSafe("RL");
         LLid = TakeSafe("LL");
+        Hl = TakeSafe("Hl");
+        Bl = TakeSafe("Bl");
+        RHl = TakeSafe("RHl");
+        LHl = TakeSafe("LHl");
+        RLl = TakeSafe("RLl");
+        LLl = TakeSafe("LLl");
         opened = TakeSafe("opened");
         experience = TakeSafe("experience");
         int i = 0;
@@ -743,12 +947,12 @@ public class RoboStructure {
         ELLt.dispose();
         EHt.dispose();
         EBt.dispose();
-        ERHt =  new Texture("Robot/hand_" + ERHid + ".png");
-        ELHt = new Texture("Robot/hand_" + ELHid + ".png");
-        ERLt = new Texture("Robot/leg_" + ERLid + ".png");
-        ELLt = new Texture("Robot/leg_" + ELLid + ".png");
-        EHt = new Texture("Robot/head_" + EHid + ".png");
-        EBt = new Texture("Robot/body_" + EBid + ".png");
+        ERHt =  new Texture("Robot/hand_" + ERHid + "_" + ERHl + ".png");
+        ELHt = new Texture("Robot/hand_" + ELHid + "_" + ELHl + ".png");
+        ERLt = new Texture("Robot/leg_" + ERLid + "_" + ERLl + ".png");
+        ELLt = new Texture("Robot/leg_" + ELLid + "_" + ELLl + ".png");
+        EHt = new Texture("Robot/head_" + EHid + "_" + EHl + ".png");
+        EBt = new Texture("Robot/body_" + EBid + "_" + EBl + ".png");
         ERH =  new TextureRegion(ERHt, 300, 300);
         ELH =  new TextureRegion(ELHt, 300, 300);
         ERL =  new TextureRegion(ERLt, 300, 300);
@@ -759,24 +963,24 @@ public class RoboStructure {
     }
     public void UpdateTextures(){
         puck = new Texture("Object/gift_0.png");
-        RHt =  new Texture("Robot/hand_" + RHid + ".png");
-        LHt = new Texture("Robot/hand_" + LHid + ".png");
-        RLt = new Texture("Robot/leg_" + RLid + ".png");
-        LLt = new Texture("Robot/leg_" + LLid + ".png");
-        Ht = new Texture("Robot/head_" + Hid + ".png");
-        Bt = new Texture("Robot/body_" + Bid + ".png");
+        RHt =  new Texture("Robot/hand_" + RHid + "_" + RHl + ".png");
+        LHt = new Texture("Robot/hand_" + LHid + "_" + LHl + ".png");
+        RLt = new Texture("Robot/leg_" + RLid + "_" + RLl + ".png");
+        LLt = new Texture("Robot/leg_" + LLid + "_" + LLl + ".png");
+        Ht = new Texture("Robot/head_" + Hid + "_" + Hl + ".png");
+        Bt = new Texture("Robot/body_" + Bid + "_" + Bl + ".png");
         RH =  new TextureRegion(RHt, 300, 300);
         LH =  new TextureRegion(LHt, 300, 300);
         RL =  new TextureRegion(RLt, 300, 300);
         LL =  new TextureRegion(LLt, 300, 300);
         H =  new TextureRegion(Ht, 300, 300);
         B =  new TextureRegion(Bt, 300, 300);
-        ERHt =  new Texture("Robot/hand_" + ERHid + ".png");
-        ELHt = new Texture("Robot/hand_" + ELHid + ".png");
-        ERLt = new Texture("Robot/leg_" + ERLid + ".png");
-        ELLt = new Texture("Robot/leg_" + ELLid + ".png");
-        EHt = new Texture("Robot/head_" + EHid + ".png");
-        EBt = new Texture("Robot/body_" + EBid + ".png");
+        ERHt =  new Texture("Robot/hand_" + ERHid + "_" + ERHl + ".png");
+        ELHt = new Texture("Robot/hand_" + ELHid + "_" + ELHl + ".png");
+        ERLt = new Texture("Robot/leg_" + ERLid + "_" + ERLl + ".png");
+        ELLt = new Texture("Robot/leg_" + ELLid + "_" + ELLl + ".png");
+        EHt = new Texture("Robot/head_" + EHid + "_" + EHl + ".png");
+        EBt = new Texture("Robot/body_" + EBid + "_" + EBl + ".png");
         ERH =  new TextureRegion(ERHt, 300, 300);
         ELH =  new TextureRegion(ELHt, 300, 300);
         ERL =  new TextureRegion(ERLt, 300, 300);

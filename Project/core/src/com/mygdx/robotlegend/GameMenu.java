@@ -42,13 +42,6 @@ public class GameMenu extends Openable implements Screen{
     Texture tutorials;
     Texture frame;
     Texture planet;
-    Texture aim;
-    Texture speed;
-    Texture damage;
-    Texture med;
-    Texture head;
-    Texture puck;
-    Texture select;
     Texture button_ship;
     Texture space;
     Texture space2;
@@ -59,7 +52,6 @@ public class GameMenu extends Openable implements Screen{
     Texture planet_icon;
     Texture big_grass;
     Texture meteor;
-    Texture tv;
     Texture level_circle;
     Texture level_back;
     Texture level_front;
@@ -159,73 +151,11 @@ public class GameMenu extends Openable implements Screen{
     public GameMenu(MainGame game) { this.game = game; }
     @Override
     public void show() {
-        game.MusicSwap(1);
+        game.MusicSwap(2);
         game.robot.Safe();
         game.robot.RandomEnemy();
-        /*
-        game.robot.Hid = 5;
-        game.robot.Bid = 5;
-        game.robot.LHid = 5;
-        game.robot.RHid = 5;
-        game.robot.LLid = 5;
-        game.robot.RLid = 5;
-
-        game.robot.EHid = 5;
-        game.robot.EBid = 5;
-        game.robot.ELHid = 5;
-        game.robot.ERHid = 5;
-        game.robot.ELLid = 5;
-        game.robot.ERLid = 5;
-
-
-        game.robot.RHt.dispose();
-        game.robot.LHt.dispose();
-        game.robot.RLt.dispose();
-        game.robot.LLt.dispose();
-        game.robot.Ht.dispose();
-        game.robot.Bt.dispose();
-        game.robot.RHt =  new Texture("Robot/hand_" +  game.robot.RHid + ".png");
-        game.robot.LHt = new Texture("Robot/hand_" +  game.robot.LHid + ".png");
-        game.robot.RLt = new Texture("Robot/leg_" +  game.robot.RLid + ".png");
-        game.robot.LLt = new Texture("Robot/leg_" +  game.robot.LLid + ".png");
-        game.robot.Ht = new Texture("Robot/head_" +  game.robot.Hid + ".png");
-        game.robot.Bt = new Texture("Robot/body_" +  game.robot.Bid + ".png");
-        game.robot.RH =  new TextureRegion( game.robot.RHt, 300, 300);
-        game.robot.LH =  new TextureRegion( game.robot.LHt, 300, 300);
-        game.robot.RL =  new TextureRegion( game.robot.RLt, 300, 300);
-        game.robot.LL =  new TextureRegion( game.robot.LLt, 300, 300);
-        game.robot.H =  new TextureRegion( game.robot.Ht, 300, 300);
-        game.robot.B =  new TextureRegion( game.robot.Bt, 300, 300);
-
-        game.robot.ERHt.dispose();
-        game.robot.ELHt.dispose();
-        game.robot.ERLt.dispose();
-        game.robot.ELLt.dispose();
-        game.robot.EHt.dispose();
-        game.robot.EBt.dispose();
-        game.robot.ERHt =  new Texture("Robot/hand_" +  game.robot.ERHid + ".png");
-        game.robot.ELHt = new Texture("Robot/hand_" +  game.robot.ELHid + ".png");
-        game.robot.ERLt = new Texture("Robot/leg_" +  game.robot.ERLid + ".png");
-        game.robot.ELLt = new Texture("Robot/leg_" +  game.robot.ELLid + ".png");
-        game.robot.EHt = new Texture("Robot/head_" +  game.robot.EHid + ".png");
-        game.robot.EBt = new Texture("Robot/body_" +  game.robot.EBid + ".png");
-        game.robot.ERH =  new TextureRegion( game.robot.ERHt, 300, 300);
-        game.robot.ELH =  new TextureRegion( game.robot.ELHt, 300, 300);
-        game.robot.ERL =  new TextureRegion( game.robot.ERLt, 300, 300);
-        game.robot.ELL =  new TextureRegion( game.robot.ELLt, 300, 300);
-        game.robot.EH =  new TextureRegion( game.robot.EHt, 300, 300);
-        game.robot.EB =  new TextureRegion( game.robot.EBt, 300, 300);
-
-        X6:
-        3 - 14px and 50%
-        6 - 9px and 40%
-        6 - 7px and 35%
-
-        game.robot.UpdateParameters();*/
-
         tutorial_circlet = new Texture("Tutorial/back_0.png");
         tutorial_circle = new TextureRegion(tutorial_circlet, 400, 400);
-
         tutorial_icon[0] = new Texture("Tutorial/icon_1_0_0.png");
         tutorial_icon[1] = new Texture("Tutorial/icon_2_0_0.png");
         tutorial_icon[2] = new Texture("Tutorial/icon_3_0_0.png");
@@ -314,13 +244,6 @@ public class GameMenu extends Openable implements Screen{
         planet_id = game.robot.level;
         location_2_planet = new TextureRegion(location_2_planet_texture, 400, 400);
         planet = new Texture("Object/planet_" + planet_id + ".png");
-        aim = new Texture("Object/aim.png");
-        speed = new Texture("Interface/speed_move_icon.png");
-        damage = new Texture("Interface/damage_icon.png");
-        med = new Texture("Object/health_5.png");
-        head = new Texture("Robot/head_1.png");
-        puck = new Texture("Object/gift_1.png");
-        select = new Texture("Interface/select2.png");
         Gdx.input.setInputProcessor(new GameMenuTouch(game, this));
         button_right =  new Texture("Button/button_right.png");
         button_left =  new Texture("Button/button_left.png");
@@ -696,7 +619,7 @@ public class GameMenu extends Openable implements Screen{
 
         DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_workshop_icon, button_workshop_state, 670, height-185, 300);
 
-        if (game.music_play) {
+        if (game.music.isPlaying()) {
             drawer.draw(music, 1020, height - 100, 100, 100);
         } else {
             drawer.draw(music_stop, 1020, height - 100, 100, 100); }
@@ -786,8 +709,7 @@ public class GameMenu extends Openable implements Screen{
                 }
         }
 
-        CheckClose(drawer);
-        CheckOpen(drawer);
+        CheckDoor(drawer);
         batch.end();
         if(closed){
             if(type_close == 1) {
@@ -871,7 +793,7 @@ public class GameMenu extends Openable implements Screen{
                         Sleep(2);
                     }
                     search_planet = false;
-                    game.MusicSwap(1);
+                    game.MusicSwap(2);
                     while(tv_size>10){
                         tv_size-=10;
                         planet_rotate+=0.5f;
@@ -924,7 +846,7 @@ public class GameMenu extends Openable implements Screen{
                     Scan();
                     int dir_anime = 1;
                     int size = 0;
-                    game.MusicSwap(5);
+                    game.MusicSwap(3);
                     while(search_planet){
                         if(!swap_planet && !zoom_planet) {
                             if (dir_anime == 1) {
@@ -1289,11 +1211,7 @@ public class GameMenu extends Openable implements Screen{
     }
     @Override
     public void dispose () {
-        white_1.dispose();
-        white_2.dispose();
-        white_3.dispose();
-        white_4.dispose();
-        white_5.dispose();
+
         machine_4.dispose();
         machine_2.dispose();
         machine_3.dispose();
@@ -1312,8 +1230,6 @@ public class GameMenu extends Openable implements Screen{
         birds[3].dispose();
         birds[4].dispose();
         camp.dispose();
-        door_left.dispose();
-        door_right.dispose();
         music.dispose();
         music_stop.dispose();
         bulb.dispose();
@@ -1327,13 +1243,6 @@ public class GameMenu extends Openable implements Screen{
         button_right.dispose();
         frame.dispose();
         planet.dispose();
-        aim.dispose();
-        speed.dispose();
-        damage.dispose();
-        med.dispose();
-        head.dispose();
-        puck.dispose();
-        select.dispose();
         space.dispose();
         space2.dispose();
         frame_green_1.dispose();
