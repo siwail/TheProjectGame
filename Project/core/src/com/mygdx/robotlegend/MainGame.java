@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
 
@@ -17,11 +18,13 @@ public class MainGame extends Game {
     Sound closed;
     Server server;
     Client client;
+    FreeTypeFontGenerator generator;
     RoboStructure robot = new RoboStructure(this);
     boolean autoplay_enabled = false;
     int max_planet = 4;
     @Override
     public void create() {
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("Decoration/main_font.ttf"));
         Gdx.graphics.setVSync(true);
         server = new Server();
         client = new Client();

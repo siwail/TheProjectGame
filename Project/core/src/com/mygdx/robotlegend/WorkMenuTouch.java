@@ -35,6 +35,12 @@ public WorkMenuTouch(MainGame game, WorkMenu workMenu){
         if(screenX >= SX(workMenu.width-700) && screenX <= SX(workMenu.width-600) && screenY <= SY(100) && screenY >= 0){
             workMenu.exit_touch = true;
         }
+        if(screenX >= SX(workMenu.width-550) && screenX <= SX(workMenu.width-430) && screenY >= SY(RY(570)) && screenY <= SY(RY(470))){
+            workMenu.left_touch = true;
+        }
+        if(screenX >= SX(workMenu.width-150) && screenX <= SX(workMenu.width-30) && screenY >= SY(RY(570)) && screenY <= SY(RY(470))){
+            workMenu.right_touch = true;
+        }
         return false;
     }
     @Override
@@ -44,7 +50,8 @@ public WorkMenuTouch(MainGame game, WorkMenu workMenu){
         scale = workMenu.scale;
         workMenu.exit_touch = false;
         workMenu.upgrade_touch = false;
-
+        workMenu.right_touch = false;
+        workMenu.left_touch = false;
         if(screenX >= SX(10) && screenX <= SX(160) && screenY <= SY(150) && screenY >= 0){
             if(workMenu.isOpen) {
                 workMenu.DoorClose(1);
@@ -96,6 +103,13 @@ public WorkMenuTouch(MainGame game, WorkMenu workMenu){
             if (screenX >= SX(workMenu.width - 500) && screenX <= SX(workMenu.width - 100) && screenY >= SY(workMenu.height - 175) && screenY <= SY(workMenu.height)) {
                 workMenu.upgrade();
             }
+            if(screenX >= SX(workMenu.width-550) && screenX <= SX(workMenu.width-430) && screenY >= SY(RY(570)) && screenY <= SY(RY(470))){
+                workMenu.NextLeftPart(workMenu.which_select);
+            }
+            if(screenX >= SX(workMenu.width-150) && screenX <= SX(workMenu.width-30) && screenY >= SY(RY(570)) && screenY <= SY(RY(470))){
+                workMenu.NextRightPart(workMenu.which_select);
+            }
+
         }
         return false;
     }

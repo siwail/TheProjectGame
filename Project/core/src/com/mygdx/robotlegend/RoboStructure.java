@@ -29,15 +29,12 @@ public class RoboStructure {
     int RLid = 1; //Правая нога
     int LLid = 1; //Левая нога
     int Hl = 1;
-    int Bl = 1;
+    int Bl = 4;
     int RHl = 1; //Правая рука
     int LHl = 1; //Левая рука
     int RLl = 1; //Правая нога
     int LLl = 1; //Левая нога
-    int BLeg = 1;
-    int BHand = 1;
-    int BHead = 1;
-    int BBody = 1;
+    int[] BBody = new int[5], BHead = new int[5], BHand = new int[5], BLeg = new int[5];
     int health = 0;
     int damage = 2;
     int attack_speed;
@@ -224,178 +221,178 @@ public class RoboStructure {
         EChangeSkinBust();
     }
     //TYPES: 1 - health; 2 - damage; 3 - energy; 4 - attack_speed; 5 - move_speed
-    int TR(int part, int model, int level, int type){ //TakeRatio
+    float TR(int part, int model, int level, int type){ //TakeRatio
         float lvl = level;
         float result = 0;
         if(part == 1){//head
             if(model == 1){
                 if(type == 1){
-                    result = 12.5f*level;
+                    result = 12.5f*lvl;
                 }
                 if(type == 3){
-                    result = 8f*level;
+                    result = 8f*lvl;
                 }
             }
             if(model == 2){
                 if(type == 1){
-                    result = 13.5f*level;
+                    result = 13.5f*lvl;
                 }
                 if(type == 3){
-                    result = 8.5f*level;
+                    result = 8.5f*lvl;
                 }
             }
             if(model == 3){
                 if(type == 1){
-                    result = 14.5f*level;
+                    result = 14.5f*lvl;
                 }
                 if(type == 3){
-                    result = 9f*level;
+                    result = 9f*lvl;
                 }
             }
             if(model == 4){
                 if(type == 1){
-                    result = 15.0f*level;
+                    result = 15.0f*lvl;
                 }
                 if(type == 3){
-                    result = 9.5f*level;
+                    result = 9.5f*lvl;
                 }
             }
             if(model == 5){
                 if(type == 1){
-                    result = 16.0f*level;
+                    result = 16.0f*lvl;
                 }
                 if(type == 3){
-                    result = 10f*level;
+                    result = 10f*lvl;
                 }
             }
         }
         if(part == 2){//body
             if(model == 1){
                 if(type == 1){
-                    result = 29.0f*level;
+                    result = 29.0f*lvl;
                 }
                 if(type == 4){
-                    result = 1.0f*level;
+                    result = 1.0f*lvl;
                 }
             }
             if(model == 2){
                 if(type == 1){
-                    result = 31.0f*level;
+                    result = 31.0f*lvl;
                 }
                 if(type == 4){
-                    result = 1.2f*level;
+                    result = 1.2f*lvl;
                 }
             }
             if(model == 3){
                 if(type == 1){
-                    result = 33.0f*level;
+                    result = 33.0f*lvl;
                 }
                 if(type == 4){
-                    result = 1.35f*level;
+                    result = 1.35f*lvl;
                 }
             }
             if(model == 4){
                 if(type == 1){
-                    result = 36.0f*level;
+                    result = 36.0f*lvl;
                 }
                 if(type == 4){
-                    result = 1.4f*level;
+                    result = 1.4f*lvl;
                 }
             }
             if(model == 5){
                 if(type == 1){
-                    result = 40.0f*level;
+                    result = 40.0f*lvl;
                 }
                 if(type == 4){
-                    result = 1.5f*level;
+                    result = 1.5f*lvl;
                 }
             }
         }
         if(part == 3){//leg
             if(model == 1){
                 if(type == 1){
-                    result = 13.0f*level;
+                    result = 13.0f*lvl;
                 }
                 if(type == 5){
-                    result = 1.0f*level;
+                    result = 1.0f*lvl;
                 }
             }
             if(model == 2){
                 if(type == 1){
-                    result = 15.0f*level;
+                    result = 15.0f*lvl;
                 }
                 if(type == 5){
-                    result = 1.2f*level;
+                    result = 1.2f*lvl;
                 }
             }
             if(model == 3){
                 if(type == 1){
-                    result = 16.0f*level;
+                    result = 16.0f*lvl;
                 }
                 if(type == 5){
-                    result = 1.25f*level;
+                    result = 1.25f*lvl;
                 }
             }
             if(model == 4){
                 if(type == 1){
-                    result = 19.0f*level;
+                    result = 19.0f*lvl;
                 }
                 if(type == 5){
-                    result = 1.35f*level;
+                    result = 1.35f*lvl;
                 }
             }
             if(model == 5){
                 if(type == 1){
-                    result = 22.0f*level;
+                    result = 22.0f*lvl;
                 }
                 if(type == 5){
-                    result = 1.5f*level;
+                    result = 1.5f*lvl;
                 }
             }
         }
         if(part == 4){//hand
             if(model == 1){
                 if(type == 1){
-                    result = 11.0f*level;
+                    result = 11.0f*lvl;
                 }
                 if(type == 2){
-                    result = 3.6f*level;
+                    result = 3.6f*lvl;
                 }
             }
             if(model == 2){
                 if(type == 1){
-                    result = 13.0f*level;
+                    result = 13.0f*lvl;
                 }
                 if(type == 2){
-                    result = 3.9f*level;
+                    result = 3.9f*lvl;
                 }
             }
             if(model == 3){
                 if(type == 1){
-                    result = 16.5f*level;
+                    result = 16.5f*lvl;
                 }
                 if(type == 2){
-                    result = 4.3f*level;
+                    result = 4.3f*lvl;
                 }
             }
             if(model == 4){
                 if(type == 1){
-                    result = 20.0f*level;
+                    result = 20.0f*lvl;
                 }
                 if(type == 2){
-                    result = 4.6f*level;
+                    result = 4.6f*lvl;
                 }
             }
             if(model == 5){
                 if(type == 1){
-                    result = 22.5f*level;
+                    result = 22.5f*lvl;
                 }
                 if(type == 2){
-                    result = 5.0f*level;
+                    result = 5.0f*lvl;
                 }
             }
         }
-        return (int)result;
+        return result;
     }
     public void SetWorkMenuTextures(){
         HeadSelectt = new Texture("Robot/head_select.png");
@@ -719,6 +716,14 @@ public class RoboStructure {
         game.safes.putInteger("opened", opened);
         game.safes.putInteger("experience", experience);
         int i = 0;
+        while(i!=5){
+            game.safes.putInteger("BBody_"+(i+1), game.robot.BBody[i]);
+            game.safes.putInteger("BHead_"+(i+1), game.robot.BHead[i]);
+            game.safes.putInteger("BHand_"+(i+1), game.robot.BHand[i]);
+            game.safes.putInteger("BLeg_"+(i+1), game.robot.BLeg[i]);
+            i++;
+        }
+        i = 0;
         while(i!=opened){
             game.safes.putInteger("skin_" + i, skins_open[i]);
             i++;
@@ -800,6 +805,7 @@ public class RoboStructure {
         bulb_chance[1] = 10;
         bulb_chance[2] = 50;
         bulb_chance[3] = 30;
+
         EBullet = new Texture("Object/bullet" + Ecolor + ".png");
         Bullet = new Texture("Object/bullet" + color + ".png");
         alert = new Texture("Interface/alert.png");
@@ -823,12 +829,20 @@ public class RoboStructure {
         LLl = TakeSafe("LLl");
         opened = TakeSafe("opened");
         experience = TakeSafe("experience");
+        Bl = 4;
         int i = 0;
         while(i!=opened){
             skins_open[i] = TakeSafe("skin_"+i);
             i++;
         }
-
+        i = 0;
+        while(i!=5){
+            BBody[i] = TakeSafe("BBody_"+(i+1), 1);
+            BHead[i] = TakeSafe("BHead_"+(i+1), 1);
+            BHand[i] = TakeSafe("BHand_"+(i+1), 1);
+            BLeg[i] = TakeSafe("BLeg_"+(i+1), 1);
+            i++;
+        }
         skins_open[0] = 0;
         skin = 0;
         index_skin = 0;

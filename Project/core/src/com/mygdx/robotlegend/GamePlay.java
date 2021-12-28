@@ -445,7 +445,7 @@ public class GamePlay extends Openable implements Screen{
         siren = Gdx.audio.newSound(Gdx.files.internal("Sound/siren.wav"));
         boom = Gdx.audio.newSound(Gdx.files.internal("Sound/upgrade.wav"));
         parameter.size = (int) (150.0 * wpw);
-        item_font = generator.generateFont(parameter);
+        item_font = game.generator.generateFont(parameter);
     item_font.setColor(0, 140, 255, 1);
         int i = 0;
 

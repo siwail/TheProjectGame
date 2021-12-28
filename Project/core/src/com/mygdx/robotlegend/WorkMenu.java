@@ -11,6 +11,7 @@ public class WorkMenu extends Openable implements Screen {
     Sound upgrade;
     Thread anime;
     Thread anime_hand;
+    Thread button;
     Texture frame;
     Texture background;
     Texture metal;
@@ -54,6 +55,14 @@ public class WorkMenu extends Openable implements Screen {
     Texture leg_rd;
     Texture leg_cd;
     Texture saw_texture;
+    Texture workpage;
+    Texture workpage_blue;
+    Texture workpage_red;
+    Texture left;
+    Texture right;
+    Texture level_circle;
+    Texture green_circle;
+    Texture red_circle;
     TextureRegion lamp;
     TextureRegion[] light = new TextureRegion[2];
     TextureRegion saw;
@@ -79,12 +88,14 @@ public class WorkMenu extends Openable implements Screen {
     int y_ru = 0;
     int y_cu = 0;
 
-
+    float left_scale = 1.0f;
+    float right_scale = 1.0f;
 
     int which_select = 0;
     int which_select_will = 0;
     int light_anime = 1;
 
+    boolean created_level = false;
     boolean fire_now = false;
     boolean ld = false;
     boolean rd = false;
@@ -92,7 +103,8 @@ public class WorkMenu extends Openable implements Screen {
     boolean lu = false;
     boolean ru = false;
     boolean cu = false;
-
+    boolean left_touch = false;
+    boolean right_touch = false;
     boolean max_level = false;
     boolean can_swap = true;
     boolean can_type_1 = false;
@@ -111,7 +123,15 @@ public class WorkMenu extends Openable implements Screen {
             Start();
             x = width/2-400;
             game.robot.UpdateParameters();
+            level_circle =  new Texture("Object/level_circle.png");
+            green_circle =  new Texture("Object/green_circle.png");
+            red_circle =  new Texture("Object/red_circle.png");
             upgrade = Gdx.audio.newSound(Gdx.files.internal("Sound/upgrade.wav"));
+            left = new Texture("Button/button_left.png");
+            right = new Texture("Button/button_right.png");
+            workpage = new Texture("Object/workpage_1.png");
+            workpage_red = new Texture("Object/workpage_2.png");
+            workpage_blue = new Texture("Object/workpage_3.png");
             lightt_1 = new Texture("Interface/light1.png");
             lightt_2 = new Texture("Interface/light2.png");
             light[0] = new TextureRegion(lightt_1, 960, 540);
@@ -159,6 +179,30 @@ public class WorkMenu extends Openable implements Screen {
             leg_cd = new Texture("Object/leg_cd.png");
             saw_texture = new Texture("Object/saw.png");
             saw = new TextureRegion(saw_texture, 300, 300);
+            button  = new Thread(){
+            @Override
+            public void run(){
+                while(!closed){
+                    if(left_touch && left_scale>=0.5f){
+                        left_scale -=0.1f;
+
+                    }
+                    if(!left_touch && left_scale<1.0f){
+                        left_scale +=0.1f;
+
+                    }
+                    if(right_touch && right_scale>=0.5f){
+                        right_scale -=0.1f;
+
+                    }
+                    if(!right_touch && right_scale<1.0f){
+                        right_scale +=0.1f;
+
+                    }
+                    Sleep( 15);
+                }
+            }
+            };
             anime  = new Thread(){
                 @Override
                 public void run(){
@@ -215,6 +259,7 @@ public class WorkMenu extends Openable implements Screen {
             drawer = new SpriteBatchRubber(this, batch);
             anime_hand.start();
             anime.start();
+            button.start();
             DoorOpen();
     }
     @Override
@@ -224,10 +269,14 @@ public class WorkMenu extends Openable implements Screen {
         drawer.draw(background, 0, 0, width, height);
         if (!exit_touch) {
             drawer.draw(close, 10, height - 150, 150, 150);
-            drawer.draw(red, width-700, height - 100, 100, 100);
+            if(scale_frame>=0.7) {
+                drawer.draw(red, RS(width - 700), RS(height - 100), RS(100), RS(100));
+            }
         } else {
             drawer.draw(close_touched, 10, height - 150, 150, 150);
-            drawer.draw(red_touched, width-700, height - 100, 100, 100);
+            if(scale_frame>=0.7) {
+                drawer.draw(red_touched, RS(width - 700), RS(height - 100), RS(100), RS(100));
+            }
         }
         drawer.draw(frame, 10, height - 350, 150, 150);
         drawer.draw(frame, 10, height - 500, 150, 150);
@@ -243,63 +292,64 @@ public class WorkMenu extends Openable implements Screen {
         item_font.draw(batch, Integer.toString(game.robot.lamps), (int)(170.0*wpw),(int)(((float)height - 750.0)*hph));
         drawer.draw(metal, RS(width - 600), RS(0), RS(600), RS(height));
         if(!max_level) {
-            if (upgrade_can && which_select != 0) {
-                drawer.draw(green_back, RS(width - 595), RS(0), RS(600), RS(350));
-            }
-            if (!upgrade_can && which_select != 0) {
-                drawer.draw(red_back, RS(width - 595), RS(0), RS(600), RS(350));
-            }
-            if (which_select != 0) {
-                if (type_1 == 4) {
-                    drawer.draw(gear, RS(width - 500), RS(200), RS(150), RS(150));
+
+                if (upgrade_can && which_select != 0) {
+                    drawer.draw(green_back, RS(width - 595), RS(0), RS(600), RS(350));
                 }
-                if (type_1 == 3) {
-                    drawer.draw(chip, RS(width - 500), RS(200), RS(150), RS(150));
+                if (!upgrade_can && which_select != 0) {
+                    drawer.draw(red_back, RS(width - 595), RS(0), RS(600), RS(350));
                 }
-                if (type_1 == 2) {
-                    drawer.draw(bulb, RS(width - 500), RS(200), RS(150), RS(150));
-                }
-                if (type_1 == 1) {
-                    drawer.draw(metall, RS(width - 500), RS(200), RS(150), RS(150));
-                }
-                if (type_2 == 4) {
-                    drawer.draw(gear, RS(width - 250), RS(200), RS(150), RS(150));
-                }
-                if (type_2 == 3) {
-                    drawer.draw(chip, RS(width - 250), RS(200), RS(150), RS(150));
-                }
-                if (type_2 == 2) {
-                    drawer.draw(bulb, RS(width - 250), RS(200), RS(150), RS(150));
-                }
-                if (type_2 == 1) {
-                    drawer.draw(metall, RS(width - 250), RS(200), RS(150), RS(150));
-                }
-            }
-            if (type_1 != 0 && type_2 != 0 && which_select != 0) {
-                if (can_type_1) {
-                    drawer.draw(yes, RS(width - 425), RS(220), RS(100), RS(100));
-                } else {
-                    drawer.draw(not, RS(width - 425), RS(220), RS(100), RS(100));
-                }
-                if (can_type_2) {
-                    drawer.draw(yes, RS(width - 175), RS(220), RS(100), RS(100));
-                } else {
-                    drawer.draw(not, RS(width - 175), RS(220), RS(100), RS(100));
-                }
-                item_font.draw(batch, number_1 + "", RS((int) (((float) width - 500.0) * wpw)), RS((int) (225.0 * hph)));
-                item_font.draw(batch, number_2 + "", RS((int) (((float) width - 250.0) * wpw)), RS((int) (225.0 * hph)));
-            }
-            if (which_select != 0) {
-                if (!upgrade_can || which_select == 0) {
-                    drawer.draw(upgrade_1, RS(width - 500), RS(0), RS(400), RS(175));
-                } else {
-                    if (!upgrade_touch) {
-                        drawer.draw(upgrade_2, RS(width - 500), RS(0), RS(400), RS(175));
-                    } else {
-                        drawer.draw(upgrade_touched, RS(width - 500), RS(0), RS(400), RS(175));
+                if (which_select != 0) {
+                    if (type_1 == 4) {
+                        drawer.draw(gear, RS(width - 500), RS(200), RS(150), RS(150));
+                    }
+                    if (type_1 == 3) {
+                        drawer.draw(chip, RS(width - 500), RS(200), RS(150), RS(150));
+                    }
+                    if (type_1 == 2) {
+                        drawer.draw(bulb, RS(width - 500), RS(200), RS(150), RS(150));
+                    }
+                    if (type_1 == 1) {
+                        drawer.draw(metall, RS(width - 500), RS(200), RS(150), RS(150));
+                    }
+                    if (type_2 == 4) {
+                        drawer.draw(gear, RS(width - 250), RS(200), RS(150), RS(150));
+                    }
+                    if (type_2 == 3) {
+                        drawer.draw(chip, RS(width - 250), RS(200), RS(150), RS(150));
+                    }
+                    if (type_2 == 2) {
+                        drawer.draw(bulb, RS(width - 250), RS(200), RS(150), RS(150));
+                    }
+                    if (type_2 == 1) {
+                        drawer.draw(metall, RS(width - 250), RS(200), RS(150), RS(150));
                     }
                 }
-            }
+                if (type_1 != 0 && type_2 != 0 && which_select != 0) {
+                    if (can_type_1) {
+                        drawer.draw(yes, RS(width - 425), RS(220), RS(100), RS(100));
+                    } else {
+                        drawer.draw(not, RS(width - 425), RS(220), RS(100), RS(100));
+                    }
+                    if (can_type_2) {
+                        drawer.draw(yes, RS(width - 175), RS(220), RS(100), RS(100));
+                    } else {
+                        drawer.draw(not, RS(width - 175), RS(220), RS(100), RS(100));
+                    }
+                    item_font.draw(batch, number_1 + "", RS((int) (((float) width - 500.0) * wpw)), RS((int) (225.0 * hph)));
+                    item_font.draw(batch, number_2 + "", RS((int) (((float) width - 250.0) * wpw)), RS((int) (225.0 * hph)));
+                }
+                if (which_select != 0) {
+                    if (!upgrade_can) {
+                        drawer.draw(upgrade_1, RS(width - 500), RS(0), RS(400), RS(175));
+                    } else {
+                        if (!upgrade_touch) {
+                            drawer.draw(upgrade_2, RS(width - 500), RS(0), RS(400), RS(175));
+                        } else {
+                            drawer.draw(upgrade_touched, RS(width - 500), RS(0), RS(400), RS(175));
+                        }
+                    }
+                }
         }else{
             if(which_select != 0) {
                 drawer.draw(red_back, RS(width - 595), RS(0), RS(600), RS(350));
@@ -307,10 +357,8 @@ public class WorkMenu extends Openable implements Screen {
                 drawer.draw(max, RS(width - 250), RS(200), RS(150), RS(150));
                 drawer.draw(not, RS(width - 425), RS(220), RS(100), RS(100));
                 drawer.draw(not, RS(width - 175), RS(220), RS(100), RS(100));
+                drawer.draw(upgrade_1, RS(width - 500), RS(0), RS(400), RS(175));
             }
-        }
-        if(which_select!=0) {
-            item_font.draw(batch, "Здоровье", RS((int) (((float) width - 350.0) * wpw)), RS((int) (650.0 * hph)));
         }
         if(which_select == 0){
             item_font.draw(batch, "Параметры", RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
@@ -381,17 +429,58 @@ public class WorkMenu extends Openable implements Screen {
             drawer.draw(energy, RS(width-500), RS(380), RS(150), RS(150));
             item_font.draw(batch, "Энергия", RS((int)(((float)width-350.0)*wpw)), RS((int)(480.0*hph)));
             item_font.draw(batch, (90-game.robot.energy_speed)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
+
         }
         if(which_select == 2){
-            item_font.draw(batch, "Корпус Ур. " + game.robot.Bid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
-            item_font.draw(batch, game.robot.Bid*15 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
-            drawer.draw(state_back, RS(width-550), RS(380), RS(525), RS(75));
-            drawer.draw(state_bonus, RS(width-540), RS(380), RS((int)(525.0f*(90-game.robot.energy_speed)/90.0f)), RS(75));
-            drawer.draw(state_energy, RS(width-540), RS(380), RS((int)(525.0f*((90-game.robot.energy_speed)+game.robot.Benergy_speed)/90.0f)), RS(75));
-            drawer.draw(state_frame, RS(width-550), RS(380), RS(525), RS(75));
-            drawer.draw(attack_speed, RS(width-500), RS(380), RS(150), RS(150));
-            item_font.draw(batch, "Динамика", RS((int)(((float)width-340.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (8-game.robot.attack_speed)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, "Корпус", RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
+
+            if(game.robot.BBody[game.robot.Bid-1] > 0) {
+                drawer.draw(workpage, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            if(game.robot.BBody[game.robot.Bid-1] == -1) {
+                drawer.draw(workpage_red, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            if(game.robot.BBody[game.robot.Bid-1] == 0) {
+                drawer.draw(workpage_blue, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            drawer.draw(game.robot.B, RS(width-410), RS(435), RS(115), RS(115), RS(230), RS(230), left_scale*right_scale, left_scale*right_scale, 0);
+
+            if(scale_frame>=0.7) {
+                if(game.robot.BBody[game.robot.Bid-1] > 0) {
+                    drawer.draw(green_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    level_big_font.draw(batch, "" + game.robot.Bl, RS((int)(((float)width-537.5f)*wpw)), RS((int)(685.0*hph)));
+                }
+                if(game.robot.BBody[game.robot.Bid-1] == 0) {
+                    drawer.draw(level_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    drawer.draw(yes, RS(width - 575), RS(605), RS(110), RS(110));
+
+                }
+                if(game.robot.BBody[game.robot.Bid-1] < 0) {
+                    drawer.draw(red_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    drawer.draw(not, RS(width - 575), RS(605), RS(110), RS(110));
+
+                }
+            }
+
+
+
+
+
+            drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
+            drawer.draw(state_speed, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(2, game.robot.Bid, game.robot.Bl, 4)/7.5f)), RS(40));
+            drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
+            drawer.draw(attack_speed, RS(width-565), RS(355), RS(100), RS(100));
+
+
+
+            drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
+            drawer.draw(state_health, RS(width-275), RS(380), RS((int)(250.0f*game.robot.TR(2, game.robot.Bid, game.robot.Bl, 1)/200.0f)), RS(40));
+            drawer.draw(state_frame, RS(width-285), RS(380), RS(250), RS(40));
+            drawer.draw(health, RS(width-295), RS(355), RS(100), RS(100));
+            drawer.draw(left, RS(width-550-120/2*left_scale+60), RS(470-100/2*left_scale+50), RS(100*left_scale), RS(120*left_scale));
+            drawer.draw(right, RS(width-150-120/2*right_scale+60), RS(470-100/2*right_scale+50), RS(100*right_scale), RS(120*right_scale));
+            alert_font.draw(batch, "" + (int)game.robot.TR(2, game.robot.Bid, game.robot.Bl,1), RS((int)(((float)width-195.0)*wpw)), RS((int)(412.5*hph)));
+            alert_font.draw(batch, "" + (int)game.robot.TR(2, game.robot.Bid, game.robot.Bl,4), RS((int)(((float)width-455.0)*wpw)), RS((int)(412.5*hph)));
         }
         if(which_select == 3){
             item_font.draw(batch, "Механо-нога Ур. " + game.robot.LLid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
@@ -470,6 +559,195 @@ public class WorkMenu extends Openable implements Screen {
             game.setGameMenu();
         }
     }
+    public void NextRightPart(int select){
+        if(select == 1){
+            if(game.robot.Hid < 5){
+                game.robot.Hid++;
+                game.robot.Hl = game.robot.BHead[game.robot.Hid-1];
+                max_level = game.robot.Hl >= 5;
+                created_level = game.robot.BHead[game.robot.Hid-1] > 0;
+                type_1 = 3;
+                type_2 = 2;
+                number_1 = 8 * game.robot.Hl;
+                number_2 = 5 * game.robot.Hl;
+                can_type_1 = game.robot.microchips >= number_1;
+                can_type_2 = game.robot.lamps >= number_2;
+                upgrade_can = game.robot.microchips >= number_1 && game.robot.lamps >= number_2;
+            }
+        }
+        if(select == 2){
+            if(game.robot.Bid < 5){
+                game.robot.Bid++;
+                game.robot.Bl = game.robot.BBody[game.robot.Bid-1];
+                max_level = game.robot.Bl >= 5;
+                created_level = game.robot.BBody[game.robot.Bid-1] > 0;
+                type_1 = 3;
+                type_2 = 1;
+                number_1 = 6 * game.robot.Bl;
+                number_2 = 9 * game.robot.Bl;
+                can_type_1 = game.robot.microchips >= number_1;
+                can_type_2 = game.robot.metal >= number_2;
+                upgrade_can = game.robot.microchips >= number_1 && game.robot.metal >= number_2;
+            }
+        }
+        if(select == 3){
+            if(game.robot.LLid < 5){
+                game.robot.LLid++;
+                game.robot.LLl = game.robot.BLeg[game.robot.LLid-1];
+                max_level = game.robot.LLl >= 5;
+                created_level = game.robot.BLeg[game.robot.LLid-1] > 0;
+                type_1 = 4;
+                type_2 = 1;
+                number_1 = 6 * game.robot.LLl;
+                number_2 = 7 * game.robot.LLl;
+                can_type_1 = game.robot.gears >= number_1;
+                can_type_2 = game.robot.metal >= number_2;
+                upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
+            }
+        }
+        if(select == 4){
+            if(game.robot.RLid < 5){
+                game.robot.RLid++;
+                game.robot.RLl = game.robot.BLeg[game.robot.RLid-1];
+                max_level = game.robot.RLl >= 5;
+                created_level = game.robot.BLeg[game.robot.RLid-1] > 0;
+                type_1 = 4;
+                type_2 = 1;
+                number_1 = 6 * game.robot.RLl;
+                number_2 = 7 * game.robot.RLl;
+                can_type_1 = game.robot.gears >= number_1;
+                can_type_2 = game.robot.metal >= number_2;
+                upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
+            }
+        }
+        if(select == 5){
+            if(game.robot.LHid < 5){
+                game.robot.LHid++;
+                game.robot.LHl = game.robot.BHand[game.robot.LHid-1];
+                max_level = game.robot.LHl >= 5;
+                created_level = game.robot.BHand[game.robot.LHid-1] > 0;
+                type_1 = 4;
+                type_2 = 2;
+                number_1 = 6 * game.robot.LHl;
+                number_2 = 8 * game.robot.LHl;
+                can_type_1 = game.robot.gears >= number_1;
+                can_type_2 = game.robot.lamps >= number_2;
+                upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
+            }
+        }
+        if(select == 6){
+            if(game.robot.RHid < 5){
+                game.robot.RHid++;
+                game.robot.RHl = game.robot.BHand[game.robot.RHid-1];
+                max_level = game.robot.RHl >= 5;
+                created_level = game.robot.BHand[game.robot.RHid-1] > 0;
+                type_1 = 4;
+                type_2 = 2;
+                number_1 = 6 * game.robot.RHl;
+                number_2 = 8 * game.robot.RHl;
+                can_type_1 = game.robot.gears >= number_1;
+                can_type_2 = game.robot.lamps >= number_2;
+                upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
+            }
+        }
+        game.robot.UpdateRobotTexture(select);
+
+    }
+    public void NextLeftPart(int select){
+        if(select == 1){
+            if(game.robot.Hid > 1){
+                game.robot.Hid--;
+                game.robot.Hl = game.robot.BHead[game.robot.Hid-1];
+                max_level = game.robot.Hl >= 5;
+                created_level = game.robot.BHead[game.robot.Hid-1] > 0;
+                type_1 = 3;
+                type_2 = 2;
+                number_1 = 8 * game.robot.Hl;
+                number_2 = 5 * game.robot.Hl;
+                can_type_1 = game.robot.microchips >= number_1;
+                can_type_2 = game.robot.lamps >= number_2;
+                upgrade_can = game.robot.microchips >= number_1 && game.robot.lamps >= number_2;
+            }
+        }
+        if(select == 2){
+            if(game.robot.Bid > 1){
+                game.robot.Bid--;
+                game.robot.Bl = game.robot.BBody[game.robot.Bid-1];
+                max_level = game.robot.Bl >= 5;
+                created_level = game.robot.BBody[game.robot.Bid-1] > 0;
+                type_1 = 3;
+                type_2 = 1;
+                number_1 = 6 * game.robot.Bl;
+                number_2 = 9 * game.robot.Bl;
+                can_type_1 = game.robot.microchips >= number_1;
+                can_type_2 = game.robot.metal >= number_2;
+                upgrade_can = game.robot.microchips >= number_1 && game.robot.metal >= number_2;
+            }
+        }
+        if(select == 3){
+            if(game.robot.LLid > 1){
+                game.robot.LLid--;
+                game.robot.LLl = game.robot.BLeg[game.robot.LLid-1];
+                max_level = game.robot.LLl >= 5;
+                created_level = game.robot.BLeg[game.robot.LLid-1] > 0;
+                type_1 = 4;
+                type_2 = 1;
+                number_1 = 6 * game.robot.LLl;
+                number_2 = 7 * game.robot.LLl;
+                can_type_1 = game.robot.gears >= number_1;
+                can_type_2 = game.robot.metal >= number_2;
+                upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
+            }
+        }
+        if(select == 4){
+            if(game.robot.RLid > 1){
+                game.robot.RLid--;
+                game.robot.RLl = game.robot.BLeg[game.robot.RLid-1];
+                max_level = game.robot.RLl >= 5;
+                created_level = game.robot.BLeg[game.robot.RLid-1] > 0;
+                type_1 = 4;
+                type_2 = 1;
+                number_1 = 6 * game.robot.RLl;
+                number_2 = 7 * game.robot.RLl;
+                can_type_1 = game.robot.gears >= number_1;
+                can_type_2 = game.robot.metal >= number_2;
+                upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
+            }
+        }
+        if(select == 5){
+            if(game.robot.LHid > 1){
+                game.robot.LHid--;
+                game.robot.LHl = game.robot.BHand[game.robot.LHid-1];
+                max_level = game.robot.LHl >= 5;
+                created_level = game.robot.BHand[game.robot.LHid-1] > 0;
+                type_1 = 4;
+                type_2 = 2;
+                number_1 = 6 * game.robot.LHl;
+                number_2 = 8 * game.robot.LHl;
+                can_type_1 = game.robot.gears >= number_1;
+                can_type_2 = game.robot.lamps >= number_2;
+                upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
+            }
+        }
+        if(select == 6){
+            if(game.robot.RHid > 1){
+                game.robot.RHid--;
+                game.robot.RHl = game.robot.BHand[game.robot.RHid-1];
+                max_level = game.robot.RHl >= 5;
+                created_level = game.robot.BHand[game.robot.RHid-1] > 0;
+                type_1 = 4;
+                type_2 = 2;
+                number_1 = 6 * game.robot.RHl;
+                number_2 = 8 * game.robot.RHl;
+                can_type_1 = game.robot.gears >= number_1;
+                can_type_2 = game.robot.lamps >= number_2;
+                upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
+            }
+        }
+                game.robot.UpdateRobotTexture(select);
+
+    }
+
     public void Swap(){
         if(can_swap) {
             can_swap = false;
@@ -482,61 +760,73 @@ public class WorkMenu extends Openable implements Screen {
                     }
                     which_select = which_select_will;
                     if (which_select == 1) {
-                        max_level = game.robot.Hid >= 5;
+                        game.robot.Hl = game.robot.BHead[game.robot.Hid-1];
+                        max_level = game.robot.Hl >= 5;
+                        created_level = game.robot.BHead[game.robot.Hid-1] > 0;
                         type_1 = 3;
                         type_2 = 2;
-                        number_1 = 8 * game.robot.Hid;
-                        number_2 = 5 * game.robot.Hid;
+                        number_1 = 8 * game.robot.Hl;
+                        number_2 = 5 * game.robot.Hl;
                         can_type_1 = game.robot.microchips >= number_1;
                         can_type_2 = game.robot.lamps >= number_2;
                         upgrade_can = game.robot.microchips >= number_1 && game.robot.lamps >= number_2;
                     }
                     if (which_select == 2) {
-                        max_level = game.robot.Bid >= 5;
+                        game.robot.Bl = game.robot.BBody[game.robot.Bid-1];
+                        max_level = game.robot.Bl >= 5;
+                        created_level = game.robot.BBody[game.robot.Bid-1] > 0;
                         type_1 = 3;
                         type_2 = 1;
-                        number_1 = 6 * game.robot.Bid;
-                        number_2 = 9 * game.robot.Bid;
+                        number_1 = 6 * game.robot.Bl;
+                        number_2 = 9 * game.robot.Bl;
                         can_type_1 = game.robot.microchips >= number_1;
                         can_type_2 = game.robot.metal >= number_2;
                         upgrade_can = game.robot.microchips >= number_1 && game.robot.metal >= number_2;
                     }
                     if (which_select == 3) {
-                        max_level = game.robot.LLid >= 5;
+                        game.robot.LLl = game.robot.BLeg[game.robot.LLid-1];
+                        max_level = game.robot.LLl >= 5;
+                        created_level = game.robot.BLeg[game.robot.LLid-1] > 0;
                         type_1 = 4;
                         type_2 = 1;
-                        number_1 = 6 * game.robot.LLid;
-                        number_2 = 7 * game.robot.LLid;
+                        number_1 = 6 * game.robot.LLl;
+                        number_2 = 7 * game.robot.LLl;
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.metal >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
                     }
                     if (which_select == 4) {
-                        max_level = game.robot.RLid >= 5;
+                        game.robot.RLl = game.robot.BLeg[game.robot.RLid-1];
+                        max_level = game.robot.RLl >= 5;
+                        created_level = game.robot.BLeg[game.robot.RLid-1] > 0;
                         type_1 = 4;
                         type_2 = 1;
-                        number_1 = 6 * game.robot.RLid;
-                        number_2 = 7 * game.robot.RLid;
+                        number_1 = 6 * game.robot.RLl;
+                        number_2 = 7 * game.robot.RLl;
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.metal >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
                     }
                     if (which_select == 5) {
-                        max_level = game.robot.LHid >= 5;
+                        game.robot.LHl = game.robot.BHand[game.robot.LHid-1];
+                        max_level = game.robot.LHl >= 5;
+                        created_level = game.robot.BHand[game.robot.LHid-1] > 0;
                         type_1 = 4;
                         type_2 = 2;
-                        number_1 = 6 * game.robot.LHid;
-                        number_2 = 8 * game.robot.LHid;
+                        number_1 = 6 * game.robot.LHl;
+                        number_2 = 8 * game.robot.LHl;
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.lamps >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
                     }
                     if (which_select == 6) {
-                        max_level = game. robot.RHid >= 5;
+                        game.robot.RHl = game.robot.BHand[game.robot.RHid-1];
+                        max_level = game.robot.RHl >= 5;
+                        created_level = game.robot.BHand[game.robot.RHid-1] > 0;
                         type_1 = 4;
                         type_2 = 2;
-                        number_1 = 6 * game.robot.RHid;
-                        number_2 = 8 * game.robot.RHid;
+                        number_1 = 6 * game.robot.RHl;
+                        number_2 = 8 * game.robot.RHl;
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.lamps >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
@@ -565,6 +855,9 @@ public class WorkMenu extends Openable implements Screen {
     }
     public int RS(int value){ //right scale
         return (int)((float)value*scale_frame)-(int)((1.0-scale_frame)*400);
+    }
+    public int RS(float value){ //right scale
+        return (int)(value*scale_frame)-(int)((1.0-scale_frame)*400);
     }
     public void AddLeg(int leg){
         if(leg == 1) {
@@ -708,48 +1001,54 @@ public class WorkMenu extends Openable implements Screen {
     public void upgrade() {
         if (upgrade_can && !max_level) {
             if (which_select == 1) {
-                if (game.robot.Hid < 5) {
-                    game.robot.Hid++;
+                if (game.robot.Hl < 5) {
+                    game.robot.Hl++;
+                    game.robot.BHead[game.robot.Hid-1] = game.robot.Hl;
                     game.robot.UpdateRobotTexture(which_select);
                     AddLeg(1);
                     upgrade.play(0.8f);
                 }
             }
             if (which_select == 2) {
-                if (game.robot.Bid < 5) {
-                    game.robot.Bid++;
+                if (game.robot.Bl < 5) {
+                    game.robot.Bl++;
+                    game.robot.BBody[game.robot.Bid-1] = game.robot.Bl;
                     game.robot.UpdateRobotTexture(which_select);
                     AddLeg(2);
                     upgrade.play(0.8f);
                 }
             }
             if (which_select == 6) {
-                if (game.robot.RHid < 5) {
-                    game.robot.RHid++;
+                if (game.robot.RHl < 5) {
+                    game.robot.RHl++;
+                    game.robot.BHand[game.robot.RHid-1] = game.robot.RHl;
                     game.robot.UpdateRobotTexture(which_select);
                     AddLeg(6);
                     upgrade.play(0.8f);
                 }
             }
             if (which_select == 5) {
-                if (game.robot.LHid < 5) {
-                    game.robot.LHid++;
+                if (game.robot.LHl < 5) {
+                    game.robot.LHl++;
+                    game.robot.BHand[game.robot.LHid-1] = game.robot.LHl;
                     game.robot.UpdateRobotTexture(which_select);
                     AddLeg(5);
                     upgrade.play(0.8f);
                 }
             }
             if (which_select == 4) {
-                if (game.robot.RLid < 5) {
-                    game.robot.RLid++;
+                if (game.robot.RLl < 5) {
+                    game.robot.RLl++;
+                    game.robot.BLeg[game.robot.RLid-1] = game.robot.RLl;
                     game.robot.UpdateRobotTexture(which_select);
                     AddLeg(4);
                     upgrade.play(0.8f);
                 }
             }
             if (which_select == 3) {
-                if (game.robot.LLid < 5) {
-                    game.robot.LLid++;
+                if (game.robot.LLl < 5) {
+                    game.robot.LLl++;
+                    game.robot.BLeg[game.robot.LLid-1] = game.robot.LLl;
                     game.robot.UpdateRobotTexture(which_select);
                     AddLeg(3);
                     upgrade.play(0.8f);
@@ -835,5 +1134,16 @@ public class WorkMenu extends Openable implements Screen {
         state_energy.dispose();
         state_damage.dispose();
         state_speed.dispose();
+        saw_texture.dispose();
+        workpage.dispose();
+        workpage_red.dispose();
+        workpage_blue.dispose();
+        metal.dispose();
+        metall.dispose();
+        left.dispose();
+        right.dispose();
+        level_circle.dispose();
+        green_circle.dispose();
+        red_circle.dispose();
     }
     }

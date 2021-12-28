@@ -23,7 +23,7 @@ public class Openable implements Screen{
     Thread door;
     Thread door2;
     SpriteBatchRubber drawer;
-    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Decoration/main_font.ttf"));
+
     FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
     public static final String FONT_CHARACTERS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyzАБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;,{}\"´`'<>:";
     boolean closed = false;
@@ -53,30 +53,30 @@ public class Openable implements Screen{
         hph = (float)Gdx.graphics.getHeight()/(float)height;
         parameter.size = (int)(35.0*wpw);
         parameter.characters = FONT_CHARACTERS;
-        alert_font = generator.generateFont(parameter);
+        alert_font = game.generator.generateFont(parameter);
         alert_font.setColor(Color.WHITE);
         parameter.size = (int)(55.0*wpw);
-        tutorial_font = generator.generateFont(parameter);
+        tutorial_font = game.generator.generateFont(parameter);
         tutorial_font.setColor(Color.WHITE);
         parameter.size = (int)(50.0*wpw);
-        item_font = generator.generateFont(parameter);
+        item_font = game.generator.generateFont(parameter);
         item_font.setColor(Color.WHITE);
-        item_green_font = generator.generateFont(parameter);
+        item_green_font = game.generator.generateFont(parameter);
         item_green_font.setColor(0, 140, 255, 1);
         parameter.size = (int)(100.0*wpw);
-        button_font = generator.generateFont(parameter);
+        button_font = game.generator.generateFont(parameter);
         button_font.setColor(Color.WHITE);
         parameter.size = (int)(150.0*wpw);
-        resource_font = generator.generateFont(parameter);
+        resource_font = game.generator.generateFont(parameter);
         resource_font.setColor(0, 140, 255, 1);
         parameter.size = (int)(160.0*wpw);
-        multiplayer_font = generator.generateFont(parameter);
+        multiplayer_font = game.generator.generateFont(parameter);
         multiplayer_font.setColor(0, 140, 255, 1);
         parameter.size = (int)(40.0*wpw);
-        level_font = generator.generateFont(parameter);
+        level_font = game.generator.generateFont(parameter);
         level_font.setColor(Color.WHITE);
         parameter.size = (int)(65.0*wpw);
-        level_big_font = generator.generateFont(parameter);
+        level_big_font = game.generator.generateFont(parameter);
         level_big_font.setColor(Color.WHITE);
 
     }
@@ -699,6 +699,11 @@ public class Openable implements Screen{
                         open_x_5+=2;
                         Sleep(2);
                     }
+                    open_x_1 = wd10;
+                    open_x_2 = wd10*2;
+                    open_x_3 = wd10*3;
+                    open_x_4 = wd10*4;
+                    open_x_5 = wd10*5;
                     Sleep(50);
                     closed = true;
                 }
