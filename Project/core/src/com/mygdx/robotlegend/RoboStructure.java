@@ -45,6 +45,7 @@ public class RoboStructure {
     int color = 2;
     int fire_damage = 2;
     boolean exp_process = false;
+    boolean box_empty = true;
     int[] metal_chance = new int[4];
     int[] chip_chance = new int[4];
     int[] gear_chance = new int[4];
@@ -206,7 +207,20 @@ public class RoboStructure {
     public void UpdateParameters(){
         EClearSkinBust();
         ClearSkinBust();
-        energy_speed = 90-Hid*10;
+        energy_speed = 90-(int)TR(1, Hid, Hl, 3);
+        Eenergy_speed = 90-(int)TR(1, EHid, EHl, 3);
+        attack_speed = 8-(int)TR(2, Bid, Bl, 4);
+        Eattack_speed = 8-(int)TR(2, EBid, EBl, 4);
+        move_speed = 11-((int)TR(3, LLid, LLl, 5)+(int)TR(3, RLid, RLl, 5));
+        Emove_speed =11-((int)TR(3, ELLid, ELLl, 5)+(int)TR(3, ERLid, ERLl, 5));
+        damage = (int)TR(4, LHid, LHl, 2)+(int)TR(3, RHid, RHl, 2);
+        Edamage = (int)TR(4, ELHid, ELHl, 2)+(int)TR(3, ERHid, ERHl, 2);
+        health = (int)TR(1, Hid, Hl, 1)+(int)TR(2, Bid, Bl, 1)+(int)TR(3, LLid, LLl, 1)+(int)TR(1, RLid, RLl, 1)+(int)TR(1, LHid, LHl, 1)+ (int)TR(1, RHid, RHl, 1);
+        Ehealth = (int)TR(1, EHid, EHl, 1)+(int)TR(2, EBid, EBl, 1)+(int)TR(3, ELLid, ELLl, 1)+(int)TR(1, ERLid, ERLl, 1)+(int)TR(1, ELHid, ELHl, 1)+ (int)TR(1, ERHid, ERHl, 1);
+
+
+
+        /*energy_speed = 90-Hid*10;
         Eenergy_speed = 90-EHid*10;
         attack_speed = 8-Bid;
         Eattack_speed = 8-EBid;
@@ -215,7 +229,7 @@ public class RoboStructure {
         damage = RHid*2+LHid*2;
         Edamage = ERHid*2+ELHid*2;
         health = Hid*10+Bid*15+RHid*5+LHid*5+RLid*5+LLid*5;
-        Ehealth = EHid*10+EBid*15+ERHid*5+ELHid*5+ERLid*5+ELLid*5;
+        Ehealth = EHid*10+EBid*15+ERHid*5+ELHid*5+ERLid*5+ELLid*5;*/
 
         ChangeSkinBust();
         EChangeSkinBust();
@@ -262,7 +276,7 @@ public class RoboStructure {
                     result = 16.0f*lvl;
                 }
                 if(type == 3){
-                    result = 10f*lvl;
+                    result = 10.0f*lvl;
                 }
             }
         }
@@ -829,7 +843,6 @@ public class RoboStructure {
         LLl = TakeSafe("LLl");
         opened = TakeSafe("opened");
         experience = TakeSafe("experience");
-        Bl = 4;
         int i = 0;
         while(i!=opened){
             skins_open[i] = TakeSafe("skin_"+i);
@@ -911,49 +924,22 @@ public class RoboStructure {
         if(level_win>48){
             level_arm = 48;
         }
-        while(EHid+EBid+ERHid+ERLid+ELLid+ELHid!=level_arm+6) {
+        while(EHid+EBid+ERHid+ERLid+ELLid+ELHid!=level_arm+6&&EHl+EBl+ERHl+ERLl+ELLl+ELHl!=level_arm+6) {
+
+
             EHid = game.random.nextInt(5) + 1;
             EBid = game.random.nextInt(5) + 1;
             ERHid = game.random.nextInt(5) + 1; //Правая рука
             ELHid = game.random.nextInt(5) + 1; //Левая рука
             ERLid = game.random.nextInt(5) + 1; //Правая нога
             ELLid = game.random.nextInt(5) + 1; //Левая нога
-            if (EHid > 5) {
-                EHid = 5;
-            }
-            if (EBid > 5) {
-                EBid = 5;
-            }
-            if (ERHid > 5) {
-                ERHid = 5;
-            }
-            if (ELHid > 5) {
-                ELHid = 5;
-            }
-            if (ELLid > 5) {
-                ELLid = 5;
-            }
-            if (ERLid > 5) {
-                ERLid = 5;
-            }
-            if (EHid < 1) {
-                EHid = 1;
-            }
-            if (EBid < 1) {
-                EBid = 1;
-            }
-            if (ERHid < 1) {
-                ERHid = 1;
-            }
-            if (ELHid < 1) {
-                ELHid = 1;
-            }
-            if (ELLid < 1) {
-                ELLid = 1;
-            }
-            if (ERLid < 1) {
-                ERLid = 1;
-            }
+
+            EHl = game.random.nextInt(5) + 1;
+            EBl = game.random.nextInt(5) + 1;
+            ERHl = game.random.nextInt(5) + 1; //Правая рука
+            ELHl = game.random.nextInt(5) + 1; //Левая рука
+            ERLl = game.random.nextInt(5) + 1; //Правая нога
+            ELLl = game.random.nextInt(5) + 1; //Левая нога
         }
         ERHt.dispose();
         ELHt.dispose();

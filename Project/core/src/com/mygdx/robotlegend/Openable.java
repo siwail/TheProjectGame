@@ -134,6 +134,52 @@ public class Openable implements Screen{
             drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand);
         }
     }
+    public void DrawBox(SpriteBatchRubber drawer, GameMenu menu, int x, int y, float scale, float state){
+        if(state<=1.0f) {
+            drawer.draw(menu.box[0], x, y + 70 * state * scale, 300 * scale, (310 - 120 * state) * scale);
+            drawer.draw(menu.box[8], x, y + 40 * state * scale, 300 * scale, 300 * scale);
+
+            drawer.draw(menu.box[5], x + 25 * scale, y + state * 80 * scale, 250 * scale, (300 - 120 * state) * scale);
+
+
+            drawer.draw(menu.box[6], x + 5 * state, y, (300) * scale, (300) * scale);
+            drawer.draw(menu.box[7], x - 5 * state, y, (300) * scale, (300) * scale);
+            drawer.draw(menu.box[2], x, y + 30 * state * scale, 300 * scale, 300 * scale);
+            drawer.draw(menu.box[1], x, y - state * 25 * scale, 300 * scale, 300 * scale);
+            drawer.draw(menu.box[3], x, y + state * 50 * scale, 300 * scale, 300 * scale);
+            drawer.draw(menu.box[4], x, y + state * 50 * scale, 300 * scale, 300 * scale);
+        }else {
+            if (state <= 2.0f) {
+                state = state - 1.0f;
+                drawer.draw(menu.box[0], x, y + 70 * scale, 300 * scale, (310 - 120 - 40 * state) * scale);
+                drawer.draw(menu.box[8], x, y + 40 * scale, 300 * scale, 300 * scale);
+
+                drawer.draw(menu.box[5], x + (25 + 15 * state) * scale, y + (80 - 75*state) * scale, (250 - 30 * state) * scale, (300 - 120) * scale);
+
+
+                drawer.draw(menu.box[6], x + 5, y - 20 * state * scale, (300) * scale, (300) * scale);
+                drawer.draw(menu.box[7], x - 5, y - 20 * state * scale, (300) * scale, (300) * scale);
+                drawer.draw(menu.box[2], x, y + (30 - 32.5f * state) * scale, 300 * scale, 300 * scale);
+                drawer.draw(menu.box[1], x, y - (25 + 32.5f * state) * scale, 300 * scale, 300 * scale);
+                drawer.draw(menu.box[3], x + 15.5f * state * scale, y + 50 * scale, 300 * scale, 300 * scale);
+                drawer.draw(menu.box[4], x - 15.5f * state * scale, y + 50 * scale, 300 * scale, 300 * scale);
+            } else {
+                state = state - 1.0f;
+                drawer.draw(menu.box[0], x, y + 70 * scale, 300 * scale, (310 - 120 - 40 ) * scale);
+                drawer.draw(menu.box[8], x, y + 40 * scale, 300 * scale, 300 * scale);
+
+                drawer.draw(menu.box[5], x + (25 + 15) * scale, y + (80 - 75) * scale, (250 - 30) * scale, (300 - 120) * scale);
+
+
+                drawer.draw(menu.box[6], x + 5, y - 20  * scale, (300) * scale, (300) * scale);
+                drawer.draw(menu.box[7], x - 5, y - 20  * scale, (300) * scale, (300) * scale);
+                drawer.draw(menu.box[2], x, y + (30 - 32.5f) * scale, 300 * scale, 300 * scale);
+                drawer.draw(menu.box[1], x, y - (25 + 32.5f) * scale, 300 * scale, 300 * scale);
+                drawer.draw(menu.box[3], x + 15.5f * scale, y + 50 * scale, 300 * scale, 300 * scale);
+                drawer.draw(menu.box[4], x - 15.5f * scale, y + 50 * scale, 300 * scale, 300 * scale);
+            }
+        }
+    }
     public void DrawAlert(SpriteBatchRubber drawer, int x,  int y, String text_1, String text_2, int plus_x){
         drawer.draw(game.robot.alert, width-400+x, y, 400, 200);
         alert_font.draw(drawer.batch, text_1, (int)((width-300+x+plus_x)*wpw), (int)((y+125)*hph));
@@ -787,12 +833,12 @@ public class Openable implements Screen{
             for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_2-wd10, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_1-wd10, (wd10)*i, wd10, wd10);
              */
-            for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_5-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_5-wd10, (wd10)*i, wd10+2, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_2, open_x_4-wd10, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_3-wd10, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_2, open_x_2-wd10, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_1-wd10, (wd10)*i, wd10, wd10);
-            for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_5, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_5-2, (wd10)*i, wd10+2, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_3, width-open_x_4, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_3, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_3, width-open_x_2, (wd10)*i, wd10, wd10);
@@ -844,6 +890,9 @@ public class Openable implements Screen{
     }
     public void Sleep(int time){
         try {
+            if(time<=0) {
+            time = 1;
+            }
             Thread.sleep(time);
         } catch (Exception ignored) { }
     }

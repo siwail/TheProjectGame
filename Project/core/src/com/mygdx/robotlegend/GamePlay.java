@@ -1062,7 +1062,7 @@ public class GamePlay extends Openable implements Screen{
                         if(!run_away){
                             int random_act = game.random.nextInt(27) + 1;
                             if (random_act < 11 && random_act > 0) {
-                                if (CheckBullet()) {
+                                if (CheckBulletInPlace(x, y, 800)) {
                                     int index = 0;
                                     if (bullets > 0) {
                                         while (index < 40) {
@@ -1107,22 +1107,30 @@ public class GamePlay extends Openable implements Screen{
                                 if (y - 1 > 0 && move_dir == -1) {
                                     if(dir == 1) {
                                         if (x + 1 != Ex || y - 1 != Ey || x!=8) {
-                                            Down();
+                                            if(!CheckBulletInPlace(x, y-1, 400)) {
+                                                Down();
+                                            }
                                         }
                                     }else{
                                         if (x - 1 != Ex || y - 1 != Ey || x!=2) {
-                                            Down();
+                                            if(!CheckBulletInPlace(x, y-1, 400)) {
+                                                Down();
+                                            }
                                         }
                                     }
                                 }
                                 if (y + 1 < 4 && move_dir == 0) {
                                     if(dir == 1) {
                                         if (x + 1 != Ex || y + 1 != Ey || x!=8) {
-                                            Up();
+                                            if(!CheckBulletInPlace(x, y+1, 400)) {
+                                                Up();
+                                            }
                                         }
                                     }else{
                                         if (x - 1 != Ex || y + 1 != Ey || x!=2) {
-                                            Up();
+                                            if(!CheckBulletInPlace(x, y+1, 400)) {
+                                                Up();
+                                            }
                                         }
                                     }
                                 }
@@ -1184,7 +1192,7 @@ public class GamePlay extends Openable implements Screen{
                             if (!(Math.abs((x * width / 10 + robot_x) - (Ex * width / 10 + Erobot_x)) > 75 && ((dir == -1 && (x * width / 10 + robot_x) < (Ex * width / 10 + Erobot_x)) || (dir == 1 && (x * width / 10 + robot_x) > (Ex * width / 10 + Erobot_x))))) {
                                 Redir();
                             }
-                            if(CheckBullet()){
+                            if(CheckBulletInPlace(x, y, 800)){
                                 int random_act = game.random.nextInt(2) + 1;
                                 if(random_act == 1 && y - 1 > 0){
                                     if(dir == 1) {
@@ -1283,7 +1291,7 @@ public class GamePlay extends Openable implements Screen{
                         if(!run_away){
                         int random_act = game.random.nextInt(27) + 1;
                         if (random_act < 11 && random_act > 0) {
-                            if (CheckBullet()) {
+                            if (CheckBulletInPlace(Ex, Ey, 800)) {
                                 int index = 0;
                                 if (bullets > 0) {
                                     while (index < 40) {
@@ -1297,22 +1305,29 @@ public class GamePlay extends Openable implements Screen{
                                 if (Ey - 1 > 0 && move_dir == -1) {
                                     if(Edir == 1) {
                                         if (Ex + 1 != x || Ey - 1 != y || Ex!=8) {
-                                            EDown();
+
+                                                EDown();
+
                                         }
                                     }else{
                                         if (Ex - 1 != x || Ey - 1 != y || Ex!=2) {
-                                            EDown();
+
+                                                EDown();
+
                                         }
                                     }
                                 }
                                 if (Ey + 1 < 4 && move_dir == 0) {
                                     if(Edir == 1) {
                                         if (Ex + 1 != x || Ey + 1 != y || Ex!=8) {
-                                            EUp();
+
+                                                EUp();
+
                                         }
                                     }else{
                                         if (Ex - 1 != x || Ey + 1 != y || Ex!=2) {
-                                            EUp();
+                                                EUp();
+
                                         }
                                     }
                                 }
@@ -1328,22 +1343,30 @@ public class GamePlay extends Openable implements Screen{
                             if (Ey - 1 > 0 && move_dir == -1) {
                                 if(Edir == 1) {
                                     if (Ex + 1 != x || Ey - 1 != y || Ex!=8) {
-                                        EDown();
+                                        if(!CheckBulletInPlace(Ex, Ey-1, 400)) {
+                                            EDown();
+                                        }
                                     }
                                 }else{
                                     if (Ex - 1 != x || Ey - 1 != y || Ex!=2) {
-                                        EDown();
+                                        if(!CheckBulletInPlace(Ex, Ey-1, 400)) {
+                                            EDown();
+                                        }
                                     }
                                 }
                             }
                             if (Ey + 1 < 4 && move_dir == 0) {
                                 if(Edir == 1) {
                                     if (Ex + 1 != x || Ey + 1 != y || Ex!=8) {
-                                        EUp();
+                                        if(!CheckBulletInPlace(Ex, Ey+1, 400)) {
+                                            EUp();
+                                        }
                                     }
                                 }else{
                                     if (Ex - 1 != x || Ey + 1 != y || Ex!=2) {
-                                        EUp();
+                                        if(!CheckBulletInPlace(Ex, Ey+1, 400)) {
+                                            EUp();
+                                        }
                                     }
                                 }
                             }
@@ -1405,7 +1428,7 @@ public class GamePlay extends Openable implements Screen{
                                 if (!(Math.abs((Ex * width / 10 + Erobot_x) - (x * width / 10 + robot_x)) > 75 && ((Edir == -1 && (Ex * width / 10 + Erobot_x) < (x * width / 10 + robot_x)) || (Edir == 1 && (Ex * width / 10 + Erobot_x) > (x * width / 10 + robot_x))))) {
                                     ERedir();
                                 }
-                                if(CheckBullet()){
+                                if(CheckBulletInPlace(Ex, Ey, 800)){
                                     int random_act = game.random.nextInt(2) + 1;
                                     if(random_act == 1 && Ey - 1 > 0){
                                         if(Edir == 1) {
@@ -2321,7 +2344,7 @@ public class GamePlay extends Openable implements Screen{
             fire_state_3[ x ] = 0;
         }
     }
-    public boolean CheckBullet(){
+   /* public boolean CheckBullet(){
         if(bullets>0) {
             int index = 0;
             while (index < 40) {
@@ -2332,8 +2355,19 @@ public class GamePlay extends Openable implements Screen{
             }
         }
         return false;
+    }*/
+    public boolean CheckBulletInPlace(int x, int y, int distance){
+        if(bullets>0) {
+            int index = 0;
+            while (index < 40) {
+                if (bullets_dir[index] != 0 && Math.floor(bullets_y[index]) == (float)y && Math.abs((float)bullets_x[index] - (float)(x*width/10)) < distance && (((float)(x*width/10)-(float)bullets_x[index] > 0 && bullets_dir[index] == 1) || ((float)bullets_x[index]-(float)(x*width/10)> 0 && bullets_dir[index] == -1))) {
+                    return true;
+                }
+                index++;
+            }
+        }
+        return false;
     }
-
     public void ESetBullet(int Ex, int Ey, int Edir){               //Жесткая дичь, которая добавляет пули. Работает - не трожь. Написал сам - молодец. Скопипастил - лох. Но если придерживаться логики, где вообще можно скопипастить такую хрень, а?
         if(bullets < 40){
             bullets++;

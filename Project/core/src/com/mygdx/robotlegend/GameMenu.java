@@ -16,6 +16,7 @@ public class GameMenu extends Openable implements Screen{
     Thread TutorialAnime;
     Thread TutorialIconAnime;
     Thread button_anime;
+    Thread box_anime;
     Sound[] hush = new Sound[3];
     Texture button_left_part;
     Texture button_right_part;
@@ -58,6 +59,7 @@ public class GameMenu extends Openable implements Screen{
     Texture level_line;
     Texture location_2_planet_texture;
     Texture tutorial_circlet;
+    Texture[] box = new Texture[9];
     Texture[] tutorial_icon = new Texture[4];
     Texture[] tutorial_frame_color = new Texture[12];
     Texture[] smoke = new Texture[4];
@@ -66,6 +68,7 @@ public class GameMenu extends Openable implements Screen{
     TextureRegion location_2_planet;
     TextureRegion location_2_space;
     TextureRegion location_2_space_2;
+    float box_state = 0.0f;
     int button_exit_state = 0;
     int button_fight_state = 0;
     int button_tutorial_state = 0;
@@ -154,6 +157,7 @@ public class GameMenu extends Openable implements Screen{
         game.MusicSwap(2);
         game.robot.Safe();
         game.robot.RandomEnemy();
+        for(int i = 0; i<9; i++) box[i] = new Texture("Object/box_"+(i+1)+".png");
         tutorial_circlet = new Texture("Tutorial/back_0.png");
         tutorial_circle = new TextureRegion(tutorial_circlet, 400, 400);
         tutorial_icon[0] = new Texture("Tutorial/icon_1_0_0.png");
@@ -269,6 +273,28 @@ public class GameMenu extends Openable implements Screen{
 
                 }
         };
+        box_anime = new Thread(){
+            @Override
+            public void run(){
+                int dir = 1;
+                while(!closed){
+                    if(dir == 1){
+                        box_state+=0.01f;
+                        if(box_state>=3.0f){
+                            dir = 0;
+                        }
+                    }else{
+                        box_state-=0.01f;
+                        if(box_state<=0){
+                            dir = 1;
+                        }
+                    }
+                    Sleep(2);
+                }
+
+            }
+        };
+        //box_anime.start();
         button_anime = new Thread(){
             @Override
             public void run(){
@@ -635,7 +661,7 @@ public class GameMenu extends Openable implements Screen{
         if(game.robot.level != 1 && game.robot.level != 2) {
             drawer.draw(smoke[smoke_anime], width / 2 - 125, 400, 175, 175);
         }
-
+        //DrawBox(drawer, this, 100, 100, 2.0f, box_state);
         if(search_planet){
             TextureRegion space_1 = new TextureRegion(space, 960, 540);
             TextureRegion space_2 = new TextureRegion(space2, 960, 540);
@@ -1266,6 +1292,7 @@ public class GameMenu extends Openable implements Screen{
         button_fight_icon.dispose();
         button_online_icon.dispose();
         button_tutorial_icon.dispose();
+        for(int i = 0; i<9; i++) box[i].dispose();
         for(int i = 0; i<11; i++) tutorial_frame_color[i].dispose();
         for(int i = 0; i<4; i++) tutorial_icon[i].dispose();
     }

@@ -12,6 +12,8 @@ public class WorkMenu extends Openable implements Screen {
     Thread anime;
     Thread anime_hand;
     Thread button;
+    Thread tube_events;
+    Thread tube_events2;
     Texture frame;
     Texture background;
     Texture metal;
@@ -63,6 +65,9 @@ public class WorkMenu extends Openable implements Screen {
     Texture level_circle;
     Texture green_circle;
     Texture red_circle;
+    Texture tube;
+    Texture[] tube_elements_texture = new Texture[5];
+    TextureRegion[] tube_elements = new TextureRegion[5];
     TextureRegion lamp;
     TextureRegion[] light = new TextureRegion[2];
     TextureRegion saw;
@@ -88,6 +93,15 @@ public class WorkMenu extends Openable implements Screen {
     int y_ru = 0;
     int y_cu = 0;
 
+    int tube_element2_index;
+    int tube_element2_speed;
+    float tube_element2_rotate;
+    float tube_element2_y;
+
+    int tube_element_index;
+    int tube_element_speed;
+    float tube_element_rotate;
+    float tube_element_y;
     float left_scale = 1.0f;
     float right_scale = 1.0f;
 
@@ -123,6 +137,13 @@ public class WorkMenu extends Openable implements Screen {
             Start();
             x = width/2-400;
             game.robot.UpdateParameters();
+            tube_elements_texture[0] = new Texture("Location/grass_1.png");
+            tube_elements_texture[1] = new Texture("Location/meteor_1.png");
+            tube_elements_texture[2] = new Texture("Item/gear.png");
+            tube_elements_texture[3] = new Texture("Item/bulb.png");
+            tube_elements_texture[4] = new Texture("Robot/head_dead.png");
+            for(int i = 0; i<5; i++) tube_elements[i] = new TextureRegion(tube_elements_texture[i]);
+            tube = new Texture("Object/tube.png");
             level_circle =  new Texture("Object/level_circle.png");
             green_circle =  new Texture("Object/green_circle.png");
             red_circle =  new Texture("Object/red_circle.png");
@@ -203,6 +224,42 @@ public class WorkMenu extends Openable implements Screen {
                 }
             }
             };
+        tube_events  = new Thread(){
+            @Override
+            public void run(){
+                while(!closed){
+                    tube_element_y = height;
+                    tube_element_speed = (game.random.nextInt(3)+1);
+                    tube_element_index = game.random.nextInt(5);
+                    while(tube_element_y>-200) {
+                        tube_element_y-=5*tube_element_speed;
+                        tube_element_rotate+=1.0f;
+                        if(tube_element_rotate > 360.0f){
+                            tube_element_rotate = 0.0f;
+                        }
+                        Sleep(10);
+                    }
+                }
+            }
+        };
+        tube_events2  = new Thread(){
+            @Override
+            public void run(){
+                while(!closed){
+                    tube_element2_y = height;
+                    tube_element2_speed = (game.random.nextInt(3)+1);
+                    tube_element2_index = game.random.nextInt(5);
+                    while(tube_element2_y>-200) {
+                        tube_element2_y-=5*tube_element2_speed;
+                        tube_element2_rotate+=1.0f;
+                        if(tube_element2_rotate > 360.0f){
+                            tube_element2_rotate = 0.0f;
+                        }
+                        Sleep(10);
+                    }
+                }
+            }
+        };
             anime  = new Thread(){
                 @Override
                 public void run(){
@@ -257,6 +314,8 @@ public class WorkMenu extends Openable implements Screen {
                 }
             };
             drawer = new SpriteBatchRubber(this, batch);
+            tube_events.start();
+            tube_events2.start();
             anime_hand.start();
             anime.start();
             button.start();
@@ -266,7 +325,11 @@ public class WorkMenu extends Openable implements Screen {
     public void render(float delta) {
         Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         batch.begin();
-        drawer.draw(background, 0, 0, width, height);
+        drawer.draw(background, 0, 0, width, height+20);
+        drawer.draw(tube_elements[tube_element_index], width-775+(height-100)/2, tube_element_y, 100, 100, 100, 100, 1, 1, tube_element_rotate);
+        drawer.draw(tube_elements[tube_element2_index], width-775+(height-100)/2, tube_element2_y, 100, 100, 100, 100, 1, 1, tube_element2_rotate);
+        drawer.draw(tube, width-675, -50, height-100, height+100);
+
         if (!exit_touch) {
             drawer.draw(close, 10, height - 150, 150, 150);
             if(scale_frame>=0.7) {
@@ -365,7 +428,7 @@ public class WorkMenu extends Openable implements Screen {
 
             drawer.draw(state_back, RS(width-550), RS(570), RS(525), RS(75));
             drawer.draw(state_bonus, RS(width-540), RS(570), RS((int)(525.0f*(game.robot.health)/300.0f)), RS(75));
-            drawer.draw(state_health, RS(width-540), RS(570), RS((int)(525.0f*(game.robot.health-game.robot.Bhealth)/300.0f)), RS(75));
+            drawer.draw(state_health, RS(width-540), RS(570), RS((int)(525.0f*(game.robot.health-game.robot.Bhealth)/552.5f)), RS(75));
             drawer.draw(state_frame, RS(width-550), RS(570), RS(525), RS(75));
             item_font.draw(batch, game.robot.health +"", RS((int)(((float)width-410.0)*wpw)), RS((int)(625.0*hph)));
             drawer.draw(health, RS(width-560), RS(540), RS(130), RS(130));
@@ -376,7 +439,7 @@ public class WorkMenu extends Openable implements Screen {
 
             drawer.draw(state_back, RS(width-550), RS(470), RS(525), RS(75));
             drawer.draw(state_bonus, RS(width-540), RS(470), RS((int)(525.0f*(90-game.robot.energy_speed)/90.0f)), RS(75));
-            drawer.draw(state_energy, RS(width-540), RS(470), RS((int)(525.0f*((90-game.robot.energy_speed)+game.robot.Benergy_speed)/90.0f)), RS(75));
+            drawer.draw(state_energy, RS(width-540), RS(470), RS((int)(525.0f*((90-game.robot.energy_speed)+game.robot.Benergy_speed)/70.0f)), RS(75));
             drawer.draw(state_frame, RS(width-550), RS(470), RS(525), RS(75));
             item_font.draw(batch, (90-game.robot.energy_speed+game.robot.Benergy_speed) +"", RS((int)(((float)width-410.0)*wpw)), RS((int)(525.0*hph)));
             drawer.draw(energy, RS(width-560), RS(435), RS(150), RS(150));
@@ -414,12 +477,50 @@ public class WorkMenu extends Openable implements Screen {
             drawer.draw(state_damage, RS(width-540), RS(170), RS((int)(525.0f*(game.robot.damage-game.robot.Bdamage)/30.0f)), RS(75));
             drawer.draw(state_frame, RS(width-550), RS(170), RS(525), RS(75));
             item_font.draw(batch, (game.robot.damage-game.robot.Bdamage) +"", RS((int)(((float)width-410.0)*wpw)), RS((int)(225.0*hph)));
-            drawer.draw(damage, RS(width-560), RS(155), RS(110), RS(110));
+            drawer.draw(damage, RS(width-565), RS(155), RS(110), RS(110));
             if(Math.abs(game.robot.Bdamage) != 0){
                 item_green_font.draw(batch,  " +" + Math.abs(game.robot.Bdamage), RS((int)(((float)width-180.0)*wpw)), RS((int)(225.0*hph)));
             }
         }
         if(which_select == 1){
+            item_font.draw(batch, "Мозг", RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
+            if(game.robot.BHead[game.robot.Hid-1] > 0) {
+                drawer.draw(workpage, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            if(game.robot.BHead[game.robot.Hid-1] == -1) {
+                drawer.draw(workpage_red, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            if(game.robot.BHead[game.robot.Hid-1] == 0) {
+                drawer.draw(workpage_blue, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            drawer.draw(game.robot.H, RS(width-415), RS(435), RS(115), RS(115), RS(230), RS(230), left_scale*right_scale, left_scale*right_scale, 0);
+            if(scale_frame>=0.7) {
+                if(game.robot.BHead[game.robot.Hid-1] > 0) {
+                    drawer.draw(green_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    level_big_font.draw(batch, "" + game.robot.Hl, RS((int)(((float)width-537.5f)*wpw)), RS((int)(685.0*hph)));
+                }
+                if(game.robot.BHead[game.robot.Hid-1] == 0) {
+                    drawer.draw(level_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    drawer.draw(yes, RS(width - 575), RS(605), RS(110), RS(110));
+                }
+                if(game.robot.BHead[game.robot.Hid-1] < 0) {
+                    drawer.draw(red_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    drawer.draw(not, RS(width - 575), RS(605), RS(110), RS(110));
+                }
+            }
+            drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
+            drawer.draw(state_energy, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(1, game.robot.Hid, game.robot.Hl, 3)/50.0f)), RS(40));
+            drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
+            drawer.draw(energy, RS(width-565), RS(355), RS(100), RS(100));
+            drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
+            drawer.draw(state_health, RS(width-275), RS(380), RS((int)(250.0f*game.robot.TR(1, game.robot.Hid, game.robot.Hl, 1)/80.0f)), RS(40));
+            drawer.draw(state_frame, RS(width-285), RS(380), RS(250), RS(40));
+            drawer.draw(health, RS(width-295), RS(355), RS(100), RS(100));
+            drawer.draw(left, RS(width-550-120/2*left_scale+60), RS(470-100/2*left_scale+50), RS(100*left_scale), RS(120*left_scale));
+            drawer.draw(right, RS(width-150-120/2*right_scale+60), RS(470-100/2*right_scale+50), RS(100*right_scale), RS(120*right_scale));
+            alert_font.draw(batch, "" + (int)game.robot.TR(1, game.robot.Hid, game.robot.Hl,1), RS((int)(((float)width-195.0)*wpw)), RS((int)(412.5*hph)));
+            alert_font.draw(batch, "" + (int)game.robot.TR(1, game.robot.Hid, game.robot.Hl,3), RS((int)(((float)width-455.0)*wpw)), RS((int)(412.5*hph)));
+            /*
             item_font.draw(batch, "Мозг робота Ур. " + game.robot.Hid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, game.robot.Hid*10 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
             drawer.draw(state_back, RS(width-550), RS(380), RS(525), RS(75));
@@ -428,12 +529,11 @@ public class WorkMenu extends Openable implements Screen {
             drawer.draw(state_frame, RS(width-550), RS(380), RS(525), RS(75));
             drawer.draw(energy, RS(width-500), RS(380), RS(150), RS(150));
             item_font.draw(batch, "Энергия", RS((int)(((float)width-350.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (90-game.robot.energy_speed)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, (90-game.robot.energy_speed)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));*/
 
         }
         if(which_select == 2){
             item_font.draw(batch, "Корпус", RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
-
             if(game.robot.BBody[game.robot.Bid-1] > 0) {
                 drawer.draw(workpage, RS(width - 580), RS(350), RS(560), RS(365));
             }
@@ -443,8 +543,7 @@ public class WorkMenu extends Openable implements Screen {
             if(game.robot.BBody[game.robot.Bid-1] == 0) {
                 drawer.draw(workpage_blue, RS(width - 580), RS(350), RS(560), RS(365));
             }
-            drawer.draw(game.robot.B, RS(width-410), RS(435), RS(115), RS(115), RS(230), RS(230), left_scale*right_scale, left_scale*right_scale, 0);
-
+            drawer.draw(game.robot.B, RS(width-415), RS(435), RS(115), RS(115), RS(230), RS(230), left_scale*right_scale, left_scale*right_scale, 0);
             if(scale_frame>=0.7) {
                 if(game.robot.BBody[game.robot.Bid-1] > 0) {
                     drawer.draw(green_circle, RS(width - 575), RS(605), RS(110), RS(110));
@@ -453,26 +552,16 @@ public class WorkMenu extends Openable implements Screen {
                 if(game.robot.BBody[game.robot.Bid-1] == 0) {
                     drawer.draw(level_circle, RS(width - 575), RS(605), RS(110), RS(110));
                     drawer.draw(yes, RS(width - 575), RS(605), RS(110), RS(110));
-
                 }
                 if(game.robot.BBody[game.robot.Bid-1] < 0) {
                     drawer.draw(red_circle, RS(width - 575), RS(605), RS(110), RS(110));
                     drawer.draw(not, RS(width - 575), RS(605), RS(110), RS(110));
-
                 }
             }
-
-
-
-
-
             drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
             drawer.draw(state_speed, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(2, game.robot.Bid, game.robot.Bl, 4)/7.5f)), RS(40));
             drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
             drawer.draw(attack_speed, RS(width-565), RS(355), RS(100), RS(100));
-
-
-
             drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
             drawer.draw(state_health, RS(width-275), RS(380), RS((int)(250.0f*game.robot.TR(2, game.robot.Bid, game.robot.Bl, 1)/200.0f)), RS(40));
             drawer.draw(state_frame, RS(width-285), RS(380), RS(250), RS(40));
@@ -483,32 +572,184 @@ public class WorkMenu extends Openable implements Screen {
             alert_font.draw(batch, "" + (int)game.robot.TR(2, game.robot.Bid, game.robot.Bl,4), RS((int)(((float)width-455.0)*wpw)), RS((int)(412.5*hph)));
         }
         if(which_select == 3){
+            item_font.draw(batch, "Механо-нога", RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
+            if(game.robot.BLeg[game.robot.LLid-1] > 0) {
+                drawer.draw(workpage, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            if(game.robot.BLeg[game.robot.LLid-1] == -1) {
+                drawer.draw(workpage_red, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            if(game.robot.BLeg[game.robot.LLid-1] == 0) {
+                drawer.draw(workpage_blue, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            drawer.draw(game.robot.LL, RS(width-405), RS(445), RS(115), RS(115), RS(210), RS(210), left_scale*right_scale, left_scale*right_scale, 0);
+            if(scale_frame>=0.7) {
+                if(game.robot.BLeg[game.robot.LLid-1] > 0) {
+                    drawer.draw(green_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    level_big_font.draw(batch, "" + game.robot.LLl, RS((int)(((float)width-537.5f)*wpw)), RS((int)(685.0*hph)));
+                }
+                if(game.robot.BLeg[game.robot.LLid-1] == 0) {
+                    drawer.draw(level_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    drawer.draw(yes, RS(width - 575), RS(605), RS(110), RS(110));
+                }
+                if(game.robot.BLeg[game.robot.LLid-1] < 0) {
+                    drawer.draw(red_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    drawer.draw(not, RS(width - 575), RS(605), RS(110), RS(110));
+                }
+            }
+            drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
+            drawer.draw(state_speed, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(3, game.robot.LLid, game.robot.LLl, 5)/7.5f)), RS(40));
+            drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
+            drawer.draw(move_speed, RS(width-565), RS(355), RS(100), RS(100));
+            drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
+            drawer.draw(state_health, RS(width-275), RS(380), RS((int)(250.0f*game.robot.TR(3, game.robot.LLid, game.robot.LLl, 1)/110.0f)), RS(40));
+            drawer.draw(state_frame, RS(width-285), RS(380), RS(250), RS(40));
+            drawer.draw(health, RS(width-295), RS(355), RS(100), RS(100));
+            drawer.draw(left, RS(width-550-120/2*left_scale+60), RS(470-100/2*left_scale+50), RS(100*left_scale), RS(120*left_scale));
+            drawer.draw(right, RS(width-150-120/2*right_scale+60), RS(470-100/2*right_scale+50), RS(100*right_scale), RS(120*right_scale));
+            alert_font.draw(batch, "" + (int)game.robot.TR(3, game.robot.LLid, game.robot.LLl,1), RS((int)(((float)width-195.0)*wpw)), RS((int)(412.5*hph)));
+            alert_font.draw(batch, "" + (int)game.robot.TR(3, game.robot.LLid, game.robot.LLl,5), RS((int)(((float)width-455.0)*wpw)), RS((int)(412.5*hph)));
+            /*
             item_font.draw(batch, "Механо-нога Ур. " + game.robot.LLid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, game.robot.LLid*5 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
             drawer.draw(move_speed, RS(width-500),RS( 380),RS( 150), RS(150));
             item_font.draw(batch, "Скорость", RS((int)(((float)width-340.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (game.robot.LLid)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, (game.robot.LLid)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));*/
         }
         if(which_select == 4){
+            item_font.draw(batch, "Механо-нога", RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
+            if(game.robot.BLeg[game.robot.RLid-1] > 0) {
+                drawer.draw(workpage, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            if(game.robot.BLeg[game.robot.RLid-1] == -1) {
+                drawer.draw(workpage_red, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            if(game.robot.BLeg[game.robot.RLid-1] == 0) {
+                drawer.draw(workpage_blue, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            drawer.draw(game.robot.RL, RS(width-405), RS(445), RS(115), RS(115), RS(210), RS(210), left_scale*right_scale, left_scale*right_scale, 0);
+            if(scale_frame>=0.7) {
+                if(game.robot.BLeg[game.robot.RLid-1] > 0) {
+                    drawer.draw(green_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    level_big_font.draw(batch, "" + game.robot.RLl, RS((int)(((float)width-537.5f)*wpw)), RS((int)(685.0*hph)));
+                }
+                if(game.robot.BLeg[game.robot.RLid-1] == 0) {
+                    drawer.draw(level_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    drawer.draw(yes, RS(width - 575), RS(605), RS(110), RS(110));
+                }
+                if(game.robot.BLeg[game.robot.RLid-1] < 0) {
+                    drawer.draw(red_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    drawer.draw(not, RS(width - 575), RS(605), RS(110), RS(110));
+                }
+            }
+            drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
+            drawer.draw(state_speed, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(3, game.robot.RLid, game.robot.RLl, 5)/7.5f)), RS(40));
+            drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
+            drawer.draw(move_speed, RS(width-565), RS(355), RS(100), RS(100));
+            drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
+            drawer.draw(state_health, RS(width-275), RS(380), RS((int)(250.0f*game.robot.TR(3, game.robot.RLid, game.robot.RLl, 1)/110.0f)), RS(40));
+            drawer.draw(state_frame, RS(width-285), RS(380), RS(250), RS(40));
+            drawer.draw(health, RS(width-295), RS(355), RS(100), RS(100));
+            drawer.draw(left, RS(width-550-120/2*left_scale+60), RS(470-100/2*left_scale+50), RS(100*left_scale), RS(120*left_scale));
+            drawer.draw(right, RS(width-150-120/2*right_scale+60), RS(470-100/2*right_scale+50), RS(100*right_scale), RS(120*right_scale));
+            alert_font.draw(batch, "" + (int)game.robot.TR(3, game.robot.RLid, game.robot.RLl,1), RS((int)(((float)width-195.0)*wpw)), RS((int)(412.5*hph)));
+            alert_font.draw(batch, "" + (int)game.robot.TR(3, game.robot.RLid, game.robot.RLl,5), RS((int)(((float)width-455.0)*wpw)), RS((int)(412.5*hph)));
+            /*
             item_font.draw(batch, "Механо-нога Ур. " + game.robot.RLid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, game.robot.RLid*5 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
             drawer.draw(move_speed, RS(width-500), RS(380), RS(150), RS(150));
             item_font.draw(batch, "Скорость", RS((int)(((float)width-340.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (game.robot.RLid)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, (game.robot.RLid)+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));*/
         }
         if(which_select == 5){
+            item_font.draw(batch, "Пушка", RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
+            if(game.robot.BHand[game.robot.LHid-1] > 0) {
+                drawer.draw(workpage, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            if(game.robot.BHand[game.robot.LHid-1] == -1) {
+                drawer.draw(workpage_red, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            if(game.robot.BHand[game.robot.LHid-1] == 0) {
+                drawer.draw(workpage_blue, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            drawer.draw(game.robot.LH, RS(width-410), RS(440), RS(115), RS(115), RS(220), RS(220), left_scale*right_scale, left_scale*right_scale, 0);
+            if(scale_frame>=0.7) {
+                if(game.robot.BHand[game.robot.LHid-1] > 0) {
+                    drawer.draw(green_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    level_big_font.draw(batch, "" + game.robot.LHl, RS((int)(((float)width-537.5f)*wpw)), RS((int)(685.0*hph)));
+                }
+                if(game.robot.BHand[game.robot.LHid-1] == 0) {
+                    drawer.draw(level_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    drawer.draw(yes, RS(width - 575), RS(605), RS(110), RS(110));
+                }
+                if(game.robot.BHand[game.robot.LHid-1] < 0) {
+                    drawer.draw(red_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    drawer.draw(not, RS(width - 575), RS(605), RS(110), RS(110));
+                }
+            }
+            drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
+            drawer.draw(state_speed, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(4, game.robot.LHid, game.robot.LHl, 2)/25.0f)), RS(40));
+            drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
+            drawer.draw(damage, RS(width-565), RS(355), RS(100), RS(100));
+            drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
+            drawer.draw(state_health, RS(width-275), RS(380), RS((int)(250.0f*game.robot.TR(4, game.robot.LHid, game.robot.LHl, 1)/112.5f)), RS(40));
+            drawer.draw(state_frame, RS(width-285), RS(380), RS(250), RS(40));
+            drawer.draw(health, RS(width-295), RS(355), RS(100), RS(100));
+            drawer.draw(left, RS(width-550-120/2*left_scale+60), RS(470-100/2*left_scale+50), RS(100*left_scale), RS(120*left_scale));
+            drawer.draw(right, RS(width-150-120/2*right_scale+60), RS(470-100/2*right_scale+50), RS(100*right_scale), RS(120*right_scale));
+            alert_font.draw(batch, "" + (int)game.robot.TR(4, game.robot.LHid, game.robot.LHl,1), RS((int)(((float)width-195.0)*wpw)), RS((int)(412.5*hph)));
+            alert_font.draw(batch, "" + (int)game.robot.TR(4, game.robot.LHid, game.robot.LHl,2), RS((int)(((float)width-455.0)*wpw)), RS((int)(412.5*hph)));
+            /*
             item_font.draw(batch, "Бластер Ур. " + game.robot.LHid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, game.robot.LHid*5 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
             drawer.draw(damage, RS(width-500), RS(380), RS(150), RS(150));
             item_font.draw(batch, "Урон", RS((int)(((float)width-340.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (game.robot.LHid)*2+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, (game.robot.LHid)*2+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));*/
         }
         if(which_select == 6){
+            item_font.draw(batch, "Пушка", RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
+            if(game.robot.BHand[game.robot.RHid-1] > 0) {
+                drawer.draw(workpage, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            if(game.robot.BHand[game.robot.RHid-1] == -1) {
+                drawer.draw(workpage_red, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            if(game.robot.BHand[game.robot.RHid-1] == 0) {
+                drawer.draw(workpage_blue, RS(width - 580), RS(350), RS(560), RS(365));
+            }
+            drawer.draw(game.robot.RH, RS(width-410), RS(440), RS(115), RS(115), RS(220), RS(220), left_scale*right_scale, left_scale*right_scale, 0);
+            if(scale_frame>=0.7) {
+                if(game.robot.BHand[game.robot.RHid-1] > 0) {
+                    drawer.draw(green_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    level_big_font.draw(batch, "" + game.robot.RHl, RS((int)(((float)width-537.5f)*wpw)), RS((int)(685.0*hph)));
+                }
+                if(game.robot.BHand[game.robot.RHid-1] == 0) {
+                    drawer.draw(level_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    drawer.draw(yes, RS(width - 575), RS(605), RS(110), RS(110));
+                }
+                if(game.robot.BHand[game.robot.RHid-1] < 0) {
+                    drawer.draw(red_circle, RS(width - 575), RS(605), RS(110), RS(110));
+                    drawer.draw(not, RS(width - 575), RS(605), RS(110), RS(110));
+                }
+            }
+            drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
+            drawer.draw(state_speed, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(4, game.robot.RHid, game.robot.RHl, 2)/25.0f)), RS(40));
+            drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
+            drawer.draw(damage, RS(width-565), RS(355), RS(100), RS(100));
+            drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
+            drawer.draw(state_health, RS(width-275), RS(380), RS((int)(250.0f*game.robot.TR(4, game.robot.RHid, game.robot.RHl, 1)/112.5f)), RS(40));
+            drawer.draw(state_frame, RS(width-285), RS(380), RS(250), RS(40));
+            drawer.draw(health, RS(width-295), RS(355), RS(100), RS(100));
+            drawer.draw(left, RS(width-550-120/2*left_scale+60), RS(470-100/2*left_scale+50), RS(100*left_scale), RS(120*left_scale));
+            drawer.draw(right, RS(width-150-120/2*right_scale+60), RS(470-100/2*right_scale+50), RS(100*right_scale), RS(120*right_scale));
+            alert_font.draw(batch, "" + (int)game.robot.TR(4, game.robot.RHid, game.robot.RHl,1), RS((int)(((float)width-195.0)*wpw)), RS((int)(412.5*hph)));
+            alert_font.draw(batch, "" + (int)game.robot.TR(4, game.robot.RHid, game.robot.RHl,2), RS((int)(((float)width-455.0)*wpw)), RS((int)(412.5*hph)));
+            /*
             item_font.draw(batch, "Бластер Ур. " + game.robot.RHid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, game.robot.RHid*5 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
             drawer.draw(damage, RS(width-500), RS(380), RS(150), RS(150));
             item_font.draw(batch, "Урон", RS((int)(((float)width-340.0)*wpw)), RS((int)(480.0*hph)));
-            item_font.draw(batch, (game.robot.RHid)*2+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));
+            item_font.draw(batch, (game.robot.RHid)*2+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));*/
         }
         DrawRobot(drawer, (int)x, y, scale, rothand, rothead, rotleg, rot, false, false, false, 90);
         DrawSelect(drawer, (int)x, y, scale, rothand, rothead, rotleg, rot, which_select_will);
@@ -949,6 +1190,7 @@ public class WorkMenu extends Openable implements Screen {
                 }
             };
             anime.start();
+
         }
         if(leg == 6) {
             lu= true;
@@ -1025,6 +1267,12 @@ public class WorkMenu extends Openable implements Screen {
                     game.robot.UpdateRobotTexture(which_select);
                     AddLeg(6);
                     upgrade.play(0.8f);
+                    if(game.robot.RHid == game.robot.LHid){
+                        game.robot.LHl++;
+                        game.robot.BHand[game.robot.LHid-1] = game.robot.LHl;
+                        game.robot.UpdateRobotTexture(5);
+                        AddLeg(5);
+                    }
                 }
             }
             if (which_select == 5) {
@@ -1034,15 +1282,27 @@ public class WorkMenu extends Openable implements Screen {
                     game.robot.UpdateRobotTexture(which_select);
                     AddLeg(5);
                     upgrade.play(0.8f);
-                }
+                    if(game.robot.RHid == game.robot.LHid) {
+                        game.robot.RHl++;
+                        game.robot.BHand[game.robot.RHid-1] = game.robot.RHl;
+                        game.robot.UpdateRobotTexture(6);
+                        AddLeg(6);
+                    }
+                    }
             }
             if (which_select == 4) {
                 if (game.robot.RLl < 5) {
                     game.robot.RLl++;
-                    game.robot.BLeg[game.robot.RLid-1] = game.robot.RLl;
+                    game.robot.BLeg[game.robot.RLid - 1] = game.robot.RLl;
                     game.robot.UpdateRobotTexture(which_select);
                     AddLeg(4);
                     upgrade.play(0.8f);
+                    if (game.robot.RLid == game.robot.LLid) {
+                        game.robot.LLl++;
+                        game.robot.BLeg[game.robot.LLid - 1] = game.robot.LLl;
+                        game.robot.UpdateRobotTexture(3);
+                        AddLeg(3);
+                    }
                 }
             }
             if (which_select == 3) {
@@ -1052,6 +1312,12 @@ public class WorkMenu extends Openable implements Screen {
                     game.robot.UpdateRobotTexture(which_select);
                     AddLeg(3);
                     upgrade.play(0.8f);
+                    if (game.robot.RLid == game.robot.LLid) {
+                        game.robot.RLl++;
+                        game.robot.BLeg[game.robot.RLid - 1] = game.robot.RLl;
+                        game.robot.UpdateRobotTexture(4);
+                        AddLeg(4);
+                    }
                 }
             }
             Gdx.input.vibrate(200);
@@ -1092,6 +1358,9 @@ public class WorkMenu extends Openable implements Screen {
     public void hide() { }
     @Override
     public void dispose() {
+        for(int i = 0; i<5; i++) tube_elements_texture[i].dispose();
+
+        tube.dispose();
         machine_4.dispose();
         machine_2.dispose();
         machine_3.dispose();
