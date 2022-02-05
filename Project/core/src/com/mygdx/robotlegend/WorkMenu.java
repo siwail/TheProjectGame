@@ -151,8 +151,8 @@ public class WorkMenu extends Openable implements Screen {
             left = new Texture("Button/button_left.png");
             right = new Texture("Button/button_right.png");
             workpage = new Texture("Object/workpage_1.png");
-            workpage_red = new Texture("Object/workpage_2.png");
-            workpage_blue = new Texture("Object/workpage_3.png");
+            workpage_red = new Texture("Object/workpage_3.png");
+            workpage_blue = new Texture("Object/workpage_2.png");
             lightt_1 = new Texture("Interface/light1.png");
             lightt_2 = new Texture("Interface/light2.png");
             light[0] = new TextureRegion(lightt_1, 960, 540);
@@ -427,7 +427,7 @@ public class WorkMenu extends Openable implements Screen {
             item_font.draw(batch, "Параметры", RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
 
             drawer.draw(state_back, RS(width-550), RS(570), RS(525), RS(75));
-            drawer.draw(state_bonus, RS(width-540), RS(570), RS((int)(525.0f*(game.robot.health)/300.0f)), RS(75));
+            drawer.draw(state_bonus, RS(width-540), RS(570), RS((int)(525.0f*(game.robot.health)/552.5f)), RS(75));
             drawer.draw(state_health, RS(width-540), RS(570), RS((int)(525.0f*(game.robot.health-game.robot.Bhealth)/552.5f)), RS(75));
             drawer.draw(state_frame, RS(width-550), RS(570), RS(525), RS(75));
             item_font.draw(batch, game.robot.health +"", RS((int)(((float)width-410.0)*wpw)), RS((int)(625.0*hph)));
@@ -438,7 +438,7 @@ public class WorkMenu extends Openable implements Screen {
 
 
             drawer.draw(state_back, RS(width-550), RS(470), RS(525), RS(75));
-            drawer.draw(state_bonus, RS(width-540), RS(470), RS((int)(525.0f*(90-game.robot.energy_speed)/90.0f)), RS(75));
+            drawer.draw(state_bonus, RS(width-540), RS(470), RS((int)(525.0f*(90-game.robot.energy_speed)/70.0f)), RS(75));
             drawer.draw(state_energy, RS(width-540), RS(470), RS((int)(525.0f*((90-game.robot.energy_speed)+game.robot.Benergy_speed)/70.0f)), RS(75));
             drawer.draw(state_frame, RS(width-550), RS(470), RS(525), RS(75));
             item_font.draw(batch, (90-game.robot.energy_speed+game.robot.Benergy_speed) +"", RS((int)(((float)width-410.0)*wpw)), RS((int)(525.0*hph)));
@@ -450,8 +450,8 @@ public class WorkMenu extends Openable implements Screen {
 
 
             drawer.draw(state_back, RS(width-550), RS(370), RS(525), RS(75));
-            drawer.draw(state_bonus, RS(width-540), RS(370), RS((int)(525.0f*(11-game.robot.move_speed)/11.0f)), RS(75));
-            drawer.draw(state_speed, RS(width-540), RS(370), RS((int)(525.0f*((11-game.robot.move_speed)+game.robot.Bmove_speed)/11.0f)), RS(75));
+            drawer.draw(state_bonus, RS(width-540), RS(370), RS((int)(525.0f*(11-game.robot.move_speed)/8.5f)), RS(75));
+            drawer.draw(state_speed, RS(width-540), RS(370), RS((int)(525.0f*((11-game.robot.move_speed)+game.robot.Bmove_speed)/8.5f)), RS(75));
             drawer.draw(state_frame, RS(width-550), RS(370), RS(525), RS(75));
             item_font.draw(batch, (11-game.robot.move_speed+game.robot.Bmove_speed) +"", RS((int)(((float)width-410.0)*wpw)), RS((int)(425.0*hph)));
             drawer.draw(move_speed, RS(width-545), RS(350), RS(120), RS(120));
@@ -462,8 +462,8 @@ public class WorkMenu extends Openable implements Screen {
 
 
             drawer.draw(state_back, RS(width-550), RS(270), RS(525), RS(75));
-            drawer.draw(state_bonus, RS(width-540), RS(270), RS((int)(525.0f*(8-game.robot.attack_speed)/8.0f)), RS(75));
-            drawer.draw(state_speed, RS(width-540), RS(270), RS((int)(525.0f*((8-game.robot.attack_speed)+game.robot.Battack_speed)/8.0f)), RS(75));
+            drawer.draw(state_bonus, RS(width-540), RS(270), RS((int)(525.0f*(8-game.robot.attack_speed)/8.5f)), RS(75));
+            drawer.draw(state_speed, RS(width-540), RS(270), RS((int)(525.0f*((8-game.robot.attack_speed)+game.robot.Battack_speed)/8.5f)), RS(75));
             drawer.draw(state_frame, RS(width-550), RS(270), RS(525), RS(75));
             item_font.draw(batch, (8-game.robot.attack_speed+game.robot.Battack_speed) +"", RS((int)(((float)width-410.0)*wpw)), RS((int)(325.0*hph)));
             drawer.draw(attack_speed, RS(width-545), RS(250), RS(120), RS(120));
@@ -473,8 +473,8 @@ public class WorkMenu extends Openable implements Screen {
 
 
             drawer.draw(state_back, RS(width-550), RS(170), RS(525), RS(75));
-            drawer.draw(state_bonus, RS(width-540), RS(170), RS((int)(525.0f*(game.robot.damage)/30.0f)), RS(75));
-            drawer.draw(state_damage, RS(width-540), RS(170), RS((int)(525.0f*(game.robot.damage-game.robot.Bdamage)/30.0f)), RS(75));
+            drawer.draw(state_bonus, RS(width-540), RS(170), RS((int)(525.0f*(game.robot.damage)/55.0f)), RS(75));
+            drawer.draw(state_damage, RS(width-540), RS(170), RS((int)(525.0f*(game.robot.damage-game.robot.Bdamage)/55.0f)), RS(75));
             drawer.draw(state_frame, RS(width-550), RS(170), RS(525), RS(75));
             item_font.draw(batch, (game.robot.damage-game.robot.Bdamage) +"", RS((int)(((float)width-410.0)*wpw)), RS((int)(225.0*hph)));
             drawer.draw(damage, RS(width-565), RS(155), RS(110), RS(110));
@@ -688,7 +688,7 @@ public class WorkMenu extends Openable implements Screen {
                 }
             }
             drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(state_speed, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(4, game.robot.LHid, game.robot.LHl, 2)/25.0f)), RS(40));
+            drawer.draw(state_damage, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(4, game.robot.LHid, game.robot.LHl, 2)/27.5f)), RS(40));
             drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
             drawer.draw(damage, RS(width-565), RS(355), RS(100), RS(100));
             drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
@@ -733,7 +733,7 @@ public class WorkMenu extends Openable implements Screen {
                 }
             }
             drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(state_speed, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(4, game.robot.RHid, game.robot.RHl, 2)/25.0f)), RS(40));
+            drawer.draw(state_damage, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(4, game.robot.RHid, game.robot.RHl, 2)/27.5f)), RS(40));
             drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
             drawer.draw(damage, RS(width-565), RS(355), RS(100), RS(100));
             drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));

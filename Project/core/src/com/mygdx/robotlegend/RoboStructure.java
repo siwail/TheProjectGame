@@ -204,6 +204,60 @@ public class RoboStructure {
         }
         Safe();
     }
+    public void AddDetail(int detail, int model) {
+        if (detail == 1) {
+            BHead[model - 1] = 0;
+        }
+        if (detail == 2) {
+            BBody[model - 1] = 0;
+        }
+        if (detail == 3) {
+            BLeg[model - 1] = 0;
+        }
+        if (detail == 4) {
+            BHand[model - 1] = 0;
+        }
+    }
+    public boolean AllDetailsExist(){
+       int d = 0;
+       int m = 0;
+       while(d<4){
+           d++;
+           while(m<4){
+               m++;
+                if(!DetailExist(d, m)){
+                    return false;
+                }
+           }
+       }
+        return true;
+    }
+    public boolean DetailExist(int detail, int model){
+        if(detail == 1){
+            if(BHead[model - 1] != -1) {
+                return true;
+            }
+        }
+        if(detail == 2){
+            if(BBody[model - 1] != -1) {
+                return true;
+            }
+        }
+        if(detail == 3){
+            if(BLeg[model - 1] != -1) {
+                return true;
+            }
+        }
+        if(detail == 4){
+            if(BHand[model - 1] != -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public void AddBox(){
+        box_empty = true;
+    }
     public void UpdateParameters(){
         EClearSkinBust();
         ClearSkinBust();
@@ -378,7 +432,7 @@ public class RoboStructure {
                     result = 13.0f*lvl;
                 }
                 if(type == 2){
-                    result = 3.9f*lvl;
+                    result = 4.0f*lvl;
                 }
             }
             if(model == 3){
@@ -386,7 +440,7 @@ public class RoboStructure {
                     result = 16.5f*lvl;
                 }
                 if(type == 2){
-                    result = 4.3f*lvl;
+                    result = 4.5f*lvl;
                 }
             }
             if(model == 4){
@@ -394,7 +448,7 @@ public class RoboStructure {
                     result = 20.0f*lvl;
                 }
                 if(type == 2){
-                    result = 4.6f*lvl;
+                    result = 4.9f*lvl;
                 }
             }
             if(model == 5){
@@ -402,7 +456,7 @@ public class RoboStructure {
                     result = 22.5f*lvl;
                 }
                 if(type == 2){
-                    result = 5.0f*lvl;
+                    result = 5.5f*lvl;
                 }
             }
         }
@@ -541,34 +595,53 @@ public class RoboStructure {
         EBenergy_speed = 0;
     }
     public void UpdateRobotTexture(int which_select){
+        int Hlx = Hl, Blx = Bl, RHlx = RHl, LHlx = LHl, RLlx = RLl, LLlx = LLl;
+        if(Hlx < 1){
+            Hlx = 1;
+        }
+        if(Blx < 1){
+            Blx = 1;
+        }
+        if(RHlx < 1){
+            RHlx = 1;
+        }
+        if(LHlx < 1){
+            LHlx = 1;
+        }
+        if(RLlx < 1){
+            RLlx = 1;
+        }
+        if(LLlx < 1){
+            LLlx = 1;
+        }
         if(which_select == 1){
             Ht.dispose();
-            Ht = new Texture("Robot/head_" + Hid + "_" + Hl + ".png");
+            Ht = new Texture("Robot/head_" + Hid + "_" + Hlx + ".png");
             H =  new TextureRegion(Ht, 300, 300);
         }
         if(which_select == 2){
             Bt.dispose();
-            Bt = new Texture("Robot/body_" + Bid + "_" + Bl + ".png");
+            Bt = new Texture("Robot/body_" + Bid + "_" + Blx + ".png");
             B =  new TextureRegion(Bt, 300, 300);
         }
         if(which_select == 6){
             RHt.dispose();
-            RHt = new Texture("Robot/hand_" + RHid + "_" + RHl + ".png");
+            RHt = new Texture("Robot/hand_" + RHid + "_" + RHlx + ".png");
             RH =  new TextureRegion(RHt, 300, 300);
         }
         if(which_select == 5){
             LHt.dispose();
-            LHt = new Texture("Robot/hand_" + LHid + "_" + LHl + ".png");
+            LHt = new Texture("Robot/hand_" + LHid + "_" + LHlx + ".png");
             LH =  new TextureRegion(LHt, 300, 300);
         }
         if(which_select == 4){
             RLt.dispose();
-            RLt = new Texture("Robot/leg_" + RLid + "_" + RLl + ".png");
+            RLt = new Texture("Robot/leg_" + RLid + "_" + RLlx + ".png");
             RL =  new TextureRegion(RLt, 300, 300);
         }
         if(which_select == 3){
             LLt.dispose();
-            LLt = new Texture("Robot/leg_" + LLid + "_" + LLl + ".png");
+            LLt = new Texture("Robot/leg_" + LLid + "_" + LLlx + ".png");
             LL =  new TextureRegion(LLt, 300, 300);
         }
         UpdateParameters();

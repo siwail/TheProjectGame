@@ -59,6 +59,10 @@ public class GameMenu extends Openable implements Screen{
     Texture level_line;
     Texture location_2_planet_texture;
     Texture tutorial_circlet;
+    Texture dark;
+    Texture bluefire;
+    Texture box_item_1;
+    Texture box_item_2;
     Texture[] box = new Texture[9];
     Texture[] tutorial_icon = new Texture[4];
     Texture[] tutorial_frame_color = new Texture[12];
@@ -68,7 +72,7 @@ public class GameMenu extends Openable implements Screen{
     TextureRegion location_2_planet;
     TextureRegion location_2_space;
     TextureRegion location_2_space_2;
-    float box_state = 0.0f;
+
     int button_exit_state = 0;
     int button_fight_state = 0;
     int button_tutorial_state = 0;
@@ -109,6 +113,10 @@ public class GameMenu extends Openable implements Screen{
     float location_2_space_2_rotate = 0.0f;
     float location_2_space_3_rotate = 0.0f;
     float tutorial_circle_rotate = 0.0f;
+    boolean box_is_showing_items = false;
+    boolean box_bluefire = false;
+    boolean box_is_opening = false;
+    boolean box_dark_back = false;
     boolean last_back = false;
     boolean need_to_update_icons = false;
     boolean zoom_planet = false;
@@ -127,6 +135,7 @@ public class GameMenu extends Openable implements Screen{
     boolean work_touch = false;
     boolean isJump = false;
     float robot_x;
+    float box_min_state = 1.0f;
     boolean tutorial_touch = false;
     boolean istutorial = false;
     boolean resize_scene = false;
@@ -137,6 +146,9 @@ public class GameMenu extends Openable implements Screen{
     boolean icon_2_touch = false;
     boolean icon_3_touch = false;
     boolean icon_4_touch = false;
+    boolean box_taked = false;
+    boolean box_can_click = true;
+    boolean need_to_update_box_item = false;
 
     int tutorial_scene_size;
     int scene_size = 0;
@@ -151,12 +163,26 @@ public class GameMenu extends Openable implements Screen{
     int birdx;
     int birdy;
     int bird_anime;
+    int box_item_type = 0;
+    int box_item_model;
+    int box_item_detail;
+    float box_item_scale_1 = 1.0f;
+    float box_item_scale_2 = 1.0f;
+    float box_bluefire_scale = 0.01f;
+    float box_state = 2.0f;
+    float box_back_rotate = 0.0f;
+    float box_back_scale = 0.01f;
+    int box_x = 0;
+    int box_y = 215;
+    float box_scale = 0.7f;
     public GameMenu(MainGame game) { this.game = game; }
     @Override
     public void show() {
         game.MusicSwap(2);
         game.robot.Safe();
         game.robot.RandomEnemy();
+        dark = new Texture("Interface/dark2.png");
+        bluefire = new Texture("Object/bluefire.png");
         for(int i = 0; i<9; i++) box[i] = new Texture("Object/box_"+(i+1)+".png");
         tutorial_circlet = new Texture("Tutorial/back_0.png");
         tutorial_circle = new TextureRegion(tutorial_circlet, 400, 400);
@@ -255,6 +281,7 @@ public class GameMenu extends Openable implements Screen{
         music_stop =  new Texture("Button/music_2.png");
         camp = new Texture("Interface/camp_" + game.robot.level + ".png");
         Start();
+        box_x = width-625;
         robot_x = width-400;
         setRandomAnime();
         game.robot.UpdateSkins();
@@ -277,24 +304,28 @@ public class GameMenu extends Openable implements Screen{
             @Override
             public void run(){
                 int dir = 1;
-                while(!closed){
-                    if(dir == 1){
-                        box_state+=0.01f;
-                        if(box_state>=3.0f){
-                            dir = 0;
-                        }
-                    }else{
-                        box_state-=0.01f;
-                        if(box_state<=0){
-                            dir = 1;
+                while(!closed && !box_taked){
+                    if(!box_dark_back) {
+                        if (dir == 1) {
+                            box_state += 0.01f;
+                            if (box_state >= 2.0f) {
+                                dir = 0;
+                            }
+                        } else {
+                            box_state -= 0.01f;
+                            if (box_state <= 2.0f - 0.3f * box_min_state) {
+                                dir = 1;
+                            }
                         }
                     }
-                    Sleep(2);
+                    Sleep(3);
+
                 }
+
 
             }
         };
-        //box_anime.start();
+        box_anime.start();
         button_anime = new Thread(){
             @Override
             public void run(){
@@ -569,6 +600,9 @@ public class GameMenu extends Openable implements Screen{
             drawer.draw(grass, -70, 235, 245, 260 + anime_grass_2);
         }
 
+        if(game.robot.box_empty && !box_dark_back) {
+            DrawBox(drawer, this, box_x, box_y, box_scale, box_state);
+        }
         DrawRobot(drawer, (int)robot_x, robot_y, scale, rotation_hand+90, rotation_head, rotation_leg, 0 , false, false, false, 0);
         drawer.draw(level_back, width/2-140, 150, 300, 80);
         drawer.draw(level_line, width/2-140, 150, (int)(((double)game.robot.experience/((double)game.robot.level_win*100.0))*300.0), 80);
@@ -661,7 +695,7 @@ public class GameMenu extends Openable implements Screen{
         if(game.robot.level != 1 && game.robot.level != 2) {
             drawer.draw(smoke[smoke_anime], width / 2 - 125, 400, 175, 175);
         }
-        //DrawBox(drawer, this, 100, 100, 2.0f, box_state);
+
         if(search_planet){
             TextureRegion space_1 = new TextureRegion(space, 960, 540);
             TextureRegion space_2 = new TextureRegion(space2, 960, 540);
@@ -734,9 +768,43 @@ public class GameMenu extends Openable implements Screen{
                     }
                 }
         }
-
+        if(box_dark_back) {
+            drawer.draw(dark, 0, 0, width, height);
+            drawer.draw(tutorial_circle, box_x-(box_back_scale*1.5f*width-box_scale*300)/2, box_y-(box_back_scale*1.5f*width-box_scale*300)/2, width/2*1.5f * box_back_scale, width/2*1.5f * box_back_scale,  (1.5f*width * box_back_scale),  (1.5f*width * box_back_scale), 1, 1,  box_back_rotate);
+            if(!box_is_showing_items) {
+                DrawBox(drawer, this, box_x, box_y, box_scale, box_state);
+            }else{
+                drawer.draw(box_item_1, box_x+(300*box_scale-300*box_scale*box_item_scale_1)/2, box_y+(300*box_scale-300*box_scale*box_item_scale_1)/2, 300*box_scale*box_item_scale_1, 300*box_scale*box_item_scale_1);
+                drawer.draw(box_item_2, box_x+(300*box_scale-300*box_scale*box_item_scale_2)/2, box_y+(300*box_scale-300*box_scale*box_item_scale_2)/2, 300*box_scale*box_item_scale_2, 300*box_scale*box_item_scale_2);
+            }            if(box_bluefire) {
+                drawer.draw(bluefire, box_x - (box_bluefire_scale * width - box_scale * 300) / 2, box_y - (box_bluefire_scale * width - box_scale * 300) / 2, width * box_bluefire_scale, width * box_bluefire_scale);
+            }
+        }
         CheckDoor(drawer);
         batch.end();
+        if(need_to_update_box_item) {
+            if (box_item_type == 1) {
+                box_item_1 = new Texture("Object/workpage_2_circle.png");
+                if (box_item_detail == 1) {
+                    box_item_2 = new Texture("Robot/head_" + box_item_model + "_1.png");
+                }
+                if (box_item_detail == 2) {
+                    box_item_2 = new Texture("Robot/body_" + box_item_model + "_1.png");
+                }
+                if (box_item_detail == 3) {
+                    box_item_2 = new Texture("Robot/leg_" + box_item_model + "_1.png");
+                }
+                if (box_item_detail == 4) {
+                    box_item_2 = new Texture("Robot/hand_" + box_item_model + "_1.png");
+                }
+
+            }
+            if (box_item_type == 2) {
+
+            }
+                need_to_update_box_item = false;
+
+        }
         if(closed){
             if(type_close == 1) {
                 game.setWorkMenu();
@@ -748,6 +816,236 @@ public class GameMenu extends Openable implements Screen{
                 game.setMultiplayerMenu();
             }
         }
+    }
+    public void BoxClick() {
+        if(box_can_click) {
+            if (box_dark_back && !box_is_opening) {
+                box_is_opening = true;
+                Thread anime = new Thread() {
+                    @Override
+                    public void run() {
+                        box_can_click = false;
+                        while (box_scale > 2.0f) {
+                            box_x = (int) (width / 2 - 330.0f) + (int) (2.2f * 300 - box_scale * 300) / 2;
+                            box_y = 130 + (int) (2.2f * 300 - box_scale * 300) / 2;
+                            box_scale -= 0.01f;
+                            Sleep(10);
+                        }
+                        while (box_state > 1.75f) {
+                            box_state -= 0.01f;
+
+                            Sleep(10);
+                        }
+                        Sleep(100);
+                        while (box_state > 1.25f) {
+                            box_state -= 0.02f;
+                            box_back_scale += 0.003f;
+                            Sleep(5);
+                        }
+                        Sleep(50);
+                        while (box_state > 1.00f) {
+                            box_state -= 0.02f;
+                            box_back_scale += 0.002f;
+                            Sleep(5);
+                        }
+                        Sleep(50);
+                        while (box_state > 0.25f) {
+                            box_state -= 0.02f;
+                            box_back_scale -= 0.002f;
+                            Sleep(5);
+                        }
+                        while (box_state > 0.0f) {
+                            box_state -= 0.01f;
+                            box_back_scale -= 0.002f;
+                            Sleep(5);
+                        }
+                        box_bluefire = true;
+                        while (box_bluefire_scale < 1.5f) {
+                            if (box_state > 1.0f) {
+                                box_state -= 0.05f;
+                            }
+                            box_bluefire_scale += 0.03f;
+                            Sleep(5);
+                        }
+                        //box_item_type = game.random.nextInt(3)+1;
+                        box_item_type = 1;
+                        if (box_item_type == 1) {
+                            box_item_detail = 1;
+                            box_item_model = 1;
+                            if(!game.robot.AllDetailsExist()) {
+                                while (game.robot.DetailExist(box_item_detail, box_item_model)) {
+                                    box_item_detail = game.random.nextInt(4) + 1;
+                                    box_item_model = game.random.nextInt(5) + 1;
+
+                                }
+                            }else{
+                                box_item_detail = game.random.nextInt(4) + 1;
+                                box_item_model = game.random.nextInt(5) + 1;
+                            }
+                            game.robot.AddDetail(box_item_detail, box_item_model);
+                            need_to_update_box_item = true;
+                            while (need_to_update_box_item) {
+                                Sleep(10);
+                            }
+                        }
+                        box_item_scale_1 = 0.4f;
+                        box_item_scale_2 = 0.1f;
+                        box_is_showing_items = true;
+
+
+                        Sleep(100);
+                        while (box_bluefire_scale > 0.01f) {
+
+                            box_bluefire_scale -= 0.03f;
+                            Sleep(5);
+                        }
+
+                        box_bluefire = false;
+
+
+                        while (box_item_scale_1 < 1.0f) {
+                            box_item_scale_1 += 0.02f;
+                            box_item_scale_2 += 0.02f;
+                            Sleep(20);
+                        }
+                        box_can_click = true;
+                        int dir_scale = 1;
+                        while (box_is_showing_items) {
+                            if (dir_scale == 1) {
+                                box_item_scale_1 -= 0.005f;
+                                box_item_scale_2 -= 0.01f;
+                                if (box_item_scale_1 <= 0.9f) {
+                                    dir_scale = 0;
+                                }
+                            } else {
+                                box_item_scale_1 += 0.005f;
+                                box_item_scale_2 += 0.01f;
+                                if (box_item_scale_1 >= 1.1f) {
+                                    dir_scale = 1;
+                                }
+                            }
+                            Sleep(50);
+                        }
+                    }
+                };
+                anime.start();
+            } else {
+                if (box_is_showing_items) {
+                    Thread anime = new Thread() {
+                        @Override
+                        public void run() {
+
+                            box_can_click = false;
+                            while (box_back_scale > 0.005f || box_item_scale_1 > 0.0f || box_item_scale_2 > 0.0f) {
+                                if (box_back_scale > 0.005f) {
+                                    box_back_scale -= 0.005f;
+                                }
+                                if (box_item_scale_1 > 0.0f) {
+                                    box_item_scale_1 -= 0.0075f;
+                                }
+                                if (box_item_scale_2 > 0.0f) {
+                                    box_item_scale_2 -= 0.0075f;
+                                }
+                                Sleep(5);
+                            }
+                            box_can_click = true;
+                            box_is_opening = false;
+                            box_dark_back = false;
+                            box_is_showing_items = false;
+                            box_scale = 0;
+                            box_state = 2.0f;
+                            box_scale = 0.7f;
+                            box_x = width - 625;
+                            box_y = 215;
+                            box_back_scale = 0.0f;
+                            box_min_state = 1.0f;
+                            box_back_rotate = 0.0f;
+                            box_item_scale_1 = 0.1f;
+                            box_item_scale_2 = 0.1f;
+                            box_item_type = 1;
+                            box_item_1.dispose();
+                            box_item_2.dispose();
+
+                        }
+
+                    };
+                    anime.start();
+
+                }
+            }
+        }
+    }
+    public void BoxOpen() {
+        box_dark_back = true;
+        tutorial_circlet.dispose();
+        tutorial_circlet = new Texture("Tutorial/back_2.png");
+        tutorial_circle = new TextureRegion(tutorial_circlet, 400, 400);
+        Thread anime = new Thread() {
+            @Override
+            public void run() {
+                box_can_click = false;
+                while (box_x > width / 2 - 150 * 2.2f || box_y > 130 || box_scale<2.2f) {
+                    if (box_x > width / 2 - 150 * 2.2f) {
+                        box_x -= 10;
+                    }
+                    if (box_y > 130) {
+                        box_y -= 5;
+                    }
+                    if (box_scale < 2.2f) {
+
+                        box_scale += 0.02f;
+                    }
+                    Sleep(10);
+                }
+                box_can_click = true;
+                    int dir_scale = 1;
+                    while (box_dark_back) {
+                        if(!box_is_opening) {
+                            if (dir_scale == 1) {
+                                box_x = (int) (width / 2 - 330.0f) + (int) (2.2f * 300 - box_scale * 300) / 2;
+                                box_y = 130 + (int) (2.2f * 300 - box_scale * 300) / 2;
+                                box_scale += 0.005f;
+
+                                if (box_scale >= 2.2f) {
+                                    dir_scale = 0;
+                                }
+                            } else {
+                                box_x = (int) (width / 2 - 330.0f) + (int) (2.2f * 300 - box_scale * 300) / 2;
+                                box_y = 130 + (int) (2.2f * 300 - box_scale * 300) / 2;
+                                box_scale -= 0.005f;
+
+                                if (box_scale <= 2.0f) {
+                                    dir_scale = 1;
+                                }
+                            }
+                        }
+                        Sleep(10);
+                    }
+
+                }
+
+        };
+        anime.start();
+        Thread anime2 = new Thread() {
+            @Override
+            public void run() {
+
+                while (box_dark_back) {
+                    box_back_rotate+=0.5f;
+                    if (box_back_rotate>360.0f){
+                        box_back_rotate=0.0f;
+                    }
+
+                    if(box_back_scale<1.0f && !box_is_opening){
+                        box_back_scale+=0.02f;
+                    }
+                    Sleep(10);
+                }
+
+            }
+
+        };
+        anime2.start();
     }
     public void SwapPlanet(){
         if(!swap_planet && isTv && search_planet &&!zoom_planet &&!scan){
@@ -1292,6 +1590,9 @@ public class GameMenu extends Openable implements Screen{
         button_fight_icon.dispose();
         button_online_icon.dispose();
         button_tutorial_icon.dispose();
+        dark.dispose();
+        bluefire.dispose();
+
         for(int i = 0; i<9; i++) box[i].dispose();
         for(int i = 0; i<11; i++) tutorial_frame_color[i].dispose();
         for(int i = 0; i<4; i++) tutorial_icon[i].dispose();

@@ -664,20 +664,20 @@ public class Openable implements Screen{
                 game.opened.play(0.1f);
                 while(open_x_5 > wd10*4 ){
                     open_x_5-=2;
-                    Sleep(2);
+                    Sleep(1);
                 }
                 game.opened.play(0.1f);
                 while(open_x_4 > wd10*3 ){
                     open_x_4-=2;
                     open_x_5-=2;
-                    Sleep(2);
+                    Sleep(1);
                 }
                 game.opened.play(0.1f);
                 while(open_x_3 > wd10*2 ){
                     open_x_3-=2;
                     open_x_4-=2;
                     open_x_5-=2;
-                    Sleep(2);
+                    Sleep(1);
                 }
                 game.opened.play(0.1f);
                 while(open_x_2 > wd10 ){
@@ -685,7 +685,7 @@ public class Openable implements Screen{
                     open_x_3-=2;
                     open_x_4-=2;
                     open_x_5-=2;
-                    Sleep(2);
+                    Sleep(1);
                 }
                 game.opened.play(0.1f);
                 while(open_x_1 > -wd10 ){
@@ -694,10 +694,10 @@ public class Openable implements Screen{
                     open_x_3-=2;
                     open_x_4-=2;
                     open_x_5-=2;
-                    Sleep(2);
+                    Sleep(1);
                 }
                 isOpen = true;
-                Sleep(50);
+
             }
         };
         door2.start();
@@ -718,7 +718,7 @@ public class Openable implements Screen{
                         open_x_3+=2;
                         open_x_4+=2;
                         open_x_5+=2;
-                        Sleep(2);
+                        Sleep(1);
                     }
                     game.closed.play(0.1f);
                     while(open_x_2 < wd10*2 ){
@@ -726,24 +726,24 @@ public class Openable implements Screen{
                         open_x_3+=2;
                         open_x_4+=2;
                         open_x_5+=2;
-                        Sleep(2);
+                        Sleep(1);
                     }
                     game.closed.play(0.1f);
                     while(open_x_3 < wd10*3 ){
                         open_x_3+=2;
                         open_x_4+=2;
                         open_x_5+=2;
-                        Sleep(2);
+                        Sleep(1);
                     }
                     game.closed.play(0.1f);
                     while(open_x_4 < wd10*4 ){
                         open_x_4+=2;
                         open_x_5+=2;
-                        Sleep(2);
+                        Sleep(1);
                     }
                     while(open_x_5 < wd10*5 ){
                         open_x_5+=2;
-                        Sleep(2);
+                        Sleep(1);
                     }
                     open_x_1 = wd10;
                     open_x_2 = wd10*2;
@@ -833,16 +833,16 @@ public class Openable implements Screen{
             for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_2-wd10, (wd10)*i, wd10, wd10);
             for(int i=0;i<5;i++) drawer.draw(machine_1, width-open_x_1-wd10, (wd10)*i, wd10, wd10);
              */
-            for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_5-wd10, (wd10)*i, wd10+2, wd10);
-            for(int i=0;i<5;i++) drawer.draw(machine_2, open_x_4-wd10, (wd10)*i, wd10, wd10);
-            for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_3-wd10, (wd10)*i, wd10, wd10);
-            for(int i=0;i<5;i++) drawer.draw(machine_2, open_x_2-wd10, (wd10)*i, wd10, wd10);
-            for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_1-wd10, (wd10)*i, wd10, wd10);
-            for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_5-2, (wd10)*i, wd10+2, wd10);
-            for(int i=0;i<5;i++) drawer.draw(machine_3, width-open_x_4, (wd10)*i, wd10, wd10);
-            for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_3, (wd10)*i, wd10, wd10);
-            for(int i=0;i<5;i++) drawer.draw(machine_3, width-open_x_2, (wd10)*i, wd10, wd10);
-            for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_1, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_2, open_x_5-wd10, (wd10)*i, wd10+2, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_4-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_2, open_x_3-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, open_x_2-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_2, open_x_1-wd10, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_3, width-open_x_5-2, (wd10)*i, wd10+2, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_4, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_3, width-open_x_3, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_4, width-open_x_2, (wd10)*i, wd10, wd10);
+            for(int i=0;i<5;i++) drawer.draw(machine_3, width-open_x_1, (wd10)*i, wd10, wd10);
         }
     }
    /* public void CheckClose(SpriteBatchRubber drawer){
