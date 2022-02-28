@@ -72,6 +72,7 @@ public class GameMenu extends Openable implements Screen{
     TextureRegion location_2_planet;
     TextureRegion location_2_space;
     TextureRegion location_2_space_2;
+    Sound[] took = new Sound[4];
 
     int button_exit_state = 0;
     int button_fight_state = 0;
@@ -799,9 +800,7 @@ public class GameMenu extends Openable implements Screen{
                 }
 
             }
-            if (box_item_type == 2) {
 
-            }
                 need_to_update_box_item = false;
 
         }
@@ -819,46 +818,61 @@ public class GameMenu extends Openable implements Screen{
     }
     public void BoxClick() {
         if(box_can_click) {
+            took[0] = Gdx.audio.newSound(Gdx.files.internal("Sound/took_2.wav"));
+            took[1] = Gdx.audio.newSound(Gdx.files.internal("Sound/took_4.wav"));
+            took[2] = Gdx.audio.newSound(Gdx.files.internal("Sound/took_5.wav"));
+            took[3] = Gdx.audio.newSound(Gdx.files.internal("Sound/move_3.wav"));
             if (box_dark_back && !box_is_opening) {
                 box_is_opening = true;
                 Thread anime = new Thread() {
                     @Override
                     public void run() {
                         box_can_click = false;
+
+                        took[1].play(0.5f);
                         while (box_scale > 2.0f) {
                             box_x = (int) (width / 2 - 330.0f) + (int) (2.2f * 300 - box_scale * 300) / 2;
                             box_y = 130 + (int) (2.2f * 300 - box_scale * 300) / 2;
                             box_scale -= 0.01f;
                             Sleep(10);
                         }
+
                         while (box_state > 1.75f) {
                             box_state -= 0.01f;
 
                             Sleep(10);
                         }
+
                         Sleep(100);
+
                         while (box_state > 1.25f) {
                             box_state -= 0.02f;
                             box_back_scale += 0.003f;
                             Sleep(5);
                         }
+
                         Sleep(50);
+
                         while (box_state > 1.00f) {
                             box_state -= 0.02f;
                             box_back_scale += 0.002f;
                             Sleep(5);
                         }
+
                         Sleep(50);
+
                         while (box_state > 0.25f) {
                             box_state -= 0.02f;
                             box_back_scale -= 0.002f;
                             Sleep(5);
                         }
+
                         while (box_state > 0.0f) {
                             box_state -= 0.01f;
                             box_back_scale -= 0.002f;
                             Sleep(5);
                         }
+
                         box_bluefire = true;
                         while (box_bluefire_scale < 1.5f) {
                             if (box_state > 1.0f) {
@@ -910,16 +924,16 @@ public class GameMenu extends Openable implements Screen{
                         }
                         box_can_click = true;
                         int dir_scale = 1;
-                        while (box_is_showing_items) {
+                        while (box_is_showing_items && box_can_click) {
                             if (dir_scale == 1) {
-                                box_item_scale_1 -= 0.005f;
-                                box_item_scale_2 -= 0.01f;
+                                box_item_scale_1 -= 0.01f;
+                                box_item_scale_2 += 0.005f;
                                 if (box_item_scale_1 <= 0.9f) {
                                     dir_scale = 0;
                                 }
                             } else {
-                                box_item_scale_1 += 0.005f;
-                                box_item_scale_2 += 0.01f;
+                                box_item_scale_1 += 0.01f;
+                                box_item_scale_2 -= 0.005f;
                                 if (box_item_scale_1 >= 1.1f) {
                                     dir_scale = 1;
                                 }
@@ -937,7 +951,7 @@ public class GameMenu extends Openable implements Screen{
 
                             box_can_click = false;
                             while (box_back_scale > 0.005f || box_item_scale_1 > 0.0f || box_item_scale_2 > 0.0f) {
-                                if (box_back_scale > 0.005f) {
+                                if (box_back_scale > 0f) {
                                     box_back_scale -= 0.005f;
                                 }
                                 if (box_item_scale_1 > 0.0f) {
@@ -965,7 +979,7 @@ public class GameMenu extends Openable implements Screen{
                             box_item_type = 1;
                             box_item_1.dispose();
                             box_item_2.dispose();
-
+                            for(int i = 0; i<4; i++) took[i].dispose();
                         }
 
                     };

@@ -74,20 +74,23 @@ public class FirstMenu  extends Openable implements Screen{
 		DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_play_icon, button_play_state,  width / 2 + 370, height/2+80, 400);
 
 
-		if (is_trailer && trailer_state >= 9){
 
-			drawer.draw(trailer, -((int)( (float)width * trailer_scale) - width) / 2, -((int) ((float)height * trailer_scale) - height) / 2, (int)((float)width * trailer_scale), (int)((float)height * trailer_scale));
-		}
-			if(is_trailer && trailer_state!=10){
-				if(!trailer_started) {
+			if(is_trailer){
+				if(trailer_state!=10) {
 					drawer.draw(space_1, -space_1_px / 2, -space_1_px / 2, width + space_1_px, height + space_1_px);
 				}
-				drawer.draw(space_2_r, -space_2_px/2, -space_2_px/2, width/2+space_2_px/2, height/2+space_2_px/2, width+space_2_px, height+space_2_px, 1, 1, space_2_rot);
-				drawer.draw(space_2_r, -space_3_px/2, -space_3_px/2, width/2+space_3_px/2, height/2+space_3_px/2, width+space_3_px, height+space_3_px, 1, 1, space_3_rot);
-				drawer.draw(space_2_r, -space_4_px/2, -space_4_px/2, width/2+space_4_px/2, height/2+space_4_px/2, width+space_4_px, height+space_4_px, 1, 1, space_4_rot);
-				drawer.draw(space_2_r, -space_5_px/2, -space_5_px/2, width/2+space_5_px/2, height/2+space_5_px/2, width+space_5_px, height+space_5_px, 1, 1, space_5_rot);
+				if ( trailer_state >= 9){
 
+					drawer.draw(trailer, -((int)( (float)width * trailer_scale) - width) / 2, -((int) ((float)height * trailer_scale) - height) / 2, (int)((float)width * trailer_scale), (int)((float)height * trailer_scale));
+				}
+				if(trailer_state!=10) {
+					drawer.draw(space_2_r, -space_2_px / 2, -space_2_px / 2, width / 2 + space_2_px / 2, height / 2 + space_2_px / 2, width + space_2_px, height + space_2_px, 1, 1, space_2_rot);
+					drawer.draw(space_2_r, -space_3_px / 2, -space_3_px / 2, width / 2 + space_3_px / 2, height / 2 + space_3_px / 2, width + space_3_px, height + space_3_px, 1, 1, space_3_rot);
+					drawer.draw(space_2_r, -space_4_px / 2, -space_4_px / 2, width / 2 + space_4_px / 2, height / 2 + space_4_px / 2, width + space_4_px, height + space_4_px, 1, 1, space_4_rot);
+					drawer.draw(space_2_r, -space_5_px / 2, -space_5_px / 2, width / 2 + space_5_px / 2, height / 2 + space_5_px / 2, width + space_5_px, height + space_5_px, 1, 1, space_5_rot);
+				}
 			}
+
 				if(trailer_dispose_need){
 					trailer_dispose_need = false;
 					trailer.dispose();
@@ -107,7 +110,7 @@ public class FirstMenu  extends Openable implements Screen{
 
 		game.MusicSwap(1);
 		batch = new SpriteBatch();
-		check = Gdx.audio.newSound(Gdx.files.internal("Sound/check1.wav"));
+		check = Gdx.audio.newSound(Gdx.files.internal("Sound/took_1.wav"));
 
 		button_left_part = new Texture("Button/button_left_part.png");
 		button_right_part = new Texture("Button/button_right_part.png");
@@ -115,9 +118,9 @@ public class FirstMenu  extends Openable implements Screen{
 		back_light= new Texture("Interface/back_light.png");
 		button_exit_icon= new Texture("Interface/icon_exit.png");
 		button_play_icon= new Texture("Interface/icon_play.png");
-		space_1 = new Texture("Decoration/space_1.png");
-		space_2 = new Texture("Decoration/space_2.png");
-		space_2_r = new TextureRegion(space_2, 960, 540);
+		space_1 = new Texture("Location/background_2.png");
+		space_2 = new Texture("Location/background_2_front.png");
+		space_2_r = new TextureRegion(space_2, 1280, 720);
 		robo_texture = new Texture("Object/logo_1.png");
 		trailer = new Texture("Decoration/trailer.png");
 		for(int i=0;i<5;i++){
@@ -192,7 +195,7 @@ public class FirstMenu  extends Openable implements Screen{
 					if(space_2_px > width*1.2){
 						space_2_px += trailer_state*12+1;
 
-						if(space_2_px > width*4.5) {
+						if(space_2_px > width*3.0) {
 							if(trailer_state!=9) {
 								space_2_px = -height;
 							}
@@ -205,7 +208,7 @@ public class FirstMenu  extends Openable implements Screen{
 					if(space_3_px > width*1.2){
 						space_3_px += trailer_state*12+2;
 
-						if(space_3_px > width*4.5 && trailer_state!=9) {
+						if(space_3_px > width*3.0f && trailer_state!=9) {
 							space_3_px = -height;
 						}
 
@@ -214,7 +217,7 @@ public class FirstMenu  extends Openable implements Screen{
 					if(space_4_px > width*1.2){
 						space_4_px += trailer_state*12+3;
 
-						if(space_4_px > width*4.5 && trailer_state!=9) {
+						if(space_4_px > width*3.0f && trailer_state!=9) {
 							space_4_px = -height;
 						}
 
@@ -223,7 +226,7 @@ public class FirstMenu  extends Openable implements Screen{
 					if(space_5_px > width*1.2){
 						space_5_px += trailer_state*12+4;
 
-						if(space_5_px > width*4.5 && trailer_state!=9) {
+						if(space_5_px > width*3.0f && trailer_state!=9) {
 							space_5_px = -height;
 						}
 					}
@@ -245,9 +248,11 @@ public class FirstMenu  extends Openable implements Screen{
 					}
 					if(trailer_state == 9 && !trailer_started){
 						trailer_started = true;
+						trailer_scale = 0.01f;
+
 						anime_trailer.start();
 					}
-					Sleep(4);
+					Sleep(10);
 				}
 
 			}
@@ -255,7 +260,13 @@ public class FirstMenu  extends Openable implements Screen{
 		anime_trailer = new Thread() {
 			@Override
 			public void run() {
+				while (trailer_scale < 1.0f) {
+				trailer_scale+=0.005f;
+				Sleep(2);
+				}
+
 				Sleep(1500);
+
 				while (trailer_scale < 47.0f) {
 					trailer_scale += 0.075f;
 					if(trailer_scale>35.0f){

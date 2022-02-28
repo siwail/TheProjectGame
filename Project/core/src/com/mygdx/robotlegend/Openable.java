@@ -66,9 +66,9 @@ public class Openable implements Screen{
         parameter.size = (int)(100.0*wpw);
         button_font = game.generator.generateFont(parameter);
         button_font.setColor(Color.WHITE);
-        parameter.size = (int)(150.0*wpw);
+        parameter.size = (int)(100.0*wpw);
         resource_font = game.generator.generateFont(parameter);
-        resource_font.setColor(0, 140, 255, 1);
+        resource_font.setColor(180, 180, 190, 1);
         parameter.size = (int)(160.0*wpw);
         multiplayer_font = game.generator.generateFont(parameter);
         multiplayer_font.setColor(0, 140, 255, 1);
@@ -102,36 +102,64 @@ public class Openable implements Screen{
         drawer.draw(front, x, y, (int)(200*scale), (int)(200*scale));
 
     }
-    public void DrawSelect(SpriteBatchRubber drawer, int x, int y, float scale, float rothand, float rothead, float rotleg, float rot, int which_select) {
+    public void DrawSelect(SpriteBatchRubber drawer, int x, int y, float scale, float rothand, float rothead, float rotleg, float rot, int which_select, boolean green) {
         TextureRegion Head;
         TextureRegion Body;
         TextureRegion LeftLeg;
         TextureRegion RightLeg;
         TextureRegion LeftHand;
         TextureRegion RightHand;
-        if(which_select == 1){
-            Head = new TextureRegion(game.robot.HeadSelectt, 300, 300);
-            drawer.draw(Head, x, (float) (y + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rothead);
-        }
-        if(which_select == 2){
-            Body = new TextureRegion(game.robot.BodySelectt, 300, 300);
-            drawer.draw(Body, x, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1,  rot);
-        }
-        if(which_select == 3){
-            LeftLeg = new TextureRegion(game.robot.LeftLegSelectt, 300, 300);
-            drawer.draw(LeftLeg, (float) (x - 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  -rotleg);
-        }
-        if(which_select == 4){
-            RightLeg = new TextureRegion(game.robot.RightLegSelectt, 300, 300);
-            drawer.draw(RightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rotleg);
-        }
-        if(which_select == 5){
-            LeftHand = new TextureRegion(game.robot.LeftHandSelectt, 300, 300);
-            drawer.draw(LeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand);
-        }
-        if(which_select == 6){
-            RightHand = new TextureRegion(game.robot.RightHandSelectt, 300, 300);
-            drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1,  rothand);
+        if(green) {
+            if (which_select == 1) {
+
+                Head = new TextureRegion(game.robot.HeadSelectt, 300, 300);
+                drawer.draw(Head, x, (float) (y + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rothead);
+            }
+            if (which_select == 2) {
+                Body = new TextureRegion(game.robot.BodySelectt, 300, 300);
+                drawer.draw(Body, x, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rot);
+            }
+            if (which_select == 3) {
+                LeftLeg = new TextureRegion(game.robot.LeftLegSelectt, 300, 300);
+                drawer.draw(LeftLeg, (float) (x - 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, -rotleg);
+            }
+            if (which_select == 4) {
+                RightLeg = new TextureRegion(game.robot.RightLegSelectt, 300, 300);
+                drawer.draw(RightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rotleg);
+            }
+            if (which_select == 5) {
+                LeftHand = new TextureRegion(game.robot.LeftHandSelectt, 300, 300);
+                drawer.draw(LeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand);
+            }
+            if (which_select == 6) {
+                RightHand = new TextureRegion(game.robot.RightHandSelectt, 300, 300);
+                drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand);
+            }
+        }else{
+            if (which_select == 1) {
+                Head = new TextureRegion(game.robot.HeadRedt, 300, 300);
+                drawer.draw(Head, x, (float) (y + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rothead);
+            }
+            if (which_select == 2) {
+                Body = new TextureRegion(game.robot.BodyRedt, 300, 300);
+                drawer.draw(Body, x, (float) (y + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rot);
+            }
+            if (which_select == 3) {
+                LeftLeg = new TextureRegion(game.robot.LeftLegRedt, 300, 300);
+                drawer.draw(LeftLeg, (float) (x - 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, -rotleg);
+            }
+            if (which_select == 4) {
+                RightLeg = new TextureRegion(game.robot.RightLegRedt, 300, 300);
+                drawer.draw(RightLeg, (float) (x + 50 * scale), y, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rotleg);
+            }
+            if (which_select == 5) {
+                LeftHand = new TextureRegion(game.robot.LeftHandRedt, 300, 300);
+                drawer.draw(LeftHand, (float) (x + 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand);
+            }
+            if (which_select == 6) {
+                RightHand = new TextureRegion(game.robot.RightHandRedt, 300, 300);
+                drawer.draw(RightHand, (float) (x - 90 * scale), (float) (y + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand);
+            }
         }
     }
     public void DrawBox(SpriteBatchRubber drawer, GameMenu menu, int x, int y, float scale, float state){
@@ -661,25 +689,25 @@ public class Openable implements Screen{
 
 
 
-                game.opened.play(0.1f);
+                game.opened.play(0.5f);
                 while(open_x_5 > wd10*4 ){
                     open_x_5-=2;
                     Sleep(1);
                 }
-                game.opened.play(0.1f);
+                game.opened.play(0.5f);
                 while(open_x_4 > wd10*3 ){
                     open_x_4-=2;
                     open_x_5-=2;
                     Sleep(1);
                 }
-                game.opened.play(0.1f);
+                game.opened.play(0.5f);
                 while(open_x_3 > wd10*2 ){
                     open_x_3-=2;
                     open_x_4-=2;
                     open_x_5-=2;
                     Sleep(1);
                 }
-                game.opened.play(0.1f);
+                game.opened.play(0.4f);
                 while(open_x_2 > wd10 ){
                     open_x_2-=2;
                     open_x_3-=2;
@@ -687,7 +715,7 @@ public class Openable implements Screen{
                     open_x_5-=2;
                     Sleep(1);
                 }
-                game.opened.play(0.1f);
+                game.opened.play(0.3f);
                 while(open_x_1 > -wd10 ){
                     open_x_1-=2;
                     open_x_2-=2;
@@ -711,7 +739,7 @@ public class Openable implements Screen{
                 @Override
                 public void run() {
 
-                    game.closed.play(0.1f);
+                    game.closed.play(0.3f);
                     while(open_x_1 < wd10 ){
                         open_x_1+=2;
                         open_x_2+=2;
@@ -720,7 +748,7 @@ public class Openable implements Screen{
                         open_x_5+=2;
                         Sleep(1);
                     }
-                    game.closed.play(0.1f);
+                    game.closed.play(0.4f);
                     while(open_x_2 < wd10*2 ){
                         open_x_2+=2;
                         open_x_3+=2;
@@ -728,14 +756,14 @@ public class Openable implements Screen{
                         open_x_5+=2;
                         Sleep(1);
                     }
-                    game.closed.play(0.1f);
+                    game.closed.play(0.5f);
                     while(open_x_3 < wd10*3 ){
                         open_x_3+=2;
                         open_x_4+=2;
                         open_x_5+=2;
                         Sleep(1);
                     }
-                    game.closed.play(0.1f);
+                    game.closed.play(0.5f);
                     while(open_x_4 < wd10*4 ){
                         open_x_4+=2;
                         open_x_5+=2;

@@ -21,6 +21,10 @@ public class RoboStructure {
     int EBmove_speed = 0;
     int EBattack_speed = 0;
     int EBenergy_speed = 0;
+    int power_small = 1;
+    int power_large = 1;
+    int Epower_small = 1;
+    int Epower_large = 1;
     int jetpack = 1;
     int Hid = 1;
     int Bid = 1;
@@ -29,7 +33,7 @@ public class RoboStructure {
     int RLid = 1; //Правая нога
     int LLid = 1; //Левая нога
     int Hl = 1;
-    int Bl = 4;
+    int Bl = 1;
     int RHl = 1; //Правая рука
     int LHl = 1; //Левая рука
     int RLl = 1; //Правая нога
@@ -60,6 +64,8 @@ public class RoboStructure {
     Texture[] jetpack_1 = new Texture[4];
     Texture[] jetpack_2 = new Texture[4];
     Texture jetpack_3;
+
+
     Texture Ball_1t;
     Texture Ball_2t;
     Texture contrast;
@@ -91,6 +97,12 @@ public class RoboStructure {
     Texture RightLegSelectt;
     Texture LeftHandSelectt;
     Texture RightHandSelectt;
+    Texture HeadRedt;
+    Texture BodyRedt;
+    Texture LeftLegRedt;
+    Texture RightLegRedt;
+    Texture LeftHandRedt;
+    Texture RightHandRedt;
     Texture HeadHurtt;
     Texture BodyHurtt;
     Texture LeftLegHurtt;
@@ -195,6 +207,12 @@ public class RoboStructure {
         RHid = 1;
         LLid = 1;
         RLid = 1;
+        Hl = 1;
+        Bl = 1;
+        LHl = 1;
+        RHl = 1;
+        LLl = 1;
+        RLl = 1;
         opened = 1;
         experience = 0;
         int i = 0;
@@ -202,6 +220,18 @@ public class RoboStructure {
             skins_open[i] = TakeSafe("skin_"+i, 0);
             i++;
         }
+        i = 0;
+        while(i!=5){
+            BBody[i] = -1;
+            BHead[i] = -1;
+            BHand[i] = -1;
+            BLeg[i] = -1;
+            i++;
+        }
+        BBody[0] = 1;
+        BHead[0] = 1;
+        BHand[0] = 1;
+        BLeg[0] = 1;
         Safe();
     }
     public void AddDetail(int detail, int model) {
@@ -267,8 +297,8 @@ public class RoboStructure {
         Eattack_speed = 8-(int)TR(2, EBid, EBl, 4);
         move_speed = 11-((int)TR(3, LLid, LLl, 5)+(int)TR(3, RLid, RLl, 5));
         Emove_speed =11-((int)TR(3, ELLid, ELLl, 5)+(int)TR(3, ERLid, ERLl, 5));
-        damage = (int)TR(4, LHid, LHl, 2)+(int)TR(3, RHid, RHl, 2);
-        Edamage = (int)TR(4, ELHid, ELHl, 2)+(int)TR(3, ERHid, ERHl, 2);
+        damage = (int)TR(4, LHid, LHl, 2)+(int)TR(4, RHid, RHl, 2);
+        Edamage = (int)TR(4, ELHid, ELHl, 2)+(int)TR(4, ERHid, ERHl, 2);
         health = (int)TR(1, Hid, Hl, 1)+(int)TR(2, Bid, Bl, 1)+(int)TR(3, LLid, LLl, 1)+(int)TR(1, RLid, RLl, 1)+(int)TR(1, LHid, LHl, 1)+ (int)TR(1, RHid, RHl, 1);
         Ehealth = (int)TR(1, EHid, EHl, 1)+(int)TR(2, EBid, EBl, 1)+(int)TR(3, ELLid, ELLl, 1)+(int)TR(1, ERLid, ERLl, 1)+(int)TR(1, ELHid, ELHl, 1)+ (int)TR(1, ERHid, ERHl, 1);
 
@@ -469,6 +499,13 @@ public class RoboStructure {
         RightLegSelectt = new Texture("Robot/leg_select.png");
         LeftHandSelectt = new Texture("Robot/hand_select.png");
         RightHandSelectt = new Texture("Robot/hand_select.png");
+
+        HeadRedt = new Texture("Robot/head_red.png");
+        BodyRedt = new Texture("Robot/body_red.png");
+        LeftLegRedt = new Texture("Robot/leg_red.png");
+        RightLegRedt = new Texture("Robot/leg_red.png");
+        LeftHandRedt = new Texture("Robot/hand_red.png");
+        RightHandRedt = new Texture("Robot/hand_red.png");
     }
     public void ChangeSkinBust(){
         if(skin == 0){
@@ -653,6 +690,13 @@ public class RoboStructure {
         RightLegSelectt.dispose();
         LeftHandSelectt.dispose();
         RightHandSelectt.dispose();
+
+        HeadRedt.dispose();
+        BodyRedt.dispose();
+        LeftLegRedt.dispose();
+        RightLegRedt.dispose();
+        LeftHandRedt.dispose();
+        RightHandRedt.dispose();
     }
     public void SetGamePlayTextures(){
         for(int i=1;i<6; i++){ ToBall_1t[i-1] = new Texture("Robot/ball_1_" + i + ".png");  ToBall_1[i-1] = new TextureRegion(ToBall_1t[i-1], 200, 200);}
@@ -665,6 +709,7 @@ public class RoboStructure {
         Cross = new Texture("Object/aim.png");
         EBullet.dispose();
         Bullet.dispose();
+
         EBullet = new Texture("Object/bullet" + Ecolor + ".png");
         Bullet = new Texture("Object/bullet" + color + ".png");
         Energy = new Texture("Interface/energy.png");
@@ -789,6 +834,8 @@ public class RoboStructure {
         game.safes.putInteger("LLl", game.robot.LLl);
         game.safes.putInteger("RLl", game.robot.RLl);
 
+
+
         game.safes.putInteger("H", game.robot.Hid);
         game.safes.putInteger("B", game.robot.Bid);
         game.safes.putInteger("RH", game.robot.RHid);
@@ -821,6 +868,7 @@ public class RoboStructure {
         for(int i=1;i<6; i++) ToBall_1t[i-1].dispose();
         for(int i=1;i<6; i++) ToBall_2t[i-1].dispose();
         for(int i=1;i<6; i++) ToBall_3t[i-1].dispose();
+
         Ball_1t.dispose();
         Ball_2t.dispose();
         Cross.dispose();
@@ -873,6 +921,7 @@ public class RoboStructure {
         jetpack_3.dispose();
     }
     public void SetFirstChanges(){
+
         metal_chance[0] = 60;
         metal_chance[1] = 20;
         metal_chance[2] = 10;
@@ -923,12 +972,18 @@ public class RoboStructure {
         }
         i = 0;
         while(i!=5){
-            BBody[i] = TakeSafe("BBody_"+(i+1), 1);
-            BHead[i] = TakeSafe("BHead_"+(i+1), 1);
-            BHand[i] = TakeSafe("BHand_"+(i+1), 1);
-            BLeg[i] = TakeSafe("BLeg_"+(i+1), 1);
+            BBody[i] = TakeSafe("BBody_"+(i+1), -1);
+            BHead[i] = TakeSafe("BHead_"+(i+1), -1);
+            BHand[i] = TakeSafe("BHand_"+(i+1), -1);
+            BLeg[i] = TakeSafe("BLeg_"+(i+1), -1);
             i++;
         }
+        Hl = BHead[Hid-1];
+        Bl = BBody[Bid-1];
+        RHl = BHand[RHid-1];
+        LHl = BHand[LHid-1];
+        RLl = BLeg[RLid-1];
+        LLl = BLeg[LLid-1];
         skins_open[0] = 0;
         skin = 0;
         index_skin = 0;

@@ -66,6 +66,8 @@ public class WorkMenu extends Openable implements Screen {
     Texture green_circle;
     Texture red_circle;
     Texture tube;
+    Texture power_1;
+    Texture power_2;
     Texture[] tube_elements_texture = new Texture[5];
     TextureRegion[] tube_elements = new TextureRegion[5];
     TextureRegion lamp;
@@ -92,6 +94,9 @@ public class WorkMenu extends Openable implements Screen {
     int y_lu = 0;
     int y_ru = 0;
     int y_cu = 0;
+
+    int LHid, LBid, LRHid, LLHid, LRLid, LLLid;
+    int LHl, LBl, LRHl, LLHl, LRLl, LLLl;
 
     int tube_element2_index;
     int tube_element2_speed;
@@ -126,6 +131,10 @@ public class WorkMenu extends Openable implements Screen {
     boolean exit_touch = false;
     boolean upgrade_can = false;
     boolean upgrade_touch = false;
+    boolean need_to_upgrade_power_1 = false;
+    boolean need_to_upgrade_power_2 = false;
+    boolean need_to_update_detail = false;
+    boolean actual_model = true;
     public WorkMenu(MainGame mainGame){
         this.game = mainGame;
     }
@@ -137,6 +146,8 @@ public class WorkMenu extends Openable implements Screen {
             Start();
             x = width/2-400;
             game.robot.UpdateParameters();
+            power_1 = new Texture("Interface/dark.png");
+            power_2 = new Texture("Interface/dark.png");
             tube_elements_texture[0] = new Texture("Location/grass_1.png");
             tube_elements_texture[1] = new Texture("Location/meteor_1.png");
             tube_elements_texture[2] = new Texture("Item/gear.png");
@@ -198,7 +209,7 @@ public class WorkMenu extends Openable implements Screen {
             leg_ld = new Texture("Object/leg_ld.png");
             leg_rd = new Texture("Object/leg_rd.png");
             leg_cd = new Texture("Object/leg_cd.png");
-            saw_texture = new Texture("Object/saw.png");
+            saw_texture = new Texture("Object/saw_1.png");
             saw = new TextureRegion(saw_texture, 300, 300);
             button  = new Thread(){
             @Override
@@ -320,6 +331,19 @@ public class WorkMenu extends Openable implements Screen {
             anime.start();
             button.start();
             DoorOpen();
+            LHid = game.robot.Hid;
+            LBid = game.robot.Bid;
+            LRHid = game.robot.RHid;
+            LLHid = game.robot.LHid;
+            LRLid = game.robot.RLid;
+            LLLid = game.robot.LLid;
+
+            LHl = game.robot.Hl;
+            LBl = game.robot.Bl;
+            LRHl = game.robot.RHl;
+            LLHl = game.robot.LHl;
+            LRLl = game.robot.RLl;
+            LLLl = game.robot.LLl;
     }
     @Override
     public void render(float delta) {
@@ -387,7 +411,7 @@ public class WorkMenu extends Openable implements Screen {
                     if (type_2 == 1) {
                         drawer.draw(metall, RS(width - 250), RS(200), RS(150), RS(150));
                     }
-                }
+                }if(number_1>0&&number_2>0) {
                 if (type_1 != 0 && type_2 != 0 && which_select != 0) {
                     if (can_type_1) {
                         drawer.draw(yes, RS(width - 425), RS(220), RS(100), RS(100));
@@ -402,6 +426,7 @@ public class WorkMenu extends Openable implements Screen {
                     item_font.draw(batch, number_1 + "", RS((int) (((float) width - 500.0) * wpw)), RS((int) (225.0 * hph)));
                     item_font.draw(batch, number_2 + "", RS((int) (((float) width - 250.0) * wpw)), RS((int) (225.0 * hph)));
                 }
+            }
                 if (which_select != 0) {
                     if (!upgrade_can) {
                         drawer.draw(upgrade_1, RS(width - 500), RS(0), RS(400), RS(175));
@@ -508,18 +533,22 @@ public class WorkMenu extends Openable implements Screen {
                     drawer.draw(not, RS(width - 575), RS(605), RS(110), RS(110));
                 }
             }
-            drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(state_energy, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(1, game.robot.Hid, game.robot.Hl, 3)/50.0f)), RS(40));
-            drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(energy, RS(width-565), RS(355), RS(100), RS(100));
-            drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
-            drawer.draw(state_health, RS(width-275), RS(380), RS((int)(250.0f*game.robot.TR(1, game.robot.Hid, game.robot.Hl, 1)/80.0f)), RS(40));
-            drawer.draw(state_frame, RS(width-285), RS(380), RS(250), RS(40));
-            drawer.draw(health, RS(width-295), RS(355), RS(100), RS(100));
-            drawer.draw(left, RS(width-550-120/2*left_scale+60), RS(470-100/2*left_scale+50), RS(100*left_scale), RS(120*left_scale));
-            drawer.draw(right, RS(width-150-120/2*right_scale+60), RS(470-100/2*right_scale+50), RS(100*right_scale), RS(120*right_scale));
-            alert_font.draw(batch, "" + (int)game.robot.TR(1, game.robot.Hid, game.robot.Hl,1), RS((int)(((float)width-195.0)*wpw)), RS((int)(412.5*hph)));
-            alert_font.draw(batch, "" + (int)game.robot.TR(1, game.robot.Hid, game.robot.Hl,3), RS((int)(((float)width-455.0)*wpw)), RS((int)(412.5*hph)));
+            drawer.draw(power_1, RS(width - 135), RS(605), RS(110), RS(110));
+            if(number_1>0&&number_2>0){
+                drawer.draw(state_back, RS(width - 545), RS(380), RS(250), RS(40));
+                drawer.draw(state_energy, RS(width - 535), RS(380), RS((int) (250.0f * game.robot.TR(1, game.robot.Hid, game.robot.Hl, 3) / 50.0f)), RS(40));
+                drawer.draw(state_frame, RS(width - 545), RS(380), RS(250), RS(40));
+                drawer.draw(energy, RS(width - 565), RS(355), RS(100), RS(100));
+                drawer.draw(state_back, RS(width - 285), RS(380), RS(250), RS(40));
+                drawer.draw(state_health, RS(width - 275), RS(380), RS((int) (250.0f * game.robot.TR(1, game.robot.Hid, game.robot.Hl, 1) / 80.0f)), RS(40));
+                drawer.draw(state_frame, RS(width - 285), RS(380), RS(250), RS(40));
+                drawer.draw(health, RS(width - 295), RS(355), RS(100), RS(100));
+
+                alert_font.draw(batch, "" + (int) game.robot.TR(1, game.robot.Hid, game.robot.Hl, 1), RS((int) (((float) width - 195.0) * wpw)), RS((int) (412.5 * hph)));
+                alert_font.draw(batch, "" + (int) game.robot.TR(1, game.robot.Hid, game.robot.Hl, 3), RS((int) (((float) width - 455.0) * wpw)), RS((int) (412.5 * hph)));
+            }
+            drawer.draw(left, RS(width - 550 - 120 / 2 * left_scale + 60), RS(470 - 100 / 2 * left_scale + 50), RS(100 * left_scale), RS(120 * left_scale));
+            drawer.draw(right, RS(width - 150 - 120 / 2 * right_scale + 60), RS(470 - 100 / 2 * right_scale + 50), RS(100 * right_scale), RS(120 * right_scale));
             /*
             item_font.draw(batch, "Мозг робота Ур. " + game.robot.Hid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, game.robot.Hid*10 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
@@ -558,18 +587,22 @@ public class WorkMenu extends Openable implements Screen {
                     drawer.draw(not, RS(width - 575), RS(605), RS(110), RS(110));
                 }
             }
-            drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(state_speed, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(2, game.robot.Bid, game.robot.Bl, 4)/7.5f)), RS(40));
-            drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(attack_speed, RS(width-565), RS(355), RS(100), RS(100));
-            drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
-            drawer.draw(state_health, RS(width-275), RS(380), RS((int)(250.0f*game.robot.TR(2, game.robot.Bid, game.robot.Bl, 1)/200.0f)), RS(40));
-            drawer.draw(state_frame, RS(width-285), RS(380), RS(250), RS(40));
-            drawer.draw(health, RS(width-295), RS(355), RS(100), RS(100));
-            drawer.draw(left, RS(width-550-120/2*left_scale+60), RS(470-100/2*left_scale+50), RS(100*left_scale), RS(120*left_scale));
-            drawer.draw(right, RS(width-150-120/2*right_scale+60), RS(470-100/2*right_scale+50), RS(100*right_scale), RS(120*right_scale));
-            alert_font.draw(batch, "" + (int)game.robot.TR(2, game.robot.Bid, game.robot.Bl,1), RS((int)(((float)width-195.0)*wpw)), RS((int)(412.5*hph)));
-            alert_font.draw(batch, "" + (int)game.robot.TR(2, game.robot.Bid, game.robot.Bl,4), RS((int)(((float)width-455.0)*wpw)), RS((int)(412.5*hph)));
+            drawer.draw(power_2, RS(width - 135), RS(605), RS(110), RS(110));
+            if(number_1>0&&number_2>0){
+                drawer.draw(state_back, RS(width - 545), RS(380), RS(250), RS(40));
+                drawer.draw(state_speed, RS(width - 535), RS(380), RS((int) (250.0f * game.robot.TR(2, game.robot.Bid, game.robot.Bl, 4) / 7.5f)), RS(40));
+                drawer.draw(state_frame, RS(width - 545), RS(380), RS(250), RS(40));
+                drawer.draw(attack_speed, RS(width - 565), RS(355), RS(100), RS(100));
+                drawer.draw(state_back, RS(width - 285), RS(380), RS(250), RS(40));
+                drawer.draw(state_health, RS(width - 275), RS(380), RS((int) (250.0f * game.robot.TR(2, game.robot.Bid, game.robot.Bl, 1) / 200.0f)), RS(40));
+                drawer.draw(state_frame, RS(width - 285), RS(380), RS(250), RS(40));
+                drawer.draw(health, RS(width - 295), RS(355), RS(100), RS(100));
+
+                alert_font.draw(batch, "" + (int) game.robot.TR(2, game.robot.Bid, game.robot.Bl, 1), RS((int) (((float) width - 195.0) * wpw)), RS((int) (412.5 * hph)));
+                alert_font.draw(batch, "" + (int) game.robot.TR(2, game.robot.Bid, game.robot.Bl, 4), RS((int) (((float) width - 455.0) * wpw)), RS((int) (412.5 * hph)));
+            }
+                drawer.draw(left, RS(width-550-120/2*left_scale+60), RS(470-100/2*left_scale+50), RS(100*left_scale), RS(120*left_scale));
+                drawer.draw(right, RS(width-150-120/2*right_scale+60), RS(470-100/2*right_scale+50), RS(100*right_scale), RS(120*right_scale));
         }
         if(which_select == 3){
             item_font.draw(batch, "Механо-нога", RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
@@ -597,18 +630,20 @@ public class WorkMenu extends Openable implements Screen {
                     drawer.draw(not, RS(width - 575), RS(605), RS(110), RS(110));
                 }
             }
-            drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(state_speed, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(3, game.robot.LLid, game.robot.LLl, 5)/7.5f)), RS(40));
-            drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(move_speed, RS(width-565), RS(355), RS(100), RS(100));
-            drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
-            drawer.draw(state_health, RS(width-275), RS(380), RS((int)(250.0f*game.robot.TR(3, game.robot.LLid, game.robot.LLl, 1)/110.0f)), RS(40));
-            drawer.draw(state_frame, RS(width-285), RS(380), RS(250), RS(40));
-            drawer.draw(health, RS(width-295), RS(355), RS(100), RS(100));
+            if(number_1>0&&number_2>0){
+                drawer.draw(state_back, RS(width - 545), RS(380), RS(250), RS(40));
+                drawer.draw(state_speed, RS(width - 535), RS(380), RS((int) (250.0f * game.robot.TR(3, game.robot.LLid, game.robot.LLl, 5) / 7.5f)), RS(40));
+                drawer.draw(state_frame, RS(width - 545), RS(380), RS(250), RS(40));
+                drawer.draw(move_speed, RS(width - 565), RS(355), RS(100), RS(100));
+                drawer.draw(state_back, RS(width - 285), RS(380), RS(250), RS(40));
+                drawer.draw(state_health, RS(width - 275), RS(380), RS((int) (250.0f * game.robot.TR(3, game.robot.LLid, game.robot.LLl, 1) / 110.0f)), RS(40));
+                drawer.draw(state_frame, RS(width - 285), RS(380), RS(250), RS(40));
+                drawer.draw(health, RS(width - 295), RS(355), RS(100), RS(100));
+                alert_font.draw(batch, "" + (int) game.robot.TR(3, game.robot.LLid, game.robot.LLl, 1), RS((int) (((float) width - 195.0) * wpw)), RS((int) (412.5 * hph)));
+                alert_font.draw(batch, "" + (int) game.robot.TR(3, game.robot.LLid, game.robot.LLl, 5), RS((int) (((float) width - 455.0) * wpw)), RS((int) (412.5 * hph)));
+            }
             drawer.draw(left, RS(width-550-120/2*left_scale+60), RS(470-100/2*left_scale+50), RS(100*left_scale), RS(120*left_scale));
             drawer.draw(right, RS(width-150-120/2*right_scale+60), RS(470-100/2*right_scale+50), RS(100*right_scale), RS(120*right_scale));
-            alert_font.draw(batch, "" + (int)game.robot.TR(3, game.robot.LLid, game.robot.LLl,1), RS((int)(((float)width-195.0)*wpw)), RS((int)(412.5*hph)));
-            alert_font.draw(batch, "" + (int)game.robot.TR(3, game.robot.LLid, game.robot.LLl,5), RS((int)(((float)width-455.0)*wpw)), RS((int)(412.5*hph)));
             /*
             item_font.draw(batch, "Механо-нога Ур. " + game.robot.LLid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, game.robot.LLid*5 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
@@ -642,18 +677,21 @@ public class WorkMenu extends Openable implements Screen {
                     drawer.draw(not, RS(width - 575), RS(605), RS(110), RS(110));
                 }
             }
-            drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(state_speed, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(3, game.robot.RLid, game.robot.RLl, 5)/7.5f)), RS(40));
-            drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(move_speed, RS(width-565), RS(355), RS(100), RS(100));
-            drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
-            drawer.draw(state_health, RS(width-275), RS(380), RS((int)(250.0f*game.robot.TR(3, game.robot.RLid, game.robot.RLl, 1)/110.0f)), RS(40));
-            drawer.draw(state_frame, RS(width-285), RS(380), RS(250), RS(40));
-            drawer.draw(health, RS(width-295), RS(355), RS(100), RS(100));
-            drawer.draw(left, RS(width-550-120/2*left_scale+60), RS(470-100/2*left_scale+50), RS(100*left_scale), RS(120*left_scale));
-            drawer.draw(right, RS(width-150-120/2*right_scale+60), RS(470-100/2*right_scale+50), RS(100*right_scale), RS(120*right_scale));
-            alert_font.draw(batch, "" + (int)game.robot.TR(3, game.robot.RLid, game.robot.RLl,1), RS((int)(((float)width-195.0)*wpw)), RS((int)(412.5*hph)));
-            alert_font.draw(batch, "" + (int)game.robot.TR(3, game.robot.RLid, game.robot.RLl,5), RS((int)(((float)width-455.0)*wpw)), RS((int)(412.5*hph)));
+            if(number_1>0&&number_2>0){
+                drawer.draw(state_back, RS(width - 545), RS(380), RS(250), RS(40));
+                drawer.draw(state_speed, RS(width - 535), RS(380), RS((int) (250.0f * game.robot.TR(3, game.robot.RLid, game.robot.RLl, 5) / 7.5f)), RS(40));
+                drawer.draw(state_frame, RS(width - 545), RS(380), RS(250), RS(40));
+                drawer.draw(move_speed, RS(width - 565), RS(355), RS(100), RS(100));
+                drawer.draw(state_back, RS(width - 285), RS(380), RS(250), RS(40));
+                drawer.draw(state_health, RS(width - 275), RS(380), RS((int) (250.0f * game.robot.TR(3, game.robot.RLid, game.robot.RLl, 1) / 110.0f)), RS(40));
+                drawer.draw(state_frame, RS(width - 285), RS(380), RS(250), RS(40));
+                drawer.draw(health, RS(width - 295), RS(355), RS(100), RS(100));
+
+                alert_font.draw(batch, "" + (int) game.robot.TR(3, game.robot.RLid, game.robot.RLl, 1), RS((int) (((float) width - 195.0) * wpw)), RS((int) (412.5 * hph)));
+                alert_font.draw(batch, "" + (int) game.robot.TR(3, game.robot.RLid, game.robot.RLl, 5), RS((int) (((float) width - 455.0) * wpw)), RS((int) (412.5 * hph)));
+            }
+            drawer.draw(left, RS(width - 550 - 120 / 2 * left_scale + 60), RS(470 - 100 / 2 * left_scale + 50), RS(100 * left_scale), RS(120 * left_scale));
+            drawer.draw(right, RS(width - 150 - 120 / 2 * right_scale + 60), RS(470 - 100 / 2 * right_scale + 50), RS(100 * right_scale), RS(120 * right_scale));
             /*
             item_font.draw(batch, "Механо-нога Ур. " + game.robot.RLid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, game.robot.RLid*5 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
@@ -687,18 +725,21 @@ public class WorkMenu extends Openable implements Screen {
                     drawer.draw(not, RS(width - 575), RS(605), RS(110), RS(110));
                 }
             }
-            drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(state_damage, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(4, game.robot.LHid, game.robot.LHl, 2)/27.5f)), RS(40));
-            drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(damage, RS(width-565), RS(355), RS(100), RS(100));
-            drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
-            drawer.draw(state_health, RS(width-275), RS(380), RS((int)(250.0f*game.robot.TR(4, game.robot.LHid, game.robot.LHl, 1)/112.5f)), RS(40));
-            drawer.draw(state_frame, RS(width-285), RS(380), RS(250), RS(40));
-            drawer.draw(health, RS(width-295), RS(355), RS(100), RS(100));
-            drawer.draw(left, RS(width-550-120/2*left_scale+60), RS(470-100/2*left_scale+50), RS(100*left_scale), RS(120*left_scale));
-            drawer.draw(right, RS(width-150-120/2*right_scale+60), RS(470-100/2*right_scale+50), RS(100*right_scale), RS(120*right_scale));
-            alert_font.draw(batch, "" + (int)game.robot.TR(4, game.robot.LHid, game.robot.LHl,1), RS((int)(((float)width-195.0)*wpw)), RS((int)(412.5*hph)));
-            alert_font.draw(batch, "" + (int)game.robot.TR(4, game.robot.LHid, game.robot.LHl,2), RS((int)(((float)width-455.0)*wpw)), RS((int)(412.5*hph)));
+            if(number_1>0&&number_2>0){
+                drawer.draw(state_back, RS(width - 545), RS(380), RS(250), RS(40));
+                drawer.draw(state_damage, RS(width - 535), RS(380), RS((int) (250.0f * game.robot.TR(4, game.robot.LHid, game.robot.LHl, 2) / 27.5f)), RS(40));
+                drawer.draw(state_frame, RS(width - 545), RS(380), RS(250), RS(40));
+                drawer.draw(damage, RS(width - 565), RS(355), RS(100), RS(100));
+                drawer.draw(state_back, RS(width - 285), RS(380), RS(250), RS(40));
+                drawer.draw(state_health, RS(width - 275), RS(380), RS((int) (250.0f * game.robot.TR(4, game.robot.LHid, game.robot.LHl, 1) / 112.5f)), RS(40));
+                drawer.draw(state_frame, RS(width - 285), RS(380), RS(250), RS(40));
+                drawer.draw(health, RS(width - 295), RS(355), RS(100), RS(100));
+
+                alert_font.draw(batch, "" + (int) game.robot.TR(4, game.robot.LHid, game.robot.LHl, 1), RS((int) (((float) width - 195.0) * wpw)), RS((int) (412.5 * hph)));
+                alert_font.draw(batch, "" + (int) game.robot.TR(4, game.robot.LHid, game.robot.LHl, 2), RS((int) (((float) width - 455.0) * wpw)), RS((int) (412.5 * hph)));
+            }
+            drawer.draw(left, RS(width - 550 - 120 / 2 * left_scale + 60), RS(470 - 100 / 2 * left_scale + 50), RS(100 * left_scale), RS(120 * left_scale));
+            drawer.draw(right, RS(width - 150 - 120 / 2 * right_scale + 60), RS(470 - 100 / 2 * right_scale + 50), RS(100 * right_scale), RS(120 * right_scale));
             /*
             item_font.draw(batch, "Бластер Ур. " + game.robot.LHid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, game.robot.LHid*5 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
@@ -732,18 +773,20 @@ public class WorkMenu extends Openable implements Screen {
                     drawer.draw(not, RS(width - 575), RS(605), RS(110), RS(110));
                 }
             }
-            drawer.draw(state_back, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(state_damage, RS(width-535), RS(380), RS((int)(250.0f*game.robot.TR(4, game.robot.RHid, game.robot.RHl, 2)/27.5f)), RS(40));
-            drawer.draw(state_frame, RS(width-545), RS(380), RS(250), RS(40));
-            drawer.draw(damage, RS(width-565), RS(355), RS(100), RS(100));
-            drawer.draw(state_back, RS(width-285), RS(380), RS(250), RS(40));
-            drawer.draw(state_health, RS(width-275), RS(380), RS((int)(250.0f*game.robot.TR(4, game.robot.RHid, game.robot.RHl, 1)/112.5f)), RS(40));
-            drawer.draw(state_frame, RS(width-285), RS(380), RS(250), RS(40));
-            drawer.draw(health, RS(width-295), RS(355), RS(100), RS(100));
-            drawer.draw(left, RS(width-550-120/2*left_scale+60), RS(470-100/2*left_scale+50), RS(100*left_scale), RS(120*left_scale));
-            drawer.draw(right, RS(width-150-120/2*right_scale+60), RS(470-100/2*right_scale+50), RS(100*right_scale), RS(120*right_scale));
-            alert_font.draw(batch, "" + (int)game.robot.TR(4, game.robot.RHid, game.robot.RHl,1), RS((int)(((float)width-195.0)*wpw)), RS((int)(412.5*hph)));
-            alert_font.draw(batch, "" + (int)game.robot.TR(4, game.robot.RHid, game.robot.RHl,2), RS((int)(((float)width-455.0)*wpw)), RS((int)(412.5*hph)));
+            if(number_1>0&&number_2>0){
+                drawer.draw(state_back, RS(width - 545), RS(380), RS(250), RS(40));
+                drawer.draw(state_damage, RS(width - 535), RS(380), RS((int) (250.0f * game.robot.TR(4, game.robot.RHid, game.robot.RHl, 2) / 27.5f)), RS(40));
+                drawer.draw(state_frame, RS(width - 545), RS(380), RS(250), RS(40));
+                drawer.draw(damage, RS(width - 565), RS(355), RS(100), RS(100));
+                drawer.draw(state_back, RS(width - 285), RS(380), RS(250), RS(40));
+                drawer.draw(state_health, RS(width - 275), RS(380), RS((int) (250.0f * game.robot.TR(4, game.robot.RHid, game.robot.RHl, 1) / 112.5f)), RS(40));
+                drawer.draw(state_frame, RS(width - 285), RS(380), RS(250), RS(40));
+                drawer.draw(health, RS(width - 295), RS(355), RS(100), RS(100));
+                alert_font.draw(batch, "" + (int) game.robot.TR(4, game.robot.RHid, game.robot.RHl, 1), RS((int) (((float) width - 195.0) * wpw)), RS((int) (412.5 * hph)));
+                alert_font.draw(batch, "" + (int) game.robot.TR(4, game.robot.RHid, game.robot.RHl, 2), RS((int) (((float) width - 455.0) * wpw)), RS((int) (412.5 * hph)));
+            }
+            drawer.draw(left, RS(width - 550 - 120 / 2 * left_scale + 60), RS(470 - 100 / 2 * left_scale + 50), RS(100 * left_scale), RS(120 * left_scale));
+            drawer.draw(right, RS(width - 150 - 120 / 2 * right_scale + 60), RS(470 - 100 / 2 * right_scale + 50), RS(100 * right_scale), RS(120 * right_scale));
             /*
             item_font.draw(batch, "Бластер Ур. " + game.robot.RHid, RS((int)(((float)width-540.0)*wpw)), RS((int)(780.0*hph)));
             item_font.draw(batch, game.robot.RHid*5 +"", RS((int)(((float)width-500.0)*wpw)), RS((int)(570.0*hph)));
@@ -752,7 +795,7 @@ public class WorkMenu extends Openable implements Screen {
             item_font.draw(batch, (game.robot.RHid)*2+"", RS((int)(((float)width-500.0)*wpw)), RS((int)(400.0*hph)));*/
         }
         DrawRobot(drawer, (int)x, y, scale, rothand, rothead, rotleg, rot, false, false, false, 90);
-        DrawSelect(drawer, (int)x, y, scale, rothand, rothead, rotleg, rot, which_select_will);
+        DrawSelect(drawer, (int)x, y, scale, rothand, rothead, rotleg, rot, which_select_will, actual_model);
         if(cu){
             drawer.draw(leg_cu, (int)x-(int)(50*scale), height-y_cu, 400, 400);
             if(y_cu>=300){
@@ -797,7 +840,38 @@ public class WorkMenu extends Openable implements Screen {
         CheckDoor(drawer);
         batch.end();
         if(closed){
+            if(!actual_model) {
+                game.robot.Hid = LHid;
+                game.robot.Bid = LBid;
+                game.robot.RHid = LRHid;
+                game.robot.LHid = LLHid;
+                game.robot.RLid = LRLid;
+                game.robot.LLid = LLLid;
+
+                game.robot.Hid = LHid;
+                game.robot.Bid = LBid;
+                game.robot.RHid = LRHid;
+                game.robot.LHid = LLHid;
+                game.robot.RLid = LRLid;
+                game.robot.LLid = LLLid;
+                game.robot.UpdateRobotTexture(which_select);
+                actual_model = true;
+            }
             game.setGameMenu();
+        }
+        if(need_to_upgrade_power_1){
+            power_1.dispose();
+            power_1 = new Texture("Button/button_1_" + game.robot.Hid + "_1.png");
+            need_to_upgrade_power_1 = false;
+        }
+        if(need_to_upgrade_power_2){
+            power_2.dispose();
+            power_2 = new Texture("Button/button_2_" + game.robot.Bid + "_1.png");
+            need_to_upgrade_power_2 = false;
+        }
+        if(need_to_update_detail){
+            game.robot.UpdateRobotTexture(which_select);
+            need_to_update_detail = false;
         }
     }
     public void NextRightPart(int select){
@@ -805,30 +879,40 @@ public class WorkMenu extends Openable implements Screen {
             if(game.robot.Hid < 5){
                 game.robot.Hid++;
                 game.robot.Hl = game.robot.BHead[game.robot.Hid-1];
+                power_1.dispose();
+                power_1 = new Texture("Button/button_1_" + game.robot.Hid + "_1.png");
                 max_level = game.robot.Hl >= 5;
                 created_level = game.robot.BHead[game.robot.Hid-1] > 0;
                 type_1 = 3;
                 type_2 = 2;
                 number_1 = 8 * game.robot.Hl;
                 number_2 = 5 * game.robot.Hl;
+                SetNumbersCost(game.robot.Hid);
                 can_type_1 = game.robot.microchips >= number_1;
                 can_type_2 = game.robot.lamps >= number_2;
                 upgrade_can = game.robot.microchips >= number_1 && game.robot.lamps >= number_2;
+                CanUpgrade();
+                CheckActual(which_select);
             }
         }
         if(select == 2){
             if(game.robot.Bid < 5){
                 game.robot.Bid++;
                 game.robot.Bl = game.robot.BBody[game.robot.Bid-1];
+                power_2.dispose();
+                power_2 = new Texture("Button/button_2_" + game.robot.Bid + "_1.png");
                 max_level = game.robot.Bl >= 5;
                 created_level = game.robot.BBody[game.robot.Bid-1] > 0;
                 type_1 = 3;
                 type_2 = 1;
                 number_1 = 6 * game.robot.Bl;
                 number_2 = 9 * game.robot.Bl;
+                SetNumbersCost(game.robot.Bid);
                 can_type_1 = game.robot.microchips >= number_1;
                 can_type_2 = game.robot.metal >= number_2;
                 upgrade_can = game.robot.microchips >= number_1 && game.robot.metal >= number_2;
+                CanUpgrade();
+                CheckActual(which_select);
             }
         }
         if(select == 3){
@@ -841,9 +925,12 @@ public class WorkMenu extends Openable implements Screen {
                 type_2 = 1;
                 number_1 = 6 * game.robot.LLl;
                 number_2 = 7 * game.robot.LLl;
+                SetNumbersCost(game.robot.LLid);
                 can_type_1 = game.robot.gears >= number_1;
                 can_type_2 = game.robot.metal >= number_2;
                 upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
+                CanUpgrade();
+                CheckActual(which_select);
             }
         }
         if(select == 4){
@@ -856,9 +943,12 @@ public class WorkMenu extends Openable implements Screen {
                 type_2 = 1;
                 number_1 = 6 * game.robot.RLl;
                 number_2 = 7 * game.robot.RLl;
+                SetNumbersCost(game.robot.RLid);
                 can_type_1 = game.robot.gears >= number_1;
                 can_type_2 = game.robot.metal >= number_2;
                 upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
+                CanUpgrade();
+                CheckActual(which_select);
             }
         }
         if(select == 5){
@@ -871,9 +961,12 @@ public class WorkMenu extends Openable implements Screen {
                 type_2 = 2;
                 number_1 = 6 * game.robot.LHl;
                 number_2 = 8 * game.robot.LHl;
+                SetNumbersCost(game.robot.LHid);
                 can_type_1 = game.robot.gears >= number_1;
                 can_type_2 = game.robot.lamps >= number_2;
                 upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
+                CanUpgrade();
+                CheckActual(which_select);
             }
         }
         if(select == 6){
@@ -886,11 +979,15 @@ public class WorkMenu extends Openable implements Screen {
                 type_2 = 2;
                 number_1 = 6 * game.robot.RHl;
                 number_2 = 8 * game.robot.RHl;
+                SetNumbersCost(game.robot.RHid);
                 can_type_1 = game.robot.gears >= number_1;
                 can_type_2 = game.robot.lamps >= number_2;
                 upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
+                CanUpgrade();
+                CheckActual(which_select);
             }
         }
+
         game.robot.UpdateRobotTexture(select);
 
     }
@@ -899,30 +996,40 @@ public class WorkMenu extends Openable implements Screen {
             if(game.robot.Hid > 1){
                 game.robot.Hid--;
                 game.robot.Hl = game.robot.BHead[game.robot.Hid-1];
+                power_1.dispose();
+                power_1 = new Texture("Button/button_1_" + game.robot.Hid + "_1.png");
                 max_level = game.robot.Hl >= 5;
                 created_level = game.robot.BHead[game.robot.Hid-1] > 0;
                 type_1 = 3;
                 type_2 = 2;
                 number_1 = 8 * game.robot.Hl;
                 number_2 = 5 * game.robot.Hl;
+                SetNumbersCost(game.robot.Hid);
                 can_type_1 = game.robot.microchips >= number_1;
                 can_type_2 = game.robot.lamps >= number_2;
                 upgrade_can = game.robot.microchips >= number_1 && game.robot.lamps >= number_2;
+                CanUpgrade();
+                CheckActual(which_select);
             }
         }
         if(select == 2){
             if(game.robot.Bid > 1){
                 game.robot.Bid--;
                 game.robot.Bl = game.robot.BBody[game.robot.Bid-1];
+                power_2.dispose();
+                power_2 = new Texture("Button/button_2_" + game.robot.Bid + "_1.png");
                 max_level = game.robot.Bl >= 5;
                 created_level = game.robot.BBody[game.robot.Bid-1] > 0;
                 type_1 = 3;
                 type_2 = 1;
                 number_1 = 6 * game.robot.Bl;
                 number_2 = 9 * game.robot.Bl;
+                SetNumbersCost(game.robot.Bid);
                 can_type_1 = game.robot.microchips >= number_1;
                 can_type_2 = game.robot.metal >= number_2;
                 upgrade_can = game.robot.microchips >= number_1 && game.robot.metal >= number_2;
+                CanUpgrade();
+                CheckActual(which_select);
             }
         }
         if(select == 3){
@@ -935,9 +1042,12 @@ public class WorkMenu extends Openable implements Screen {
                 type_2 = 1;
                 number_1 = 6 * game.robot.LLl;
                 number_2 = 7 * game.robot.LLl;
+                SetNumbersCost(game.robot.LLid);
                 can_type_1 = game.robot.gears >= number_1;
                 can_type_2 = game.robot.metal >= number_2;
                 upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
+                CanUpgrade();
+                CheckActual(which_select);
             }
         }
         if(select == 4){
@@ -950,9 +1060,12 @@ public class WorkMenu extends Openable implements Screen {
                 type_2 = 1;
                 number_1 = 6 * game.robot.RLl;
                 number_2 = 7 * game.robot.RLl;
+                SetNumbersCost(game.robot.RLid);
                 can_type_1 = game.robot.gears >= number_1;
                 can_type_2 = game.robot.metal >= number_2;
                 upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
+                CanUpgrade();
+                CheckActual(which_select);
             }
         }
         if(select == 5){
@@ -965,9 +1078,12 @@ public class WorkMenu extends Openable implements Screen {
                 type_2 = 2;
                 number_1 = 6 * game.robot.LHl;
                 number_2 = 8 * game.robot.LHl;
+                SetNumbersCost(game.robot.LHid);
                 can_type_1 = game.robot.gears >= number_1;
                 can_type_2 = game.robot.lamps >= number_2;
                 upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
+                CanUpgrade();
+                CheckActual(which_select);
             }
         }
         if(select == 6){
@@ -980,49 +1096,148 @@ public class WorkMenu extends Openable implements Screen {
                 type_2 = 2;
                 number_1 = 6 * game.robot.RHl;
                 number_2 = 8 * game.robot.RHl;
+                SetNumbersCost(game.robot.RHid);
                 can_type_1 = game.robot.gears >= number_1;
                 can_type_2 = game.robot.lamps >= number_2;
                 upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
+                CanUpgrade();
+                CheckActual(which_select);
             }
         }
                 game.robot.UpdateRobotTexture(select);
 
     }
+    public void CheckActual( int selected){
+       if(selected == 1){
+           if(game.robot.BHead[game.robot.Hid-1] > 0){
+               actual_model = true;
+               LHid = game.robot.Hid;
+               LHl = game.robot.Hl;
+           }else{
+               actual_model = false;
+           }
+       }
+        if(selected == 2){
+            if(game.robot.BBody[game.robot.Bid-1] > 0){
+                actual_model = true;
+                LBid = game.robot.Bid;
+                LBl = game.robot.Bl;
+            }else{
+                actual_model = false;
+            }
+        }
+        if(selected == 6){
+            if(game.robot.BHand[game.robot.RHid-1] > 0){
+                actual_model = true;
+                LRHid = game.robot.RHid;
+                LRHl = game.robot.RHl;
+            }else{
+                actual_model = false;
+            }
+        }
+        if(selected == 5){
+            if(game.robot.BHand[game.robot.LHid-1] > 0){
+                actual_model = true;
+                LLHid = game.robot.LHid;
+                LLHl = game.robot.LHl;
+            }else{
+                actual_model = false;
+            }
+        }
+        if(selected == 4){
+            if(game.robot.BLeg[game.robot.RLid-1] > 0){
+                actual_model = true;
+                LRLid = game.robot.RLid;
+                LRLl = game.robot.RLl;
+            }else{
+                actual_model = false;
+            }
+        }
+        if(selected == 3){
+            if(game.robot.BLeg[game.robot.LLid-1] > 0){
+                actual_model = true;
+                LLLid = game.robot.LLid;
+                LLLl = game.robot.LLl;
+            }else{
+                actual_model = false;
+            }
+        }
+    }
+    public void SetNumbersCost(int m){//model
 
+        if(number_1==0){
+            number_1=m*5;
+        }
+        if(number_2==0){
+            number_2=m*5;
+        }
+    }
+    public void CanUpgrade(){
+        if(number_1<0||number_2<0){
+            upgrade_can = false;
+        }
+    }
     public void Swap(){
         if(can_swap) {
             can_swap = false;
             anime = new Thread() {
                 @Override
                 public void run() {
+                    if(!actual_model) {
+                        game.robot.Hid = LHid;
+                        game.robot.Bid = LBid;
+                        game.robot.RHid = LRHid;
+                        game.robot.LHid = LLHid;
+                        game.robot.RLid = LRLid;
+                        game.robot.LLid = LLLid;
+
+                        game.robot.Hl = LHl;
+                        game.robot.Bl = LBl;
+                        game.robot.RHl = LRHl;
+                        game.robot.LHl = LLHl;
+                        game.robot.RLl = LRLl;
+                        game.robot.LLl = LLLl;
+                        need_to_update_detail = true;
+                        actual_model = true;
+                    }
                     while (scale_frame > 0.1) {
                         scale_frame -= 0.01;
                         Sleep(3);
                     }
+
                     which_select = which_select_will;
+
                     if (which_select == 1) {
                         game.robot.Hl = game.robot.BHead[game.robot.Hid-1];
                         max_level = game.robot.Hl >= 5;
+                        need_to_upgrade_power_1 = true;
                         created_level = game.robot.BHead[game.robot.Hid-1] > 0;
                         type_1 = 3;
                         type_2 = 2;
                         number_1 = 8 * game.robot.Hl;
                         number_2 = 5 * game.robot.Hl;
+                        SetNumbersCost(game.robot.Hid);
                         can_type_1 = game.robot.microchips >= number_1;
                         can_type_2 = game.robot.lamps >= number_2;
                         upgrade_can = game.robot.microchips >= number_1 && game.robot.lamps >= number_2;
+                        CanUpgrade();
+                        CheckActual(which_select);
                     }
                     if (which_select == 2) {
                         game.robot.Bl = game.robot.BBody[game.robot.Bid-1];
                         max_level = game.robot.Bl >= 5;
+                        need_to_upgrade_power_2 = true;
                         created_level = game.robot.BBody[game.robot.Bid-1] > 0;
                         type_1 = 3;
                         type_2 = 1;
                         number_1 = 6 * game.robot.Bl;
                         number_2 = 9 * game.robot.Bl;
+                        SetNumbersCost(game.robot.Hid);
                         can_type_1 = game.robot.microchips >= number_1;
                         can_type_2 = game.robot.metal >= number_2;
                         upgrade_can = game.robot.microchips >= number_1 && game.robot.metal >= number_2;
+                        CanUpgrade();
+                        CheckActual(which_select);
                     }
                     if (which_select == 3) {
                         game.robot.LLl = game.robot.BLeg[game.robot.LLid-1];
@@ -1032,9 +1247,12 @@ public class WorkMenu extends Openable implements Screen {
                         type_2 = 1;
                         number_1 = 6 * game.robot.LLl;
                         number_2 = 7 * game.robot.LLl;
+                        SetNumbersCost(game.robot.Hid);
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.metal >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
+                        CanUpgrade();
+                        CheckActual(which_select);
                     }
                     if (which_select == 4) {
                         game.robot.RLl = game.robot.BLeg[game.robot.RLid-1];
@@ -1044,9 +1262,12 @@ public class WorkMenu extends Openable implements Screen {
                         type_2 = 1;
                         number_1 = 6 * game.robot.RLl;
                         number_2 = 7 * game.robot.RLl;
+                        SetNumbersCost(game.robot.Hid);
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.metal >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.metal >= number_2;
+                        CanUpgrade();
+                        CheckActual(which_select);
                     }
                     if (which_select == 5) {
                         game.robot.LHl = game.robot.BHand[game.robot.LHid-1];
@@ -1056,9 +1277,12 @@ public class WorkMenu extends Openable implements Screen {
                         type_2 = 2;
                         number_1 = 6 * game.robot.LHl;
                         number_2 = 8 * game.robot.LHl;
+                        SetNumbersCost(game.robot.Hid);
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.lamps >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
+                        CanUpgrade();
+                        CheckActual(which_select);
                     }
                     if (which_select == 6) {
                         game.robot.RHl = game.robot.BHand[game.robot.RHid-1];
@@ -1068,9 +1292,12 @@ public class WorkMenu extends Openable implements Screen {
                         type_2 = 2;
                         number_1 = 6 * game.robot.RHl;
                         number_2 = 8 * game.robot.RHl;
+                        SetNumbersCost(game.robot.Hid);
                         can_type_1 = game.robot.gears >= number_1;
                         can_type_2 = game.robot.lamps >= number_2;
                         upgrade_can = game.robot.gears >= number_1 && game.robot.lamps >= number_2;
+                        CanUpgrade();
+                        CheckActual(which_select);
                     }
                     while (scale_frame < 1.0) {
                         scale_frame += 0.01;
@@ -1345,6 +1572,7 @@ public class WorkMenu extends Openable implements Screen {
             if(type_2 == 4){
                 game.robot.gears -= number_2;
             }
+            actual_model = true;
             check_model();
         }
     }
@@ -1414,5 +1642,7 @@ public class WorkMenu extends Openable implements Screen {
         level_circle.dispose();
         green_circle.dispose();
         red_circle.dispose();
+        power_1.dispose();
+        power_2.dispose();
     }
     }

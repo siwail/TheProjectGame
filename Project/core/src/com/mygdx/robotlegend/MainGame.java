@@ -32,8 +32,8 @@ public class MainGame extends Game {
         client.getKryo().register(ClientPacket.class);
         safes = Gdx.app.getPreferences("Save");
         click = Gdx.audio.newSound(Gdx.files.internal("Sound/click.wav"));
-        opened = Gdx.audio.newSound(Gdx.files.internal("Sound/opened.wav"));
-        closed = Gdx.audio.newSound(Gdx.files.internal("Sound/closed.wav"));
+        opened = Gdx.audio.newSound(Gdx.files.internal("Sound/took_1.wav"));
+        closed = Gdx.audio.newSound(Gdx.files.internal("Sound/took_3.wav"));
         random = new Random();
         robot.SetFirstChanges();
         robot.UpdateTextures();

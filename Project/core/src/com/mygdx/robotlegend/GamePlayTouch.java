@@ -1,4 +1,5 @@
 package com.mygdx.robotlegend;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 public class GamePlayTouch implements InputProcessor {
     com.mygdx.robotlegend.MainGame game;
@@ -31,11 +32,16 @@ public class GamePlayTouch implements InputProcessor {
         if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.jump_touch = true;
         }
+        if(screenX >= SX(gamePlay.width-600*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-450*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-150*gamePlay.scale_inteface)){
+            gamePlay.saw_touch = true;
+        }
         if(screenX >= SX(gamePlay.width-600*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-450*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.jetpack_touch = true;
         }
-
-        if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height+150)*gamePlay.scale_inteface){
+        if(screenX >= SX(gamePlay.width-800*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-650*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
+            gamePlay.circle_touch = true;
+        }
+        if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-150*gamePlay.scale_inteface)){
             gamePlay.ball_touch = true;
         }
         return false;
@@ -49,6 +55,8 @@ public class GamePlayTouch implements InputProcessor {
         gamePlay.jump_touch = false;
         gamePlay.ball_touch = false;
         gamePlay.jetpack_touch = false;
+        gamePlay.saw_touch = false;
+        gamePlay.circle_touch = false;
         if (!gamePlay.robotboom && gamePlay.win != 1){
             if (screenX >= SX(gamePlay.width - 275 * gamePlay.scale_inteface) && screenX <= SX(gamePlay.width - 25 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 250 * gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)) {
                 gamePlay.Fire();
@@ -65,10 +73,17 @@ public class GamePlayTouch implements InputProcessor {
         if (screenX >= SX(gamePlay.width - 400 * gamePlay.scale_inteface) && screenX <= SX(gamePlay.width - 250 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 150 * gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)) {
             gamePlay.Jump();
         }
+        if(screenX >= SX(gamePlay.width-600*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-450*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-150*gamePlay.scale_inteface)){
+            gamePlay.Saw();
+        }
         if(screenX >= SX(gamePlay.width-600*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-450*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.Jetpack();
         }
-        if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height+150)*gamePlay.scale_inteface){
+        if(screenX >= SX(gamePlay.width-800*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-650*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
+            gamePlay.Circle();
+        }
+
+        if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-150*gamePlay.scale_inteface)){
             gamePlay.Ball();
         }
     }
