@@ -30,19 +30,41 @@ public class GamePlayTouch implements InputProcessor {
             gamePlay.redir_touch = true;
         }
         if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
-            gamePlay.jump_touch = true;
-        }
-        if(screenX >= SX(gamePlay.width-600*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-450*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-150*gamePlay.scale_inteface)){
-            gamePlay.saw_touch = true;
-        }
-        if(screenX >= SX(gamePlay.width-600*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-450*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
-            gamePlay.jetpack_touch = true;
-        }
-        if(screenX >= SX(gamePlay.width-800*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-650*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
-            gamePlay.circle_touch = true;
+            if(game.robot.power_small == 1) {
+                gamePlay.saw_touch = true;
+            }
+            if(game.robot.power_small == 2) {
+                gamePlay.jump_touch = true;
+            }
+            if(game.robot.power_small == 3) {
+                gamePlay.jump_touch = true;
+            }
+            if(game.robot.power_small == 4) {
+                gamePlay.jump_touch = true;
+            }
+            if(game.robot.power_small == 5) {
+                gamePlay.jump_touch = true;
+            }
+
         }
         if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-150*gamePlay.scale_inteface)){
-            gamePlay.ball_touch = true;
+            if(game.robot.power_large == 1) {
+                gamePlay.ball_touch = true;
+            }
+            if(game.robot.power_large == 2) {
+                gamePlay.jetpack_touch = true;
+            }
+            if(game.robot.power_large == 3) {
+                gamePlay.jetpack_touch = true;
+            }
+            if(game.robot.power_large == 4) {
+                gamePlay.circle_touch = true;
+            }
+            if(game.robot.power_large == 5) {
+                gamePlay.ball_touch = true;
+            }
+
+
         }
         return false;
     }
@@ -71,20 +93,10 @@ public class GamePlayTouch implements InputProcessor {
             gamePlay.Redir();
         }
         if (screenX >= SX(gamePlay.width - 400 * gamePlay.scale_inteface) && screenX <= SX(gamePlay.width - 250 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 150 * gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)) {
-            gamePlay.Jump();
+            gamePlay.SmallPower();
         }
-        if(screenX >= SX(gamePlay.width-600*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-450*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-150*gamePlay.scale_inteface)){
-            gamePlay.Saw();
-        }
-        if(screenX >= SX(gamePlay.width-600*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-450*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
-            gamePlay.Jetpack();
-        }
-        if(screenX >= SX(gamePlay.width-800*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-650*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
-            gamePlay.Circle();
-        }
-
         if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-150*gamePlay.scale_inteface)){
-            gamePlay.Ball();
+            gamePlay.LargePower();
         }
     }
         return false;

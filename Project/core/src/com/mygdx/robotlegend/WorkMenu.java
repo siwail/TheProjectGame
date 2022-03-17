@@ -841,12 +841,12 @@ public class WorkMenu extends Openable implements Screen {
         batch.end();
         if(closed){
             if(!actual_model) {
-                game.robot.Hid = LHid;
-                game.robot.Bid = LBid;
-                game.robot.RHid = LRHid;
-                game.robot.LHid = LLHid;
-                game.robot.RLid = LRLid;
-                game.robot.LLid = LLLid;
+                game.robot.Hl = LHl;
+                game.robot.Bl = LBl;
+                game.robot.RHl = LRHl;
+                game.robot.LHl = LLHl;
+                game.robot.RLl = LRLl;
+                game.robot.LLl = LLLl;
 
                 game.robot.Hid = LHid;
                 game.robot.Bid = LBid;

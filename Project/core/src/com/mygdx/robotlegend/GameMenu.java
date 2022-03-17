@@ -63,6 +63,10 @@ public class GameMenu extends Openable implements Screen{
     Texture bluefire;
     Texture box_item_1;
     Texture box_item_2;
+    Texture Frontcolor;
+    Texture Frontground;
+    Texture bonus_1;
+    Texture bonus_2;
     Texture[] box = new Texture[9];
     Texture[] tutorial_icon = new Texture[4];
     Texture[] tutorial_frame_color = new Texture[12];
@@ -73,6 +77,8 @@ public class GameMenu extends Openable implements Screen{
     TextureRegion location_2_space;
     TextureRegion location_2_space_2;
     Sound[] took = new Sound[4];
+
+
 
     int button_exit_state = 0;
     int button_fight_state = 0;
@@ -109,10 +115,10 @@ public class GameMenu extends Openable implements Screen{
     float rotation_leg = 0.0f;
     float space_rotate = 0.0f;
     float planet_rotate = 0.0f;
-    float location_2_planet_rotate = 0.0f;
-    float location_2_space_rotate = 0.0f;
-    float location_2_space_2_rotate = 0.0f;
-    float location_2_space_3_rotate = 0.0f;
+    float location_2_planet_rotate = 30.0f;
+    float location_2_space_rotate = 60.0f;
+    float location_2_space_2_rotate = 45.0f;
+    float location_2_space_3_rotate = 110.0f;
     float tutorial_circle_rotate = 0.0f;
     boolean box_is_showing_items = false;
     boolean box_bluefire = false;
@@ -179,6 +185,7 @@ public class GameMenu extends Openable implements Screen{
     public GameMenu(MainGame game) { this.game = game; }
     @Override
     public void show() {
+
         game.MusicSwap(2);
         game.robot.Safe();
         game.robot.RandomEnemy();
@@ -204,6 +211,50 @@ public class GameMenu extends Openable implements Screen{
         tutorial_frame_color[10] = new Texture("Tutorial/frame_touch_4_2.png");
         tutorial_frame_color[11] = new Texture("Tutorial/frame_touch_4_3.png");
         last_level = game.robot.level;
+        bonus_1 = new Texture("Interface/health_icon.png");
+        bonus_2 = new Texture("Interface/health_icon.png");
+        int bonus_1_change = 0;
+        if(game.robot.Bhealth != 0) {
+            bonus_1 = new Texture("Interface/health_icon.png");
+            bonus_1_change = 1;
+        }
+        if(game.robot.Bmove_speed != 0 && bonus_1_change == 0) {
+            bonus_1 = new Texture("Interface/speed_move_icon.png");
+            bonus_1_change = 2;
+        }
+        if(game.robot.Bdamage != 0 && bonus_1_change == 0) {
+            bonus_1 = new Texture("Interface/damage_icon.png");
+            bonus_1_change = 3;
+        }
+        if(game.robot.Benergy_speed != 0 && bonus_1_change == 0) {
+            bonus_1 = new Texture("Interface/energy_icon.png");
+            bonus_1_change = 4;
+        }
+        if(game.robot.Battack_speed != 0 && bonus_1_change == 0) {
+            bonus_1 = new Texture("Interface/speed_attack_icon.png");
+            bonus_1_change = 5;
+        }
+
+        if(game.robot.Bhealth != 0 && bonus_1_change!=1) {
+            bonus_2 = new Texture("Interface/health_icon.png");
+
+        }
+        if(game.robot.Bmove_speed != 0 && bonus_1_change!=2) {
+            bonus_2 = new Texture("Interface/speed_move_icon.png");
+
+        }
+        if(game.robot.Bdamage != 0 && bonus_1_change!=3) {
+            bonus_2 = new Texture("Interface/damage_icon.png");
+
+        }
+        if(game.robot.Benergy_speed != 0 && bonus_1_change!=4) {
+            bonus_2 = new Texture("Interface/energy_icon.png");
+
+        }
+        if(game.robot.Battack_speed != 0 && bonus_1_change!=5) {
+            bonus_2 = new Texture("Interface/speed_attack_icon.png");
+
+        }
         level_circle =  new Texture("Object/level_circle.png");
         level_back =  new Texture("Object/level_backline.png");
         level_front =  new Texture("Object/level_frontline.png");
@@ -216,13 +267,15 @@ public class GameMenu extends Openable implements Screen{
         space =  new Texture("Location/background_2.png");
         space2 =  new Texture("Location/background_2_front.png");
         location_2_space = new TextureRegion(space, 1280, 720);
-        location_2_space_2 = new TextureRegion(space, 1280, 720);
+        location_2_space_2 = new TextureRegion(space2, 1280, 720);
         frame_green_1 =  new Texture("Object/frame_2.png");
         frame_green_2 =  new Texture("Object/frame_1.png");
         button_ship = new Texture("Button/button_ship.png");
         tutorials = new Texture("Interface/back.png");
         ring = new Texture("Object/ring" + game.robot.color + ".png");
         throne = new Texture("Object/stand.png");
+        Frontcolor = new Texture("Interface/frontground_color_" + game.robot.level + ".png");
+        Frontground = new Texture("Interface/frontground.png");
         smoke[0] = new Texture("Object/smoke1.png");
         smoke[1] = new Texture("Object/smoke2.png");
         smoke[2] = new Texture("Object/smoke3.png");
@@ -255,6 +308,7 @@ public class GameMenu extends Openable implements Screen{
         }else{
             game.robot.Eskin = 0;
         }
+
         button_left_part = new Texture("Button/button_left_part.png");
         button_right_part = new Texture("Button/button_right_part.png");
         button_center_part = new Texture("Button/button_center_part.png");
@@ -284,9 +338,32 @@ public class GameMenu extends Openable implements Screen{
         Start();
         box_x = width-625;
         robot_x = width-400;
+
+
+        //ВРЕМЕННО{
+        game.robot.Epower_large = game.random.nextInt(5)+1;
+        game.robot.Epower_small = game.random.nextInt(5)+1;
+        game.robot.power_large = game.random.nextInt(5)+1;
+        game.robot.power_small = game.random.nextInt(5)+1;
+        if(game.robot.power_large == 2){
+            game.robot.jetpack = 2;
+        }
+        if(game.robot.power_large == 3){
+            game.robot.jetpack = 1;
+        }
+        if(game.robot.Epower_large == 2){
+            game.robot.Ejetpack = 2;
+        }
+        if(game.robot.Epower_large == 3){
+            game.robot.Ejetpack = 1;
+        }
+        //ВРЕМЕННО}
+
+
         setRandomAnime();
         game.robot.UpdateSkins();
         batch = new SpriteBatch();
+
        TutorialAnime = new Thread(){
             @Override
             public void run(){
@@ -570,9 +647,10 @@ public class GameMenu extends Openable implements Screen{
         Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
         batch.begin();
         if(game.robot.level == 2){
-            drawer.draw(location_2_space, -width/1.5f,-height/1.5f, width, height, width*3.0f, height*3.0f, 1, 1,  location_2_space_rotate, true);
-            drawer.draw(location_2_space_2, -width/1.5f,-height/1.5f, width, height, width*3.0f, height*3.0f, 1, 1,  location_2_space_2_rotate, true);
-            drawer.draw(location_2_space_2, -width/1.5f,-height/1.5f, width, height, width*3.0f, height*3.0f, 1, 1,  location_2_space_3_rotate, true);
+            drawer.draw(back_space, 0,0, width, height);
+            drawer.draw(location_2_space, -width/2.0f,-height/2.0f, width, height, width*2.0f, height*2.0f, 1, 1,  location_2_space_rotate, true);
+            drawer.draw(location_2_space_2, -width/2.0f,-height/2.0f, width, height, width*2.0f, height*2.0f, 1, 1,  location_2_space_2_rotate, true);
+            drawer.draw(location_2_space_2, -width/2.0f,-height/2.0f, width, height, width*2.0f, height*2.0f, 1, 1,  location_2_space_3_rotate, true);
             drawer.draw(location_2_planet, width/2, height/2-300, 400, 400, 800, 800, 1, 1,  location_2_planet_rotate, true);
         }
         drawer.draw(camp, 0, 0, width, height);
@@ -618,7 +696,16 @@ public class GameMenu extends Openable implements Screen{
         drawer.draw(ring, 250+(200-ring_1_xy)/2, 230+(int)((double)(200-ring_1_xy)*1.25), ring_1_xy, ring_1_xy);
         drawer.draw(ring, 250+(200-ring_2_xy)/2, 230+(int)((double)(200-ring_2_xy)*1.25), ring_2_xy, ring_2_xy);
         drawer.draw(game.robot.puck, 250+(200-box_size)/2, 385+skin_y+(200-box_size)/2, box_size, box_size);
+        if(game.robot.Bhealth !=0 || game.robot.Bdamage !=0 || game.robot.Bmove_speed !=0 || game.robot.Battack_speed !=0 || game.robot.Benergy_speed !=0 ) {
+            drawer.draw(bonus_1, 215 + (200 - box_size) / 2, 405 + skin_y + (200 - box_size) / 2, 50, 50);
+            drawer.draw(bonus_2, 238 + (200 + box_size) / 2, 405 + skin_y + (200 - box_size) / 2, 50, 50);
+        }
         drawer.draw(throne, 200, 245, 300, 300);
+
+
+
+        drawer.draw(Frontcolor, 0, 0, width, height);
+        drawer.draw(Frontground, 0, 0, width, height);
         if(!right_touched) {
             drawer.draw(button_right, 450, 435 + skin_y / 2, 150, 150);
         }else{
@@ -654,6 +741,8 @@ public class GameMenu extends Openable implements Screen{
             birds[1].dispose();
             birds[2].dispose();
             birds[3].dispose();
+            Frontcolor.dispose();
+            Frontcolor = new Texture("Interface/frontground_color_" + game.robot.level + ".png");
             if(game.robot.level == 3 || game.robot.level == 4 ) {
                 birds[0] = new Texture("Object/bird_1.png");
                 birds[1] = new Texture("Object/bird_2.png");
@@ -701,8 +790,10 @@ public class GameMenu extends Openable implements Screen{
             TextureRegion space_1 = new TextureRegion(space, 960, 540);
             TextureRegion space_2 = new TextureRegion(space2, 960, 540);
             drawer.draw(back_space, 0, 0, width, height);
-            drawer.draw(space_1, -width/1.5f, -height/1.5f, width, height, width*1.5f, height*1.5f, 1.0f, 1.0f, -space_rotate);
-            drawer.draw(space_2, -width/1.5f, -height/1.5f, width, height, width*1.5f, height*1.5f, 1.0f, 1.0f, space_rotate);
+            drawer.draw(space_1, -width/3f, -height/3f, width*0.75f, height*0.75f, width*1.5f, height*1.5f, 1.0f, 1.0f, -space_rotate);
+            drawer.draw(space_2, -width/3f, -height/3f, width*0.75f, height*0.75f, width*1.5f, height*1.5f, 1.0f, 1.0f, -space_rotate*1);
+            drawer.draw(space_2, -width/3f, -height/3f, width*0.75f, height*0.75f, width*1.5f, height*1.5f, 1.0f, 1.0f, space_rotate);
+            drawer.draw(space_2, -width/3f, -height/3f, width*0.75f, height*0.75f, width*1.5f, height*1.5f, 1.0f, 1.0f, space_rotate*2);
             drawer.draw(frame_green_1, 100-prob_y, height-450, 300, 300);
             drawer.draw(planet_icon, 50-prob_y, height-150, 150, 150);
             drawer.draw(grass, 125-prob_y, height-430, 100, 100);
@@ -1015,17 +1106,15 @@ public class GameMenu extends Openable implements Screen{
                     int dir_scale = 1;
                     while (box_dark_back) {
                         if(!box_is_opening) {
+                            box_x = (int) (width / 2 - 330.0f) + (int) (2.2f * 300 - box_scale * 300) / 2;
+                            box_y = 130 + (int) (2.2f * 300 - box_scale * 300) / 2;
                             if (dir_scale == 1) {
-                                box_x = (int) (width / 2 - 330.0f) + (int) (2.2f * 300 - box_scale * 300) / 2;
-                                box_y = 130 + (int) (2.2f * 300 - box_scale * 300) / 2;
                                 box_scale += 0.005f;
 
                                 if (box_scale >= 2.2f) {
                                     dir_scale = 0;
                                 }
                             } else {
-                                box_x = (int) (width / 2 - 330.0f) + (int) (2.2f * 300 - box_scale * 300) / 2;
-                                box_y = 130 + (int) (2.2f * 300 - box_scale * 300) / 2;
                                 box_scale -= 0.005f;
 
                                 if (box_scale <= 2.0f) {
@@ -1123,7 +1212,7 @@ public class GameMenu extends Openable implements Screen{
                 public void run() {
                     Sleep(100);
                     while(tv_size<width*2){
-                        tv_size+=10;
+                        tv_size+=15;
                         planet_rotate+=0.5f;
                         if(planet_rotate>=360.0f){
                             planet_rotate = 0.0f;
@@ -1133,7 +1222,7 @@ public class GameMenu extends Openable implements Screen{
                     search_planet = false;
                     game.MusicSwap(2);
                     while(tv_size>10){
-                        tv_size-=10;
+                        tv_size-=15;
                         planet_rotate+=0.5f;
                         if(planet_rotate>=360.0f){
                             planet_rotate = 0.0f;
@@ -1160,7 +1249,7 @@ public class GameMenu extends Openable implements Screen{
                 @Override
                 public void run() {
                     while(tv_size<width*2){
-                        tv_size+=10;
+                        tv_size+=15;
                         planet_rotate+=0.5f;
                         if(planet_rotate>=360.0f){
                             planet_rotate = 0.0f;
@@ -1169,7 +1258,7 @@ public class GameMenu extends Openable implements Screen{
                     }
                     search_planet = true;
                     while(tv_size>800){
-                            tv_size-=10;
+                            tv_size-=15;
                             planet_rotate+=0.5f;
                         if(planet_rotate>=360.0f){
                             planet_rotate = 0.0f;
@@ -1227,9 +1316,9 @@ public class GameMenu extends Openable implements Screen{
             @Override
             public void run() {
                 while(scan_y<height){
-                    scan_y+=5;
+                    scan_y+=10;
                     if(scan_height>15.0f) {
-                        scan_height -= 6.0f;
+                        scan_height -= 12.0f;
                     }
                     Sleep(5);
                 }
@@ -1297,6 +1386,50 @@ public class GameMenu extends Openable implements Screen{
     }
     public void SetRing(){
         ring.dispose();
+        bonus_1.dispose();
+        bonus_2.dispose();
+        int bonus_1_change = 0;
+        if(game.robot.Bhealth != 0) {
+            bonus_1 = new Texture("Interface/health_icon.png");
+            bonus_1_change = 1;
+        }
+        if(game.robot.Bmove_speed != 0 && bonus_1_change == 0) {
+            bonus_1 = new Texture("Interface/speed_move_icon.png");
+            bonus_1_change = 2;
+        }
+        if(game.robot.Bdamage != 0 && bonus_1_change == 0) {
+            bonus_1 = new Texture("Interface/damage_icon.png");
+            bonus_1_change = 3;
+        }
+        if(game.robot.Benergy_speed != 0 && bonus_1_change == 0) {
+            bonus_1 = new Texture("Interface/energy_icon.png");
+            bonus_1_change = 4;
+        }
+        if(game.robot.Battack_speed != 0 && bonus_1_change == 0) {
+            bonus_1 = new Texture("Interface/speed_attack_icon.png");
+            bonus_1_change = 5;
+        }
+
+        if(game.robot.Bhealth != 0 && bonus_1_change!=1) {
+            bonus_2 = new Texture("Interface/health_icon.png");
+
+        }
+        if(game.robot.Bmove_speed != 0 && bonus_1_change!=2) {
+            bonus_2 = new Texture("Interface/speed_move_icon.png");
+
+        }
+        if(game.robot.Bdamage != 0 && bonus_1_change!=3) {
+            bonus_2 = new Texture("Interface/damage_icon.png");
+
+        }
+        if(game.robot.Benergy_speed != 0 && bonus_1_change!=4) {
+            bonus_2 = new Texture("Interface/energy_icon.png");
+
+        }
+        if(game.robot.Battack_speed != 0 && bonus_1_change!=5) {
+            bonus_2 = new Texture("Interface/speed_attack_icon.png");
+
+        }
         ring = new Texture("Object/ring" + game.robot.color + ".png");
     }
     public void SetTutorial(int touched, boolean back) {
@@ -1549,7 +1682,8 @@ public class GameMenu extends Openable implements Screen{
     }
     @Override
     public void dispose () {
-
+        bonus_1.dispose();
+        bonus_2.dispose();
         machine_4.dispose();
         machine_2.dispose();
         machine_3.dispose();
@@ -1604,6 +1738,8 @@ public class GameMenu extends Openable implements Screen{
         button_fight_icon.dispose();
         button_online_icon.dispose();
         button_tutorial_icon.dispose();
+        Frontcolor.dispose();
+        Frontground.dispose();
         dark.dispose();
         bluefire.dispose();
 
