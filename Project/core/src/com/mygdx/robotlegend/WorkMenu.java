@@ -140,7 +140,7 @@ public class WorkMenu extends Openable implements Screen {
     }
     @Override
     public void show() {
-            game.MusicSwap(4);
+            game.MusicSwap(7);
             game.robot.SetWorkMenuTextures();
             Gdx.input.setInputProcessor(new WorkMenuTouch(game, this));
             Start();

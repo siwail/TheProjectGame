@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class RoboStructure {
     com.mygdx.robotlegend.MainGame game;
     public RoboStructure(MainGame game){ this.game = game; }
+    int max_planet = 5;
     int level = 0;
     int level_win = 1;
     int gears = 0;
@@ -56,10 +57,10 @@ public class RoboStructure {
     boolean exp_process = false;
     boolean box_empty = true;
     boolean draw_interface = true;
-    int[] metal_chance = new int[4];
-    int[] chip_chance = new int[4];
-    int[] gear_chance = new int[4];
-    int[] bulb_chance = new int[4];
+    int[] metal_chance = new int[5];
+    int[] chip_chance = new int[5];
+    int[] gear_chance = new int[5];
+    int[] bulb_chance = new int[5];
     Texture alert;
     Texture[] ToBall_1t = new Texture[5];
     Texture[] ToBall_2t = new Texture[5];
@@ -74,6 +75,10 @@ public class RoboStructure {
     Texture[] Ejetpack_1 = new Texture[4];
     Texture[] Ejetpack_2 = new Texture[4];
     Texture Ejetpack_3;
+
+
+    Texture leg_1t;
+    Texture leg_2t;
 
     Texture Ball_1t;
     Texture Ball_2t;
@@ -153,6 +158,8 @@ public class RoboStructure {
     Texture SLLt;
     Texture SHt;
     Texture SBt;
+    TextureRegion leg_1;
+    TextureRegion leg_2;
     TextureRegion Ball_1;
     TextureRegion Ball_2;
     TextureRegion Ball_1_right;
@@ -719,8 +726,19 @@ public class RoboStructure {
         for(int i=1;i<6; i++){ ToBall_1t[i-1] = new Texture("Robot/ball_1_" + i + ".png");  ToBall_1[i-1] = new TextureRegion(ToBall_1t[i-1], 200, 200);}
         for(int i=1;i<6; i++){ ToBall_2t[i-1] = new Texture("Robot/ball_2_" + i + ".png");  ToBall_2[i-1] = new TextureRegion(ToBall_2t[i-1], 200, 200);}
         for(int i=1;i<6; i++){ ToBall_3t[i-1] = new Texture("Robot/ball_3_" + i + ".png");  ToBall_3[i-1] = new TextureRegion(ToBall_3t[i-1], 200, 200);}
+
+
+        leg_1t = new Texture("Robot/leg_1.png");
+        leg_2t = new Texture("Robot/leg_2.png");
+
+        leg_1 = new TextureRegion(leg_1t, 200, 200);
+        leg_2 = new TextureRegion(leg_2t, 200, 200);
+
         Ball_2t = new Texture("Robot/ball_2.png");
         Ball_1t = new Texture("Robot/ball_1.png");
+
+
+
         Ball_1 = new TextureRegion(Ball_1t, 300, 300);
         Ball_2 = new TextureRegion(Ball_2t, 300, 300);
         Ball_2_rightt = new Texture("Robot/ball_2_right.png");
@@ -897,7 +915,8 @@ public class RoboStructure {
         for(int i=1;i<6; i++) ToBall_1t[i-1].dispose();
         for(int i=1;i<6; i++) ToBall_2t[i-1].dispose();
         for(int i=1;i<6; i++) ToBall_3t[i-1].dispose();
-
+        leg_1t.dispose();
+        leg_2t.dispose();
         Ball_1t.dispose();
         Ball_2t.dispose();
         Ball_1_rightt.dispose();
@@ -968,22 +987,28 @@ public class RoboStructure {
         metal_chance[1] = 20;
         metal_chance[2] = 10;
         metal_chance[3] = 10;
+        metal_chance[4] = 25;
+
 
         chip_chance[0] = 10;
         chip_chance[1] = 60;
         chip_chance[2] = 20;
         chip_chance[3] = 10;
+        chip_chance[4] = 25;
+
 
         gear_chance[0] = 20;
         gear_chance[1] = 10;
         gear_chance[2] = 20;
         gear_chance[3] = 50;
+        gear_chance[4] = 25;
+
 
         bulb_chance[0] = 10;
         bulb_chance[1] = 10;
         bulb_chance[2] = 50;
         bulb_chance[3] = 30;
-
+        bulb_chance[4] = 25;
 
         alert = new Texture("Interface/alert.png");
         contrast = new Texture("Interface/contrast.png");
@@ -1038,7 +1063,7 @@ public class RoboStructure {
         EBullet_left = new Texture("Object/bullet" + Ecolor_left + ".png");
         Bullet_right = new Texture("Object/bullet" + color_right + ".png");
         Bullet_left = new Texture("Object/bullet" + color_left + ".png");
-        level = game.random.nextInt(4)+1;
+        level = game.random.nextInt(max_planet)+1;
     }
     public void AddExperience(int num){
         int added = 0;
@@ -1099,10 +1124,20 @@ public class RoboStructure {
     }
     public void RandomEnemy(){
         int level_arm = level_win;
-        if(level_win>48){
-            level_arm = 48;
-        }
-        while(EHid+EBid+ERHid+ERLid+ELLid+ELHid!=level_arm+6||EHl+EBl+ERHl+ERLl+ELLl+ELHl!=level_arm+6) {
+        EHid = game.random.nextInt(5) + 1;
+        EBid = game.random.nextInt(5) + 1;
+        ERHid = game.random.nextInt(5) + 1; //Правая рука
+        ELHid = game.random.nextInt(5) + 1; //Левая рука
+        ERLid = game.random.nextInt(5) + 1; //Правая нога
+        ELLid = game.random.nextInt(5) + 1; //Левая нога
+
+        EHl = game.random.nextInt(5) + 1;
+        EBl = game.random.nextInt(5) + 1;
+        ERHl = game.random.nextInt(5) + 1; //Правая рука
+        ELHl = game.random.nextInt(5) + 1; //Левая рука
+        ERLl = game.random.nextInt(5) + 1; //Правая нога
+        ELLl = game.random.nextInt(5) + 1; //Левая нога
+        while(EHid+EBid+ERHid+ERLid+ELLid+ELHid>level_arm+6||EHl+EBl+ERHl+ERLl+ELLl+ELHl>level_arm+6) {
 
 
             EHid = game.random.nextInt(5) + 1;

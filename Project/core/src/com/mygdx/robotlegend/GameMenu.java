@@ -301,7 +301,13 @@ public class GameMenu extends Openable implements Screen{
             birds[2] = new Texture("Object/bird_3_3.png");
             birds[3] = new Texture("Object/bird_4_3.png");
         }
-            birds[4] = new Texture("Object/bird_5.png");
+        if(game.robot.level == 5 ) {
+            birds[0] = new Texture("Object/bird_1_5.png");
+            birds[1] = new Texture("Object/bird_2_5.png");
+            birds[2] = new Texture("Object/bird_3_5.png");
+            birds[3] = new Texture("Object/bird_4_5.png");
+        }
+
         if(game.random.nextInt(3) == 0) {
             game.robot.Eskin = game.random.nextInt(game.robot.max_skin);
             game.robot.EUpdateSkin();
@@ -341,6 +347,7 @@ public class GameMenu extends Openable implements Screen{
 
 
         //ВРЕМЕННО{
+        /*
         game.robot.Epower_large = game.random.nextInt(5)+1;
         game.robot.Epower_small = game.random.nextInt(5)+1;
         game.robot.power_large = game.random.nextInt(5)+1;
@@ -356,9 +363,27 @@ public class GameMenu extends Openable implements Screen{
         }
         if(game.robot.Epower_large == 3){
             game.robot.Ejetpack = 1;
-        }
-        //ВРЕМЕННО}
 
+        }*/
+        //game.robot.power_small = 2; //СУПЕР ВРЕМЕННО
+        //ВРЕМЕННО}
+        game.robot.Epower_large = game.robot.EBid;
+        game.robot.Epower_small = game.robot.EHid;
+        game.robot.power_large = game.robot.Bid;
+        game.robot.power_small = game.robot.Hid;
+        if(game.robot.power_large == 2){
+            game.robot.jetpack = 2;
+        }
+        if(game.robot.power_large == 3){
+            game.robot.jetpack = 1;
+        }
+        if(game.robot.Epower_large == 2){
+            game.robot.Ejetpack = 2;
+        }
+        if(game.robot.Epower_large == 3){
+            game.robot.Ejetpack = 1;
+
+        }
 
         setRandomAnime();
         game.robot.UpdateSkins();
@@ -651,7 +676,7 @@ public class GameMenu extends Openable implements Screen{
             drawer.draw(location_2_space, -width/2.0f,-height/2.0f, width, height, width*2.0f, height*2.0f, 1, 1,  location_2_space_rotate, true);
             drawer.draw(location_2_space_2, -width/2.0f,-height/2.0f, width, height, width*2.0f, height*2.0f, 1, 1,  location_2_space_2_rotate, true);
             drawer.draw(location_2_space_2, -width/2.0f,-height/2.0f, width, height, width*2.0f, height*2.0f, 1, 1,  location_2_space_3_rotate, true);
-            drawer.draw(location_2_planet, width/2, height/2-300, 400, 400, 800, 800, 1, 1,  location_2_planet_rotate, true);
+            drawer.draw(location_2_planet, width/2+100, height/2-200, 300, 300, 600, 600, 1, 1,  location_2_planet_rotate, true);
         }
         drawer.draw(camp, 0, 0, width, height);
 
@@ -667,6 +692,9 @@ public class GameMenu extends Openable implements Screen{
                 drawer.draw(bird_region, birdx, birdy-200, 0, 0, 400, 300, 1, 1, (birdy - height / 2) / 15);
             }
             if(game.robot.level == 2 ) {
+                drawer.draw(bird_region, birdx, birdy, 0, 0, 450, 450, 1, 1, (birdy - height / 2) / 30);
+            }
+            if(game.robot.level == 5 ) {
                 drawer.draw(bird_region, birdx, birdy, 0, 0, 450, 450, 1, 1, (birdy - height / 2) / 30);
             }
         }
@@ -761,6 +789,12 @@ public class GameMenu extends Openable implements Screen{
                 birds[2] = new Texture("Object/bird_3_3.png");
                 birds[3] = new Texture("Object/bird_4_3.png");
             }
+            if(game.robot.level == 5 ) {
+                birds[0] = new Texture("Object/bird_1_5.png");
+                birds[1] = new Texture("Object/bird_2_5.png");
+                birds[2] = new Texture("Object/bird_3_5.png");
+                birds[3] = new Texture("Object/bird_4_5.png");
+            }
             camp = new Texture("Interface/camp_" + game.robot.level + ".png");
         }
         DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_exit_icon, button_exit_state, 100, -20, 400);
@@ -782,7 +816,7 @@ public class GameMenu extends Openable implements Screen{
         item_font.draw(batch, Integer.toString(game.robot.microchips), (int)(275.0*wpw), (int)((height-130)*hph));
         item_font.draw(batch, Integer.toString(game.robot.lamps), (int)(405.0*wpw), (int)((height-130)*hph));
 
-        if(game.robot.level != 1 && game.robot.level != 2) {
+        if(game.robot.level != 1 && game.robot.level != 2 && game.robot.level != 5) {
             drawer.draw(smoke[smoke_anime], width / 2 - 125, 400, 175, 175);
         }
 
@@ -862,7 +896,7 @@ public class GameMenu extends Openable implements Screen{
         }
         if(box_dark_back) {
             drawer.draw(dark, 0, 0, width, height);
-            drawer.draw(tutorial_circle, box_x-(box_back_scale*1.5f*width-box_scale*300)/2, box_y-(box_back_scale*1.5f*width-box_scale*300)/2, width/2*1.5f * box_back_scale, width/2*1.5f * box_back_scale,  (1.5f*width * box_back_scale),  (1.5f*width * box_back_scale), 1, 1,  box_back_rotate);
+            drawer.draw(tutorial_circle, box_x-(box_back_scale*0.7f*width-box_scale*300)/2, box_y-(box_back_scale*0.7f*width-box_scale*300)/2, width/2*0.7f * box_back_scale, width/2*0.7f * box_back_scale,  (0.7f*width * box_back_scale),  (0.7f*width * box_back_scale), 1, 1,  box_back_rotate);
             if(!box_is_showing_items) {
                 DrawBox(drawer, this, box_x, box_y, box_scale, box_state);
             }else{
@@ -1008,7 +1042,7 @@ public class GameMenu extends Openable implements Screen{
                         box_bluefire = false;
 
 
-                        while (box_item_scale_1 < 1.0f) {
+                        while (box_item_scale_1 < 0.75f) {
                             box_item_scale_1 += 0.02f;
                             box_item_scale_2 += 0.02f;
                             Sleep(20);
@@ -1018,18 +1052,18 @@ public class GameMenu extends Openable implements Screen{
                         while (box_is_showing_items && box_can_click) {
                             if (dir_scale == 1) {
                                 box_item_scale_1 -= 0.01f;
-                                box_item_scale_2 += 0.005f;
-                                if (box_item_scale_1 <= 0.9f) {
+                                box_item_scale_2 -= 0.012f;
+                                if (box_item_scale_1 <= 0.65f) {
                                     dir_scale = 0;
                                 }
                             } else {
                                 box_item_scale_1 += 0.01f;
-                                box_item_scale_2 -= 0.005f;
-                                if (box_item_scale_1 >= 1.1f) {
+                                box_item_scale_2 += 0.012f;
+                                if (box_item_scale_1 >= 0.85f) {
                                     dir_scale = 1;
                                 }
                             }
-                            Sleep(50);
+                            Sleep(25);
                         }
                     }
                 };
@@ -1175,7 +1209,7 @@ public class GameMenu extends Openable implements Screen{
                     }
 
                     planet_id++;
-                    if(planet_id > game.max_planet){
+                    if(planet_id > game.robot.max_planet){
                         planet_id = 1;
                     }
                     NeedUpdatePlanetPart = true;
@@ -1700,7 +1734,6 @@ public class GameMenu extends Openable implements Screen{
         birds[1].dispose();
         birds[2].dispose();
         birds[3].dispose();
-        birds[4].dispose();
         camp.dispose();
         music.dispose();
         music_stop.dispose();

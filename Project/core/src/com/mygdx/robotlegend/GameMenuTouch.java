@@ -125,10 +125,10 @@ public class GameMenuTouch implements InputProcessor {
                     gameMenu.SetTv();
                 }
                 if (screenX >= SX(gameMenu.width / 2) && screenX <= SX(gameMenu.width / 2 + 300) && screenY >= SY(gameMenu.height - 150) && screenY <= SY(gameMenu.height) && !gameMenu.istutorial) {
-                    if (gameMenu.isOpen) {
+                  /*  if (gameMenu.isOpen) {
                         gameMenu.multiplayer_touch = true;
                         gameMenu.DoorClose(3);
-                    }
+                    }*/
                 }
             } else {
                 if (gameMenu.search_planet) {

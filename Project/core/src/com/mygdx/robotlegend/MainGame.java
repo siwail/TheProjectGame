@@ -21,7 +21,7 @@ public class MainGame extends Game {
     FreeTypeFontGenerator generator;
     RoboStructure robot = new RoboStructure(this);
     boolean autoplay_enabled = false;
-    int max_planet = 4;
+
     @Override
     public void create() {
         generator = new FreeTypeFontGenerator(Gdx.files.internal("Decoration/main_font.ttf"));
