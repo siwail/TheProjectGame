@@ -1,6 +1,8 @@
 package com.mygdx.robotlegend;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.esotericsoftware.minlog.Log;
+
 public class GamePlayTouch implements InputProcessor {
     com.mygdx.robotlegend.MainGame game;
     com.mygdx.robotlegend.GamePlay gamePlay;
@@ -20,7 +22,7 @@ public class GamePlayTouch implements InputProcessor {
         if(screenX >= SX(gamePlay.width-275*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-25*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-250*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.fire_touch = true;
         }
-        if(screenX >= SX(50*gamePlay.scale_inteface) && screenX <= SX(200*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-275*gamePlay.scale_inteface) && screenY < SY(gamePlay.height-125)){
+        /*if(screenX >= SX(50*gamePlay.scale_inteface) && screenX <= SX(200*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-275*gamePlay.scale_inteface) && screenY < SY(gamePlay.height-125)){
             gamePlay.up_touch = true;
         }
         if(screenX >= SX(50*gamePlay.scale_inteface) && screenX <= SX(200*gamePlay.scale_inteface) && screenY > SY(gamePlay.height-125*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
@@ -28,7 +30,12 @@ public class GamePlayTouch implements InputProcessor {
         }
         if(screenX >= SX(200*gamePlay.scale_inteface) && screenX <= SX(350*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             gamePlay.redir_touch = true;
-        }
+        }*/
+
+
+
+
+
         if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-150*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)){
             if(game.robot.power_small == 1) {
                 gamePlay.saw_touch = true;
@@ -79,11 +86,14 @@ public class GamePlayTouch implements InputProcessor {
         gamePlay.jetpack_touch = false;
         gamePlay.saw_touch = false;
         gamePlay.circle_touch = false;
+        if(screenX >= SX(0*gamePlay.scale_inteface) && screenX <= SX(300*gamePlay.scale_inteface) && screenY > SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-0*gamePlay.scale_inteface)){
+            gamePlay.needMove = true;
+        }
         if (!gamePlay.robotboom && gamePlay.win != 1){
             if (screenX >= SX(gamePlay.width - 275 * gamePlay.scale_inteface) && screenX <= SX(gamePlay.width - 25 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 250 * gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)) {
                 gamePlay.Fire();
             }
-        if (screenX >= SX(50 * gamePlay.scale_inteface) && screenX <= SX(200 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 275 * gamePlay.scale_inteface) && screenY < SY(gamePlay.height - 125)) {
+       /* if (screenX >= SX(50 * gamePlay.scale_inteface) && screenX <= SX(200 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 275 * gamePlay.scale_inteface) && screenY < SY(gamePlay.height - 125)) {
             gamePlay.Up();
         }
         if (screenX >= SX(50 * gamePlay.scale_inteface) && screenX <= SX(200 * gamePlay.scale_inteface) && screenY > SY(gamePlay.height - 125 * gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)) {
@@ -91,13 +101,14 @@ public class GamePlayTouch implements InputProcessor {
         }
         if (screenX >= SX(200 * gamePlay.scale_inteface) && screenX <= SX(350 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 150 * gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)) {
             gamePlay.Redir();
-        }
+        }*/
         if (screenX >= SX(gamePlay.width - 400 * gamePlay.scale_inteface) && screenX <= SX(gamePlay.width - 250 * gamePlay.scale_inteface) && screenY >= SY(gamePlay.height - 150 * gamePlay.scale_inteface) && screenY <= SY(gamePlay.height)) {
             gamePlay.SmallPower();
         }
         if(screenX >= SX(gamePlay.width-400*gamePlay.scale_inteface) && screenX <= SX(gamePlay.width-250*gamePlay.scale_inteface) && screenY >= SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-150*gamePlay.scale_inteface)){
             gamePlay.LargePower();
         }
+        gamePlay.move_control = true;
     }
         return false;
     }
@@ -108,9 +119,19 @@ public class GamePlayTouch implements InputProcessor {
         return (int)(y*gamePlay.hph);
     }
     @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        if(screenX >= SX(30*gamePlay.scale_inteface) && screenX <= SX(270*gamePlay.scale_inteface) && screenY > SY(gamePlay.height-270*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-30*gamePlay.scale_inteface)){
+            gamePlay.move_control = false;
+            gamePlay.control_pos_y = (int)((gamePlay.height-(int)(screenY/gamePlay.hph))/gamePlay.scale_inteface);
+            gamePlay.control_pos_x = (int)(screenX/gamePlay.wpw/gamePlay.scale_inteface);
+        }
+        return false; }
     @Override
     public boolean mouseMoved(int screenX, int screenY) { return false; }
     @Override
-    public boolean scrolled(float amountX, float amountY) { return false; }
+    public boolean scrolled(float amountX, float amountY) {
+
+
+
+        return false; }
 }

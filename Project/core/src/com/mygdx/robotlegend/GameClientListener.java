@@ -12,8 +12,8 @@ public class GameClientListener extends Listener {
         this.play = play;
     }
     public void connect_send(Connection connection) {
-        this.connection_client = connection;
         Log.info("Клиаент вроде полкючен");
+        this.connection_client = connection;
         play.connected = true;
         Thread connect = new Thread() {
             public void run() {
@@ -22,7 +22,7 @@ public class GameClientListener extends Listener {
                     Log.info("Пакет отправлен от клиента к серверу");
                     connection_client.sendUDP(packet);
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(50);
                     } catch (Exception ignored) {
                     }
                 }
@@ -35,8 +35,8 @@ public class GameClientListener extends Listener {
         packet.turnedDown = play.turnedDown;
         packet.turnedFire = play.turnedFire;
         packet.turnedRedir = play.turnedRedir;
-        packet.turnedBall = play.turnedBall;
-        packet.turnedJump = play.turnedJump;
+        packet.turnedLarge = play.turnedLarge;
+        packet.turnedSmall = play.turnedSmall;
         packet.skin = play.game.robot.skin;
         packet.Hid = play.game.robot.Hid;
         packet.Bid = play.game.robot.Bid;
@@ -44,21 +44,26 @@ public class GameClientListener extends Listener {
         packet.LHid = play.game.robot.LHid;
         packet.RLid = play.game.robot.RLid;
         packet.LLid = play.game.robot.LLid;
+        packet.Hl = play.game.robot.Hl;
+        packet.Bl = play.game.robot.Bl;
+        packet.RHl = play.game.robot.RHl;
+        packet.LHl = play.game.robot.LHl;
+        packet.RLl = play.game.robot.RLl;
+        packet.LLl = play.game.robot.LLl;
     }
     public void received(Connection connection, Object packet_send) {
         if(!play.connected){
             connect_send(connection);
         }
-        play.connected = true;
         if (packet_send instanceof ClientPacket) {
             packets++;
             ClientPacket packet = (ClientPacket) packet_send;
             Log.info("Пакет получен от сервера к клиенту");
-            play.MEturnedBall = packet.turnedBall;
+            play.MEturnedLarge = packet.turnedLarge;
             play.MEturnedUp = packet.turnedUp;
             play.MEturnedDown = packet.turnedDown;
             play.MEturnedFire = packet.turnedFire;
-            play.MEturnedJump = packet.turnedJump;
+            play.MEturnedSmall = packet.turnedSmall;
             play.MEturnedRedir = packet.turnedRedir;
             play.MEturnedMeteor = packet.turnedMeteor;
             play.MEturnedBoom = packet.turnedBoom;

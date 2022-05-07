@@ -2,9 +2,6 @@ package com.mygdx.robotlegend;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
-
-import sun.misc.Cleaner;
-
 public class GameServerListener extends Listener {
     GamePlay play;
     ClientPacket packet;
@@ -25,7 +22,7 @@ public class GameServerListener extends Listener {
                     Log.info("Пакет отправлен от сервера к клиенту");
                     connection_client.sendUDP(packet);
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(50);
                     } catch (Exception ignored) { }
                 }
             }
@@ -37,9 +34,8 @@ public class GameServerListener extends Listener {
         packet.turnedDown = play.turnedDown;
         packet.turnedFire = play.turnedFire;
         packet.turnedRedir = play.turnedRedir;
-        packet.turnedBall = play.turnedBall;
-        packet.turnedJump = play.turnedJump;
-
+        packet.turnedLarge = play.turnedLarge;
+        packet.turnedSmall = play.turnedSmall;
         packet.level = play.game.robot.level;
         packet.skin = play.game.robot.skin;
         packet.Hid = play.game.robot.Hid;
@@ -48,6 +44,12 @@ public class GameServerListener extends Listener {
         packet.LHid = play.game.robot.LHid;
         packet.RLid = play.game.robot.RLid;
         packet.LLid = play.game.robot.LLid;
+        packet.Hl = play.game.robot.Hl;
+        packet.Bl = play.game.robot.Bl;
+        packet.RHl = play.game.robot.RHl;
+        packet.LHl = play.game.robot.LHl;
+        packet.RLl = play.game.robot.RLl;
+        packet.LLl = play.game.robot.LLl;
     }
     public void received(Connection connection, Object packet_send) {
         play.connected = true;
@@ -55,11 +57,11 @@ public class GameServerListener extends Listener {
             packets++;
             ClientPacket packet = (ClientPacket) packet_send;
             Log.info("Пакет получен от клиента к серверу");
-            play.MEturnedBall = packet.turnedBall;
+            play.MEturnedLarge = packet.turnedLarge;
             play.MEturnedUp = packet.turnedUp;
             play.MEturnedDown = packet.turnedDown;
             play.MEturnedFire = packet.turnedFire;
-            play.MEturnedJump = packet.turnedJump;
+            play.MEturnedSmall = packet.turnedSmall;
             play.MEturnedRedir = packet.turnedRedir;
             play.MEturnedMeteor = packet.turnedMeteor;
             play.MEturnedBoom = packet.turnedBoom;

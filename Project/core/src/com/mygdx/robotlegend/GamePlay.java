@@ -7,6 +7,7 @@
  import com.badlogic.gdx.graphics.Texture;
  import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  import com.badlogic.gdx.graphics.g2d.TextureRegion;
+ import com.badlogic.gdx.math.Interpolation;
  import com.esotericsoftware.kryonet.Client;
  import com.esotericsoftware.kryonet.Server;
  import com.esotericsoftware.minlog.Log;
@@ -44,6 +45,7 @@
     Thread JetpackAnime;
     Thread EJetpackAnime;
     Thread FriendBrine;
+    Thread ControlMove;
     Texture Frontcolor;
     Texture puck;
     Texture Rocket;
@@ -57,7 +59,10 @@
     Texture redir;
     Texture fire;
     Texture jump;
-    Texture explosive;
+
+    Texture button_control;
+     Texture button_control_back;
+
     Texture[] rain = new Texture[3];
 
     Texture fire_touched;
@@ -103,6 +108,8 @@
     Texture[] begin_right = new Texture[3];
     Texture[] sawt = new Texture[3];
     Texture[] Esawt = new Texture[3];
+    Texture[] explosivet = new Texture[5];
+     TextureRegion[] explosive = new TextureRegion[5];
     TextureRegion planet;
     TextureRegion Meteor;
     TextureRegion Effect;
@@ -135,6 +142,7 @@
     int[] rain_z = new int[rain_quantity];
     float[] rain_dir_x = new float[rain_quantity];
     float[] rain_dir_y = new float[rain_quantity];
+    float[] mine_rotate = new float[3];
     int explosive_dir_x;
     int explosive_dir_y;
     int Eexplosive_dir_x;
@@ -235,6 +243,7 @@
     float[] mine_scale = new float[3];
     int[] mine_x = new int[3];
     int[] mine_y = new int[3];
+    int  explosive_anime = 0;
     float[] mine_legs_rotate_1 = new float[3];
     float[] mine_legs_rotate_2 = new float[3];
     float robot_x = 0;
@@ -288,6 +297,12 @@
      float Ecircle_scale;
      float Ecircle_rotate;
 
+
+     int control_pos_x = 150;
+     int control_pos_y = 150;
+
+     boolean needMove = false;
+    boolean move_control = true;
     boolean robot_explosive = false;
     boolean enemy_explosive = false;
     boolean mine_touch = false;
@@ -370,27 +385,29 @@
     int Eenergy_circle_size = 0;
     int dead_state;
     int Edead_state;
-    int MEturnedJump = 0;
+
     int MEturnedFire = 0;
     int MEturnedUp = 0;
     int MEturnedDown = 0;
-    int MEturnedBall = 0;
+    int MEturnedLarge = 0;
+    int MEturnedSmall = 0;
     int MEturnedMeteor = 0;
     int MEturnedBoom = 0;
     int MEturnedRedir = 0;
-    int EturnedJump = 0;
+
     int EturnedFire = 0;
     int EturnedUp = 0;
     int EturnedDown = 0;
-    int EturnedBall = 0;
+    int EturnedLarge = 0;
+    int EturnedSmall = 0;
     //int EturnedMeteor = 0;
     //int EturnedBoom = 0;
     int EturnedRedir = 0;
-    int turnedJump = 0;
+    int turnedSmall = 0;
     int turnedFire = 0;
     int turnedUp = 0;
     int turnedDown = 0;
-    int turnedBall = 0;
+    int turnedLarge = 0;
     //int turnedMeteor = 0;
     //int turnedBoom = 0;
     int turnedRedir = 0;
@@ -439,6 +456,11 @@
             fire_location[3] = new Texture("Object/fire_3_4.png");
             fire_location[4] = new Texture("Object/fire_3_5.png");
         }
+        button_control = new Texture("Button/button_control.png");
+        button_control_back = new Texture("Button/button_control_back.png");
+        for(int i=0;i<5;i++){ explosivet[i] = new Texture("Object/explosive_"+(i+1)+".png"); }
+        for(int i=0;i<5;i++){ explosive[i] = new TextureRegion(explosivet[i], 300, 300); }
+
         mine  = new Texture("Object/mine.png");
         circlet = new Texture("Object/energy_circle.png");
         circle = new TextureRegion(circlet, 300, 300);
@@ -488,13 +510,7 @@
         energy = game.robot.energy;
         Darkeffect = new Texture("Interface/dark.png");
         Wineffect = new Texture("Interface/gameplay_effect_1.png");
-        if (game.robot.level != 1) {
-            Rocket = new Texture("Object/rocket.png");
-        } else {
-            DownPress = new Texture("Object/down_press.png");
-            UpPress = new Texture("Object/up_press.png");
-            Rocket = new Texture("Object/rocket_2.png");
-        }
+
         Effect = new TextureRegion(Wineffect, 300, 300);
         Frontground = new Texture("Interface/frontground.png");
 
@@ -509,6 +525,13 @@
             puck = new Texture("Object/gift_" + gift_index + ".png");
             puck_swap = new Texture("Object/gift_swap.png");
         }
+        if (game.robot.level != 1) {
+            Rocket = new Texture("Object/rocket.png");
+        } else {
+            DownPress = new Texture("Object/down_press.png");
+            UpPress = new Texture("Object/up_press.png");
+            Rocket = new Texture("Object/rocket_2.png");
+        }
         if(game.robot.level !=2 && game.robot.level != 4){
             Fire = new Texture("Object/fire.png");
         }
@@ -518,10 +541,19 @@
         if(game.robot.level == 2){
             Fire = new Texture("Object/fire_3.png");
         }
+        grass = new Texture("Location/grass_" + game.robot.level + ".png");
         Meteort = new Texture("Location/meteor_" + game.robot.level + ".png");
         Meteor = new TextureRegion(Meteort, 300, 300);
+        jetpack = new Texture("Button/button_2_" + (2+(2-game.robot.jetpack)) + "_1.png");
+        background = new Texture("Location/background_" + game.robot.level + ".png");
+        if(game.robot.level == 2){
+            background_region = new TextureRegion(background, 1280, 720);
+        }
+        floor = new Texture("Location/grass_alpha_" + game.robot.level + ".png");
 
-        grass = new Texture("Location/grass_" + game.robot.level + ".png");
+
+
+
         up_1 = new Texture("Button/button_up_-1.png");
         down_1 = new Texture("Button/button_down_-1.png");
         up_2 = new Texture("Button/button_up_1.png");
@@ -535,7 +567,7 @@
 
 
         fire_touched = new Texture("Button/button_fire_touched.png");
-        jetpack = new Texture("Button/button_2_" + (2+(2-game.robot.jetpack)) + "_1.png");
+
 
         Gdx.input.setInputProcessor(new GamePlayTouch(game, this));
         Start();
@@ -578,6 +610,7 @@
                 rip_dir_rotate[i] = (game.random.nextInt(11) - 4) * 3;
             }
         }
+
         server = game.server;
         client = game.client;
         if(online){
@@ -588,6 +621,7 @@
                 Edir=-1;
                 try {
                     server.bind(udp, tcp);
+                    Log.info("Порты забинжены");
                 }catch (Exception ignored){}
                 server.start();
                 server.addListener(new GameServerListener(this));
@@ -721,11 +755,7 @@
             y = 2;
             Ey = 2;
         }
-        background = new Texture("Location/background_" + game.robot.level + ".png");
-        if(game.robot.level == 2){
-            background_region = new TextureRegion(background, 1280, 720);
-        }
-        floor = new Texture("Location/grass_alpha_" + game.robot.level + ".png");
+
 
 
         batch = new SpriteBatch();
@@ -735,22 +765,65 @@
                 mine_legs_rotate_1[0]=-50f;
                 mine_legs_rotate_1[1]=-50f;
                 mine_legs_rotate_1[2]=-50f;
-                int dir_rotate = 1;
+                int dir_rotate_1 = 1;
+                int dir_rotate_2 = 1;
+                int dir_rotate_3 = 1;
                 while(!closed){
-                    if(dir_rotate == 1){
-                        mine_legs_rotate_1[0]+=2.5f;
-                        mine_legs_rotate_1[1]+=2.5f;
-                        mine_legs_rotate_1[2]+=2.5f;
-
+                    if(dir_rotate_1 == 1){
+                        if(!ECheckCircle(mine_x[0], (int)(mine_y[0]+90*mine_scale[0]), (int)(400*mine_scale[0]), (int)(400*mine_scale[0]))) {
+                            mine_legs_rotate_1[0]+=2.5f;
+                        }else{
+                            mine_legs_rotate_1[0]+=2.5f/8f;
+                        }
                         if(mine_legs_rotate_1[0] >= 15f){
-                            dir_rotate = -1;
+                            dir_rotate_1 = -1;
                         }
                     }else{
-                        mine_legs_rotate_1[0]-=2.5f;
-                        mine_legs_rotate_1[1]-=2.5f;
-                        mine_legs_rotate_1[2]-=2.5f;
+                        if(!ECheckCircle(mine_x[0], (int)(mine_y[0]+90*mine_scale[0]), (int)(400*mine_scale[0]), (int)(400*mine_scale[0]))) {
+                            mine_legs_rotate_1[0]-=2.5f;
+                        }else{
+                            mine_legs_rotate_1[0]-=2.5f/8f;
+                        }
                         if(  mine_legs_rotate_1[0] <= -50f){
-                            dir_rotate = 1;
+                            dir_rotate_1 = 1;
+                        }
+                    }
+                    if(dir_rotate_2 == 1){
+                        if(!ECheckCircle(mine_x[1], (int)(mine_y[1]+90*mine_scale[1]), (int)(400*mine_scale[1]), (int)(400*mine_scale[1]))) {
+                            mine_legs_rotate_1[1]+=2.5f;
+                        }else{
+                            mine_legs_rotate_1[1]+=2.5f/8f;
+                        }
+                        if(mine_legs_rotate_1[1] >= 15f){
+                            dir_rotate_2 = -1;
+                        }
+                    }else{
+                        if(!ECheckCircle(mine_x[1], (int)(mine_y[1]+90*mine_scale[1]), (int)(400*mine_scale[1]), (int)(400*mine_scale[1]))) {
+                            mine_legs_rotate_1[1]-=2.5f;
+                        }else{
+                            mine_legs_rotate_1[1]-=2.5f/8f;
+                        }
+                        if(  mine_legs_rotate_1[1] <= -50f){
+                            dir_rotate_2 = 1;
+                        }
+                    }
+                    if(dir_rotate_3 == 1){
+                        if(!ECheckCircle(mine_x[2], (int)(mine_y[1]+90*mine_scale[2]), (int)(400*mine_scale[2]), (int)(400*mine_scale[2]))) {
+                            mine_legs_rotate_1[2]+=2.5f;
+                        }else{
+                            mine_legs_rotate_1[2]+=2.5f/8f;
+                        }
+                        if(mine_legs_rotate_1[2] >= 15f){
+                            dir_rotate_3 = -1;
+                        }
+                    }else{
+                        if(!ECheckCircle(mine_x[2], (int)(mine_y[2]+90*mine_scale[2]), (int)(400*mine_scale[2]), (int)(400*mine_scale[2]))) {
+                            mine_legs_rotate_1[2]-=2.5f;
+                        }else{
+                            mine_legs_rotate_1[2]-=2.5f/8f;
+                        }
+                        if(  mine_legs_rotate_1[2] <= -50f){
+                            dir_rotate_3 = 1;
                         }
                     }
                     Sleep(5);
@@ -764,22 +837,65 @@
                 mine_legs_rotate_2[0]=15f;
                 mine_legs_rotate_2[1]=15f;
                 mine_legs_rotate_2[2]=15f;
-                int dir_rotate = 1;
+                int dir_rotate_1 = 1;
+                int dir_rotate_2 = 1;
+                int dir_rotate_3 = 1;
                 while(!closed){
-                    if(dir_rotate == 1){
-                        mine_legs_rotate_2[0]+=2.5f;
-                        mine_legs_rotate_2[1]+=2.5f;
-                        mine_legs_rotate_2[2]+=2.5f;
-
+                    if(dir_rotate_1 == 1){
+                        if(!ECheckCircle(mine_x[0], (int)(mine_y[0]+90*mine_scale[0]), (int)(400*mine_scale[0]), (int)(400*mine_scale[0]))) {
+                            mine_legs_rotate_2[0]+=2.5f;
+                        }else{
+                            mine_legs_rotate_2[0]+=2.5f/8f;
+                        }
                         if(mine_legs_rotate_2[0] >= 15f){
-                            dir_rotate = -1;
+                            dir_rotate_1 = -1;
                         }
                     }else{
-                        mine_legs_rotate_2[0]-=2.5f;
-                        mine_legs_rotate_2[1]-=2.5f;
-                        mine_legs_rotate_2[2]-=2.5f;
+                        if(!ECheckCircle(mine_x[0], (int)(mine_y[0]+90*mine_scale[0]), (int)(400*mine_scale[0]), (int)(400*mine_scale[0]))) {
+                            mine_legs_rotate_2[0]-=2.5f;
+                        }else{
+                            mine_legs_rotate_2[0]-=2.5f/8f;
+                        }
                         if(  mine_legs_rotate_2[0] <= -50f){
-                            dir_rotate = 1;
+                            dir_rotate_1 = 1;
+                        }
+                    }
+                    if(dir_rotate_2 == 1){
+                        if(!ECheckCircle(mine_x[1], (int)(mine_y[1]+90*mine_scale[1]), (int)(400*mine_scale[1]), (int)(400*mine_scale[1]))) {
+                            mine_legs_rotate_2[1]+=2.5f;
+                        }else{
+                            mine_legs_rotate_2[1]+=2.5f/8f;
+                        }
+                        if(mine_legs_rotate_2[1] >= 15f){
+                            dir_rotate_2 = -1;
+                        }
+                    }else{
+                        if(!ECheckCircle(mine_x[1], (int)(mine_y[1]+90*mine_scale[1]), (int)(400*mine_scale[1]), (int)(400*mine_scale[1]))) {
+                            mine_legs_rotate_2[1]-=2.5f;
+                        }else{
+                            mine_legs_rotate_2[1]-=2.5f/8f;
+                        }
+                        if(  mine_legs_rotate_2[1] <= -50f){
+                            dir_rotate_2 = 1;
+                        }
+                    }
+                    if(dir_rotate_3 == 1){
+                        if(!ECheckCircle(mine_x[2], (int)(mine_y[1]+90*mine_scale[2]), (int)(400*mine_scale[2]), (int)(400*mine_scale[2]))) {
+                            mine_legs_rotate_2[2]+=2.5f;
+                        }else{
+                            mine_legs_rotate_2[2]+=2.5f/8f;
+                        }
+                        if(mine_legs_rotate_2[2] >= 15f){
+                            dir_rotate_3 = -1;
+                        }
+                    }else{
+                        if(!ECheckCircle(mine_x[2], (int)(mine_y[2]+90*mine_scale[2]), (int)(400*mine_scale[2]), (int)(400*mine_scale[2]))) {
+                            mine_legs_rotate_2[2]-=2.5f;
+                        }else{
+                            mine_legs_rotate_2[2]-=2.5f/8f;
+                        }
+                        if(  mine_legs_rotate_2[2] <= -50f){
+                            dir_rotate_3 = 1;
                         }
                     }
                     Sleep(5);
@@ -819,6 +935,49 @@
 
             }
         };
+
+        ControlMove = new Thread() {
+            @Override
+            public void run() {
+                    while(!closed) {
+                        if(needMove) {
+                            needMove=false;
+                            if (control_pos_x > 150 && dir == -1) {
+                                Redir();
+                                continue;
+                            }
+                            if (control_pos_x < 150 && dir == 1) {
+                                Redir();
+                                continue;
+                            }
+                            if (control_pos_y > 150) {
+                                Up();
+                            }
+                            if (control_pos_y < 150) {
+                                Down();
+                            }
+
+                        }
+                        if(move_control){
+                            if(control_pos_x > 150) {
+                                control_pos_x-=5;
+                            }
+                            if(control_pos_x < 150) {
+                                control_pos_x+=5;
+                            }
+                            if(control_pos_y > 150) {
+                                control_pos_y-=5;
+                            }
+                            if(control_pos_y < 150) {
+                                control_pos_y+=5;
+                            }
+
+                        }
+                        Sleep(5);
+                    }
+                }
+        };
+        ControlMove.start();
         FireAnime_1 = new Thread() {
             @Override
             public void run() {
@@ -1028,14 +1187,14 @@
                 }
             }
         };
-        if(!online) {
+
             if (game.robot.level == 2) {
                 space_anime.start();
             }
             if (game.robot.level == 1) {
                 PressAdd.start();
             }
-        }
+
         TimeAdd = new Thread() {
             @Override
             public void run() {
@@ -2052,12 +2211,7 @@
                 @Override
                 public void run() {
                     while (!closed) {
-                        if(EturnedBall < MEturnedBall){
-                            if(!Eball_clicked){
-                                EBall();
-                                EturnedBall+=1;
-                            }
-                        }
+
                         if(EturnedDown < MEturnedDown){
                             if(!Edown_clicked){
                                 EDown();
@@ -2082,11 +2236,11 @@
                                 EturnedRedir+=1;
                             }
                         }
-                        if(EturnedJump < MEturnedJump){
-                            if(!Ejump_clicked){
-                                EJump();
-                                EturnedJump+=1;
-                            }
+                        if(EturnedLarge < MEturnedLarge){
+                            ELargePower();
+                        }
+                        if(EturnedSmall < MEturnedSmall){
+                            ESmallPower();
                         }
                         Sleep(100);
                     }
@@ -2101,12 +2255,18 @@
                 if (game.robot.max_skin > game.robot.opened) {
                     AddSkins.start();
                 }
+                FireAnime_1.start();
+                FireAnime_2.start();
+                FireAnime_3.start();
+                JetpackAnime.start();
+                EJetpackAnime.start();
                 AddAlert.start();
                 TimeAdd.start();
                 BoomAdd.start();
                 MedAdd.start();
                 StartLevel.start();
                 CrossAdd.start();
+
                 EnergyAdd.start();
                 EEnergyAdd.start();
                 anime.start();
@@ -2145,79 +2305,93 @@
         }
     }
     public void OnlineChanges() {
-        game.robot.ERHt.dispose();
-        game.robot.ELHt.dispose();
-        game.robot.ERLt.dispose();
-        game.robot.ELLt.dispose();
-        game.robot.EHt.dispose();
-        game.robot.EBt.dispose();
-        game.robot.ERHt = new Texture("Robot/hand_" + game.robot.ERHid + ".png");
-        game.robot.ELHt = new Texture("Robot/hand_" + game.robot.ELHid + ".png");
-        game.robot.ERLt = new Texture("Robot/leg_" + game.robot.ERLid + ".png");
-        game.robot.ERLt = new Texture("Robot/leg_" + game.robot.ERLid + ".png");
-        game.robot.ELLt = new Texture("Robot/leg_" + game.robot.ELLid + ".png");
-        game.robot.EHt = new Texture("Robot/head_" + game.robot.EHid + ".png");
-        game.robot.EBt = new Texture("Robot/body_" + game.robot.EBid + ".png");
-        game.robot.ERH = new TextureRegion(game.robot.ERHt, 300, 300);
-        game.robot.ELH = new TextureRegion(game.robot.ELHt, 300, 300);
-        game.robot.ERL = new TextureRegion(game.robot.ERLt, 300, 300);
-        game.robot.ELL = new TextureRegion(game.robot.ELLt, 300, 300);
-        game.robot.EH = new TextureRegion(game.robot.EHt, 300, 300);
-        game.robot.EB = new TextureRegion(game.robot.EBt, 300, 300);
-        game.robot.EUpdateSkin();
-        game.robot.UpdateParameters();
-        if(!host){
-        booms[0].dispose();
-        booms[1].dispose();
-        booms[2].dispose();
-        Rocket.dispose();
-        Splash.dispose();
-        grass.dispose();
-        Meteort.dispose();
-        background.dispose();
-        floor.dispose();
+     game.robot.UpdateTextures();
+        if(game.robot.level !=2) {
+            boom_front[0] = new Texture("Interface/white_flash_1.png");
+            boom_front[1] = new Texture("Interface/white_flash_2.png");
+            boom_front[2] = new Texture("Interface/white_flash_3.png");
+        }else{
+            boom_front[0] = new Texture("Interface/green_flash_1.png");
+            boom_front[1] = new Texture("Interface/green_flash_2.png");
+            boom_front[2] = new Texture("Interface/green_flash_3.png");
+        }
         if (game.robot.level != 2) {
             booms[0] = new Texture("Object/energy_1.png");
             booms[1] = new Texture("Object/energy_2.png");
             booms[2] = new Texture("Object/energy_3.png");
+            booms[3] = new Texture("Object/energy_4.png");
+            booms[4] = new Texture("Object/energy_5.png");
+            booms[5] = new Texture("Object/energy_6.png");
+            booms[6] = new Texture("Object/energy_7.png");
         } else {
             booms[0] = new Texture("Object/energy_1_2.png");
             booms[1] = new Texture("Object/energy_2_2.png");
             booms[2] = new Texture("Object/energy_3_2.png");
+            booms[3] = new Texture("Object/energy_4_2.png");
+            booms[4] = new Texture("Object/energy_5_2.png");
+            booms[5] = new Texture("Object/energy_6_2.png");
+            booms[6] = new Texture("Object/energy_7_2.png");
         }
+        if(game.robot.level!=2 && game.robot.level!=5) {
+            fire_location[0] = new Texture("Object/fire_" + game.robot.level + "_1.png");
+            fire_location[1] = new Texture("Object/fire_" + game.robot.level + "_2.png");
+            fire_location[2] = new Texture("Object/fire_" + game.robot.level + "_3.png");
+            fire_location[3] = new Texture("Object/fire_" + game.robot.level + "_4.png");
+            fire_location[4] = new Texture("Object/fire_" + game.robot.level + "_5.png");
+        }
+        if(game.robot.level == 5){
+            fire_location[0] = new Texture("Object/fire_3_1.png");
+            fire_location[1] = new Texture("Object/fire_3_2.png");
+            fire_location[2] = new Texture("Object/fire_3_3.png");
+            fire_location[3] = new Texture("Object/fire_3_4.png");
+            fire_location[4] = new Texture("Object/fire_3_5.png");
+        }
+        Frontcolor = new Texture("Interface/frontground_color_" + game.robot.level + ".png");
+        big_grass= new Texture("Location/grass_" + game.robot.level + "_2.png");
         if (game.robot.level == 2) {
             planett = new Texture("Object/planet_3.png");
             planet = new TextureRegion(planett, 400, 400);
             FrontLevel2 = new Texture("Location/background_2_front.png");
+            FrontLevel2_region = new TextureRegion(FrontLevel2, 1280, 720);
+        }
+        if (game.robot.level == 4) {
+
+            FrontLevel2 = new Texture("Location/background_4_front.png");
+        }
+
+        Splash = new Texture("Object/splash_" + game.robot.level + ".png");
+
+
+        if (game.robot.opened < game.robot.max_skin) {
+            gift_index = game.random.nextInt(game.robot.max_skin-1)+1;
+            puck = new Texture("Object/gift_" + gift_index + ".png");
+            puck_swap = new Texture("Object/gift_swap.png");
         }
         if (game.robot.level != 1) {
             Rocket = new Texture("Object/rocket.png");
         } else {
+            DownPress = new Texture("Object/down_press.png");
+            UpPress = new Texture("Object/up_press.png");
             Rocket = new Texture("Object/rocket_2.png");
         }
-        if (game.robot.level != 2 && game.robot.level != 1) {
-            Splash = new Texture("Object/splash.png");
-        } else {
-            if (game.robot.level == 2) {
-                local_speed = 2;
-                Splash = new Texture("Object/splash_2.png");
-            } else {
-                Splash = new Texture("Object/splash_3.png");
-            }
+        if(game.robot.level !=2 && game.robot.level != 4){
+            Fire = new Texture("Object/fire.png");
+        }
+        if(game.robot.level == 4){
+            Fire = new Texture("Object/fire_2.png");
+        }
+        if(game.robot.level == 2){
+            Fire = new Texture("Object/fire_3.png");
         }
         grass = new Texture("Location/grass_" + game.robot.level + ".png");
         Meteort = new Texture("Location/meteor_" + game.robot.level + ".png");
         Meteor = new TextureRegion(Meteort, 300, 300);
+        jetpack = new Texture("Button/button_2_" + (2+(2-game.robot.jetpack)) + "_1.png");
         background = new Texture("Location/background_" + game.robot.level + ".png");
+        if(game.robot.level == 2){
+            background_region = new TextureRegion(background, 1280, 720);
+        }
         floor = new Texture("Location/grass_alpha_" + game.robot.level + ".png");
-
-        if (game.robot.level == 2) {
-            space_anime.start();
-        }
-        if (game.robot.level == 1) {
-            PressAdd.start();
-        }
-    }
     }
     @Override
     public void render(float delta) {
@@ -2462,8 +2636,15 @@
         }
         if(mine_clicked) {
             for(int num = 0;num<3;num++) {
-                DrawLegs(drawer, mine_x[num] + (int) (200 * mine_scale[num] - 200 * leg_scale[num] * mine_scale[num]), mine_y[num] + (int) ((1.0f - leg_scale[num]) * 325 * mine_scale[num]), mine_scale[num] * leg_scale[num], 400 * mine_scale[num] * leg_scale[num], mine_legs_rotate_1[num], mine_legs_rotate_2[num]);
-                drawer.draw(mine, mine_x[num], mine_y[num] + 90 * mine_scale[num], mine_scale[num] * 400, mine_scale[num] * 400);
+                if(mine_exist[num]!=3 && mine_exist[num]!=0) {
+                    DrawLegs(drawer, mine_x[num] + (int) (200 * mine_scale[num] - 200 * leg_scale[num] * mine_scale[num]), mine_y[num] + (int) ((1.0f - leg_scale[num]) * 325 * mine_scale[num]), mine_scale[num] * leg_scale[num], 400 * mine_scale[num] * leg_scale[num], mine_legs_rotate_1[num], mine_legs_rotate_2[num]);
+                }
+                if(mine_exist[num]!=3) {
+                    if(mine_exist[num]!=0) {
+
+                        drawer.draw(mine, mine_x[num], mine_y[num] + 90 * mine_scale[num], mine_scale[num] * 400, mine_scale[num] * 400);
+                    }
+                    }
             }
         }
         if(saw_clicked){
@@ -2687,6 +2868,16 @@
             }
         }
 
+
+        if(mine_clicked) {
+            for(int num = 0;num<3;num++) {
+                if(mine_exist[num]==3) {
+                    drawer.draw(explosive[explosive_anime], mine_x[num] - 200 * mine_scale[num], mine_y[num] - 200 * mine_scale[num] + 90 * mine_scale[num], 200 * mine_scale[num], 200 * mine_scale[num], mine_scale[num] * 400, mine_scale[num] * 400, 1, 1, mine_rotate[num]);
+                }
+            }
+        }
+
+
         if(isboom && boom_y == 1){
             drawer.draw(booms[boom_anime-1], boom_x*(width/10)-275*boom_flip,  (height/5)*boom_y-60-10*boom_y+(height-boom_height), 550*boom_flip, boom_height);
         }
@@ -2748,7 +2939,7 @@
                 drawer.draw(fire_touched, (int) (width - 275 * scale_inteface), -pos_interface, (int) (250 * scale_inteface), (int) (250 * scale_inteface));
             } else {
                 drawer.draw(fire, (int) (width - 275 * scale_inteface), -pos_interface, (int) (250 * scale_inteface), (int) (250 * scale_inteface));
-            }
+            }/*
             if (dir == 1) {
                 if (up_touch) {
                     drawer.draw(button_touched, (int) (50 * scale_inteface), (int) (125 * scale_inteface - pos_interface), (int) (150 * scale_inteface), (int) (150 * scale_inteface));
@@ -2777,6 +2968,10 @@
                 drawer.draw(button_touched, (int) (200 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
             }
                 drawer.draw(redir, (int) (200 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+*/
+
+            drawer.draw(button_control_back, 0, 0, 300*scale_inteface, 300*scale_inteface);
+            drawer.draw(button_control, (control_pos_x-75)*scale_inteface, (control_pos_y-75)*scale_inteface, 150*scale_inteface, 150*scale_inteface);
 
             if (game.robot.power_large == 1) {
                 if(ball_touch) {
@@ -2943,6 +3138,7 @@
         }
     }
     public void ELargePower(){
+        EturnedLarge++;
         if(game.robot.Epower_large == 1) {
             EBall();
         }
@@ -2960,6 +3156,7 @@
         }
     }
     public void ESmallPower(){
+        EturnedSmall++;
         if(game.robot.Epower_small == 1) {
             ESaw();
         }
@@ -2978,6 +3175,7 @@
     }
 
     public void LargePower(){
+        turnedLarge++;
         if(game.robot.power_large == 1) {
             Ball();
         }
@@ -2995,6 +3193,7 @@
         }
     }
     public void SmallPower(){
+        turnedSmall++;
         if(game.robot.power_small == 1) {
             Saw();
         }
@@ -3561,6 +3760,13 @@
                         if (level_dir > 7){
                             if(!game.robot.exp_process) {
                                 end = true;
+                                if(online){
+                                    if(host){
+                                        server.stop();
+                                    }else{
+                                        client.stop();
+                                    }
+                                }
                             }
                         }
                         Sleep(20);
@@ -3707,6 +3913,7 @@
                                 DamageRobot(game.robot.Eattack_speed * 7);
                             }
                             ETakeSkin();
+                            ECheckMine();
                             EUseMed();
                             Erot -= 2.0f;
                             if(!CheckCircle(Ex * (width / 10) + (int) Erobot_x, (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y, (int)(Escale*300), (int)(Escale*300))) {
@@ -3726,6 +3933,7 @@
                                 DamageRobot((8-game.robot.Eattack_speed) * 7);
                             }
                             ETakeSkin();
+                            ECheckMine();
                             EUseMed();
                             Erot += 2.0f;
                             if(!CheckCircle(Ex * (width / 10) + (int) Erobot_x, (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y, (int)(Escale*300), (int)(Escale*300))) {
@@ -3751,8 +3959,8 @@
         }
     }
     public void Ball(){
-        if(!fire_clicked && !up_clicked && !down_clicked && !redir_clicked && !jump_clicked && !dead && !pause && !ball_clicked && ball_can && !jetpack_clicked) {
-                turnedBall++;
+        if(!fire_clicked && !up_clicked && !down_clicked && !redir_clicked && !jump_clicked && !dead && !pause && !ball_clicked && ball_can && !jetpack_clicked && !robot_explosive) {
+
                 ball_clicked = true;
                 ball_can = false;
                 Thread anime = new Thread() {
@@ -3773,6 +3981,7 @@
                                     DamageEnemy((8-game.robot.attack_speed)*7);
                                 }
                                 TakeSkin();
+                                CheckMine();
                                 UseMed();
                                 rot -= 2.0f;
                                 if(!ECheckCircle(x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, (int)(scale*300), (int)(scale*300))) {
@@ -3792,6 +4001,7 @@
                                     DamageEnemy((8-game.robot.attack_speed)*7);
                                 }
                                 TakeSkin();
+                                CheckMine();
                                 UseMed();
                                 rot += 2.0f;
                                 if(!ECheckCircle(x * (width / 10) + (int) robot_x, (height / 5) * y - 60 - 10 * y + (int) robot_y, (int)(scale*300), (int)(scale*300))) {
@@ -4314,6 +4524,7 @@
                                 Erobot_x = 0;
                                 EUseMed();
                                 ETakeSkin();
+                                ECheckMine();
                                 break;
                             }
                             if(Erobot_speed_bonus == 0) {
@@ -4351,6 +4562,7 @@
                         Ey++;
                         EUseMed();
                         ETakeSkin();
+                        ECheckMine();
                         Eup_clicked = false;
                     }
                 };
@@ -4409,6 +4621,7 @@
                                 Erobot_x = 0;
                                 EUseMed();
                                 ETakeSkin();
+                                ECheckMine();
                                 break;
                             }
                             if(Erobot_speed_bonus == 0) {
@@ -4446,6 +4659,7 @@
                         Ey--;
                         EUseMed();
                         ETakeSkin();
+                        ECheckMine();
                         Edown_clicked = false;
                     }
                 };
@@ -4519,6 +4733,7 @@
                         robot_x = 0;
                         UseMed();
                         TakeSkin();
+                        CheckMine();
                     }
                 };
                 anime.start();
@@ -4542,6 +4757,7 @@
                         y++;
                         UseMed();
                         TakeSkin();
+                        CheckMine();
                         up_clicked = false;
                     }
                 };
@@ -4614,6 +4830,7 @@
                         robot_x = 0;
                         UseMed();
                         TakeSkin();
+                        CheckMine();
                     }
                 };
                 anime.start();
@@ -4637,6 +4854,7 @@
                         y--;
                         UseMed();
                         TakeSkin();
+                        CheckMine();
                         down_clicked = false;
                     }
                 };
@@ -4761,6 +4979,8 @@
                             Sleep(  (int)(8*speed));
                         }
                         EUseMed();
+                        ETakeSkin();
+                        ECheckMine();
                         Eswap = false;
                         Escale = 0.8f;
                         Ejump_clicked = false;
@@ -5099,6 +5319,7 @@
                                     anime.start();
                                 }
                                 ETakeSkin();
+                                ECheckMine();
                                 EUseMed();
                                 Ex += dir_x;
                                 Erobot_x = 0;
@@ -5172,7 +5393,7 @@
         if (!up_clicked && !down_clicked && !jump_clicked && !dead && !pause && !ball_clicked) {
             if (EnergyExists(30)) {
                 EnergyUse(30);
-                turnedJump++;
+
                 jump_clicked = true;
                 Thread anime = new Thread() {
                     @Override
@@ -5216,9 +5437,9 @@
                                 Sleep(5);
                             }
 
-
-
                         UseMed();
+                        TakeSkin();
+                        CheckMine();
                         swap = false;
                         scale = 0.8f;
                         jump_clicked = false;
@@ -5593,38 +5814,100 @@
 
 
 
-
+                    float last_rothand = rothand;
                     int access = 0;
                     while (access != 1) {
-
+                        rothand-=2f*explosive_dir_x;
+                        if(rothand>=360){
+                           rothand = 0.0f;
+                        }
+                        if(rothand<0){
+                            rothand = 360.0f;
+                        }
+                        if(rotleg<100){
+                            rotleg+=0.5f;
+                        }
                         robot_x += explosive_dir_x*5;
                         robot_y += explosive_dir_y*2;
-                        if ((robot_x >= will_x_1 - 10 && robot_x <= will_x_1 + 10) || robot_x+width/10*x >= width-width/10 ||  robot_x+width/10*x <= width/10 ) {
+                        if ((robot_x >= will_x_1 - 10 && robot_x <= will_x_1 + 10) || robot_x+width/10*x >= width-2*width/10 ||  robot_x+width/10*x <= width/10 ) {
                             access = 1;
                         }
-                        Sleep(10);
+                        if(!ECheckCircle(x * (width / 10) + (int) robot_x - (int)(90*scale), (height / 5) * y - 60 - 10 * y + (int) robot_y, (int)(380*scale), (int)(535*scale))) {
+                            Sleep(4);
+                        }else{
+                            Sleep(16);
+                        }
                     }
                     while (access != 2) {
-
+                        rothand-=2f*explosive_dir_x;
+                        if(rothand>=360){
+                            rothand = 0.0f;
+                        }
+                        if(rothand<0){
+                            rothand = 360.0f;
+                        }
+                        if(rotleg>0){
+                            rotleg-=0.25f;
+                        }
                         robot_x += explosive_dir_x*5;
                         robot_y -= explosive_dir_y*2;
-                        if ((robot_x >= will_x_2 - 10 && robot_x <= will_x_2 + 10) || robot_x+width/10*x >= width-width/10||  robot_x+width/10*x <= width/10 ) {
+                        if ((robot_x >= will_x_2 - 10 && robot_x <= will_x_2 + 10) || robot_x+width/10*x >= width-2*width/10||  robot_x+width/10*x <= width/10 ) {
                             access = 2;
                         }
-                        Sleep(10);
+                        if(!ECheckCircle(x * (width / 10) + (int) robot_x - (int)(90*scale), (height / 5) * y - 60 - 10 * y + (int) robot_y, (int)(380*scale), (int)(535*scale))) {
+                            Sleep(4);
+                        }else{
+                            Sleep(16);
+                        }
                     }
                     while(robot_y>0){
                         robot_y-=2;
-                        Sleep(10);
+                        if(rotleg>0){
+                            rotleg-=0.25f;
+                        }
+                        if(!ECheckCircle(x * (width / 10) + (int) robot_x - (int)(90*scale), (height / 5) * y - 60 - 10 * y + (int) robot_y, (int)(380*scale), (int)(535*scale))) {
+                            Sleep(4);
+                        }else{
+                            Sleep(16);
+                        }
+                    }
+                    while(rothand>last_rothand+3||rothand<last_rothand-3){
+                        rothand-=2.5f*explosive_dir_x;
+                        if(rothand>360){
+                            rothand = 0.0f;
+                        }
+                        if(rothand<0){
+                            rothand = 360.0f;
+                        }
+                        if(rotleg>0){
+                            rotleg-=0.5f;
+                        }
+                        if(!ECheckCircle(x * (width / 10) + (int) robot_x - (int)(90*scale), (height / 5) * y - 60 - 10 * y + (int) robot_y, (int)(380*scale), (int)(535*scale))) {
+                            Sleep(4);
+                        }else{
+                            Sleep(16);
+                        }
                     }
                     x += Math.round(robot_x/(width/10));
                     robot_x=0;
                     robot_explosive = false;
+
                 }
             };
             anime.start();
         }
     }
+     public void CheckMine() {
+        for(int i=0;i<3;i++){
+            if(Math.round((mine_x[i]+200*mine_scale[i])/(width/10))==x&&Math.floor((mine_y[i]+90*mine_scale[i])/(height/5))+1==y&&mine_exist[i] == 2){
+                mine_exist[i] = 3;
+                Explosive(dir, 1, 1);
+            }
+        }
+     }
+     public void ECheckMine() {
+
+     }
     public void Mine(){
         if(mines < 3){
             mine_clicked = true;
@@ -5632,10 +5915,14 @@
             Thread anime = new Thread() {
                 @Override
                 public void run() {
-                    int mode = 1;
                     int move_y_dir = 0;
                     int steps = 0;
-                    int num = mines-1;
+                    int num = 0;
+                    while (true) {
+                        if (mine_exist[num] == 0) break;
+                        num++;
+                    }
+                    mine_rotate[num] = 0.0f;
                     mine_exist[num] = 1;
                     leg_scale[num] = 1.0f;
                     mine_x[num] = (int)((x*width/10)+robot_x);
@@ -5645,13 +5932,21 @@
                     int will_y = (height/5)*y-65-y*10;
                     while(mine_y[num] > will_y){
                         mine_y[num]-=5;
-                        Sleep(10);
+                        if(!ECheckCircle(mine_x[num], (int)(mine_y[num]+90*mine_scale[num]), (int)(400*mine_scale[num]), (int)(400*mine_scale[num]))) {
+                            Sleep(10);
+                        }else{
+                            Sleep(80);
+                        }
                     }
                     while(mine_y[num] < will_y){
                         mine_y[num]+=5;
-                        Sleep(10);
+                        if(!ECheckCircle(mine_x[num], (int)(mine_y[num]+90*mine_scale[num]), (int)(400*mine_scale[num]), (int)(400*mine_scale[num]))) {
+                            Sleep(10);
+                        }else{
+                            Sleep(80);
+                        }
                     }
-                    Explosive(dir, 1, 1);
+
                     last_scale = mine_scale[num];
                     while(mine_exist[num] == 1 && steps<20){
                         int move_random = game.random.nextInt(2);
@@ -5659,13 +5954,21 @@
                         if(move_random == 0 && last_mine_x+width/10<width-width/10) {
                             while (mine_x[num] < last_mine_x+width/10) {
                                 mine_x[num]+=5;
-                                Sleep(10);
+                                if(!ECheckCircle(mine_x[num], (int)(mine_y[num]+90*mine_scale[num]), (int)(400*mine_scale[num]), (int)(400*mine_scale[num]))) {
+                                    Sleep(10);
+                                }else{
+                                    Sleep(80);
+                                }
                             }
                         }
                         if(move_random == 1 && last_mine_x-width/10>width/10) {
                             while (mine_x[num] > last_mine_x-width/10) {
                                 mine_x[num]-=5;
-                                Sleep(10);
+                                if(!ECheckCircle(mine_x[num], (int)(mine_y[num]+90*mine_scale[num]), (int)(400*mine_scale[num]), (int)(400*mine_scale[num]))) {
+                                    Sleep(10);
+                                }else{
+                                    Sleep(80);
+                                }
                             }
                         }
                         if(move_y_dir == 0){
@@ -5693,9 +5996,55 @@
                         if(leg_scale[num] > 0.0f){
                            leg_scale[num]-=0.01f;
                         }
-                        Sleep(10);
+                        if(!ECheckCircle(mine_x[num], (int)(mine_y[num]+90*mine_scale[num]), (int)(400*mine_scale[num]), (int)(400*mine_scale[num]))) {
+                            Sleep(10);
+                        }else{
+                            Sleep(80);
+                        }
                     }
-                    mine_clicked = false;
+                    while(mine_scale[num]<1.75f){
+
+
+                        explosive_anime++;
+                        if(explosive_anime>=5){
+                            explosive_anime=0;
+                        }
+
+
+                            mine_scale[num]+=0.05f;
+                            mine_rotate[num]+=1.0f;
+                            if(mine_rotate[num]>=360.0f){
+                                mine_rotate[num]=0f;
+                            }
+                        if(!ECheckCircle(mine_x[num], (int)(mine_y[num]+90*mine_scale[num]), (int)(400*mine_scale[num]), (int)(400*mine_scale[num]))) {
+                            Sleep(10);
+                        }else{
+                            Sleep(80);
+                        }
+                    }
+                    while(mine_scale[num]>0.1f){
+
+
+                        explosive_anime--;
+                        if(explosive_anime<0){
+                            explosive_anime=4;
+                        }
+
+
+                        mine_scale[num]-=0.05f;
+                        mine_rotate[num]+=1.0f;
+                        if(mine_rotate[num]>=360.0f){
+                            mine_rotate[num]=0f;
+                        }
+                        if(!ECheckCircle(mine_x[num], (int)(mine_y[num]+90*mine_scale[num]), (int)(400*mine_scale[num]), (int)(400*mine_scale[num]))) {
+                            Sleep(10);
+                        }else{
+                            Sleep(80);
+                        }
+                    }
+                    mine_exist[num]=0;
+                    mines--;
+
                 }
             };
             anime.start();
@@ -5717,6 +6066,7 @@
         for(Texture texture: med){ texture.dispose(); }
         for(Texture texture: sawt){ texture.dispose(); }
         for(Texture texture: Esawt){ texture.dispose(); }
+        for(Texture texture: explosivet){ texture.dispose(); }
         death.dispose();
         grass.dispose();
         game.robot.DisposeGamePlayTextures();
@@ -5780,6 +6130,8 @@
         Frontcolor.dispose();
         button_touched.dispose();
         button_cant_touch.dispose();
+        button_control.dispose();
+        button_control_back.dispose();
         if(game.robot.level!=2) {
             fire_location[0].dispose();
             fire_location[1].dispose();

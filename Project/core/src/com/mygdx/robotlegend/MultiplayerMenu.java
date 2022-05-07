@@ -19,7 +19,6 @@ public class MultiplayerMenu  extends Openable implements Screen{
     Texture left;
     Texture close;
     Texture close_touched;
-    Texture coming_soon;
     int which_select = 1;
     int resize = 0;
     boolean resize_item = false;
@@ -109,7 +108,6 @@ public class MultiplayerMenu  extends Openable implements Screen{
         connect = new Texture("Button/button_connect.png");
         create = new Texture("Button/button_create.png");
         background = new Texture("Interface/back.png");
-        coming_soon = new Texture("Decoration/comingsoon.png");
         metall = new Texture("Item/metall.png");
         gear = new Texture("Item/gear.png");
         chip = new Texture("Item/chip.png");
@@ -212,7 +210,6 @@ public class MultiplayerMenu  extends Openable implements Screen{
         right.dispose();
         left.dispose();
         close.dispose();
-        coming_soon.dispose();
         close_touched.dispose();
     }
 }
