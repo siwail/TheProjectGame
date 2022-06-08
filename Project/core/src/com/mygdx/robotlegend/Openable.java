@@ -399,6 +399,45 @@ public class Openable implements Screen{
             }
         }
     }
+
+    public void DrawPull(SpriteBatchRubber drawer, int x1, int y1, int x2, int y2, int x3, int y3, float scale, float rothand, float rothead, float rotleg, float rot, int rotate) {
+
+            TextureRegion[] Head = game.robot.HP;
+            TextureRegion[] Body = game.robot.BP;
+            TextureRegion[] LeftLeg = game.robot.LLP;
+            TextureRegion[] RightLeg = game.robot.RLP;
+            TextureRegion[] LeftHand = game.robot.LHP;
+            TextureRegion[] RightHand = game.robot.RHP;
+
+
+
+
+            drawer.draw(Head[0], x1, (float) (y1 + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rothead);
+            drawer.draw(Body[0], x1, (float) (y1 + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rot);
+            drawer.draw(LeftLeg[0], (float) (x1 - 50 * scale), y1, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, -rotleg);
+            drawer.draw(RightLeg[0], (float) (x1 + 50 * scale), y1, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rotleg);
+            drawer.draw(LeftHand[0], (float) (x1 + 90 * scale), (float) (y1 + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand);
+            drawer.draw(RightHand[0], (float) (x1 - 90 * scale), (float) (y1 + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand - 90 + rotate);
+
+
+            drawer.draw(Head[1], x2, (float) (y2 + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rothead);
+            drawer.draw(Body[1], x2, (float) (y2 + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rot);
+            drawer.draw(LeftLeg[1], (float) (x2 - 50 * scale), y2, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, -rotleg);
+            drawer.draw(RightLeg[1], (float) (x2 + 50 * scale), y2, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rotleg);
+            drawer.draw(LeftHand[1], (float) (x2 + 90 * scale), (float) (y2 + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand);
+            drawer.draw(RightHand[1], (float) (x2 - 90 * scale), (float) (y2 + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand - 90 + rotate);
+
+
+            drawer.draw(Head[2], x3, (float) (y3 + 335 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rothead);
+            drawer.draw(Body[2], x3, (float) (y3 + 170 * scale), 150, 25, (float) (200 * scale), (float) (200 * scale), 1, 1, rot);
+            drawer.draw(LeftLeg[2], (float) (x3 - 50 * scale), y3, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, -rotleg);
+            drawer.draw(RightLeg[2], (float) (x3 + 50 * scale), y3, (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rotleg);
+            drawer.draw(LeftHand[2], (float) (x3 + 90 * scale), (float) (y3 + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand);
+            drawer.draw(RightHand[2], (float) (x3 - 90 * scale), (float) (y3 + 170 * scale), (float) (100 * scale), (float) (160 * scale), (float) (200 * scale), (float) (200 * scale), 1, 1, rothand - 90 + rotate);
+
+
+    }
+
     public void DrawRobotExplosive(SpriteBatchRubber drawer, int x, int y, float scale, float rothand, float rothead, float rotleg, float rot, boolean dead, int rotate) {
         if(!dead) {
             TextureRegion Head = game.robot.H;

@@ -53,7 +53,7 @@ public class RoboStructure {
     int Ecolor_left = 0;
     int color_right = 0;
     int color_left = 0;
-    int fire_damage = 2;
+    int fire_damage = 4;
     boolean exp_process = false;
     boolean box_empty = true;
     boolean draw_interface = true;
@@ -97,6 +97,21 @@ public class RoboStructure {
     Texture EBullet_left;
     Texture ESelect;
     Texture Select;
+
+    Texture[] RHPt = new Texture[3];
+    Texture[] LHPt = new Texture[3];
+    Texture[] RLPt = new Texture[3];
+    Texture[] LLPt = new Texture[3];
+    Texture[] HPt = new Texture[3];
+    Texture[] BPt = new Texture[3];
+
+    TextureRegion[] RHP = new TextureRegion[3];
+    TextureRegion[] LHP = new TextureRegion[3];
+    TextureRegion[] RLP = new TextureRegion[3];
+    TextureRegion[] LLP = new TextureRegion[3];
+    TextureRegion[] HP = new TextureRegion[3];
+    TextureRegion[] BP = new TextureRegion[3];
+
     Texture HeadDeadt;
     Texture BodyDeadt;
     Texture LeftLegDeadt;
@@ -723,68 +738,123 @@ public class RoboStructure {
         RightHandRedt.dispose();
     }
     public void SetGamePlayTextures(){
-        for(int i=1;i<6; i++){ ToBall_1t[i-1] = new Texture("Robot/ball_1_" + i + ".png");  ToBall_1[i-1] = new TextureRegion(ToBall_1t[i-1], 200, 200);}
-        for(int i=1;i<6; i++){ ToBall_2t[i-1] = new Texture("Robot/ball_2_" + i + ".png");  ToBall_2[i-1] = new TextureRegion(ToBall_2t[i-1], 200, 200);}
-        for(int i=1;i<6; i++){ ToBall_3t[i-1] = new Texture("Robot/ball_3_" + i + ".png");  ToBall_3[i-1] = new TextureRegion(ToBall_3t[i-1], 200, 200);}
+
+        if(power_large==1||Epower_large==1) {
+            for (int i = 1; i < 6; i++) {
+                ToBall_1t[i - 1] = new Texture("Robot/ball_1_" + i + ".png");
+                ToBall_1[i - 1] = new TextureRegion(ToBall_1t[i - 1], 200, 200);
+            }
+            for (int i = 1; i < 6; i++) {
+                ToBall_2t[i - 1] = new Texture("Robot/ball_2_" + i + ".png");
+                ToBall_2[i - 1] = new TextureRegion(ToBall_2t[i - 1], 200, 200);
+            }
+            for (int i = 1; i < 6; i++) {
+                ToBall_3t[i - 1] = new Texture("Robot/ball_3_" + i + ".png");
+                ToBall_3[i - 1] = new TextureRegion(ToBall_3t[i - 1], 200, 200);
+            }
+
+            Ball_2t = new Texture("Robot/ball_2.png");
+            Ball_1t = new Texture("Robot/ball_1.png");
+            Ball_1 = new TextureRegion(Ball_1t, 300, 300);
+            Ball_2 = new TextureRegion(Ball_2t, 300, 300);
+
+            Ball_2_rightt = new Texture("Robot/ball_2_right.png");
+            Ball_1_rightt = new Texture("Robot/ball_1_right.png");
+            Ball_1_right = new TextureRegion(Ball_1t, 300, 300);
+            Ball_2_right = new TextureRegion(Ball_2t, 300, 300);
+
+        }
+
+        if(power_small==4||Epower_small==4) {
+            for (int i = 0; i < 3; i++) {
+                HPt[i] = new Texture("Robot/head_pull_" + (i + 1) + ".png");
+                HP[i] = new TextureRegion(HPt[i], 300, 300);
+
+                BPt[i] = new Texture("Robot/body_pull_" + (i + 1) + ".png");
+                BP[i] = new TextureRegion(BPt[i], 300, 300);
+
+                RHPt[i] = new Texture("Robot/hand_pull_" + (i + 1) + ".png");
+                RHP[i] = new TextureRegion(RHPt[i], 300, 300);
+
+                LHPt[i] = new Texture("Robot/hand_pull_" + (i + 1) + ".png");
+                LHP[i] = new TextureRegion(LHPt[i], 300, 300);
+
+                RLPt[i] = new Texture("Robot/leg_pull_" + (i + 1) + ".png");
+                RLP[i] = new TextureRegion(RLPt[i], 300, 300);
+
+                LLPt[i] = new Texture("Robot/leg_pull_" + (i + 1) + ".png");
+                LLP[i] = new TextureRegion(LLPt[i], 300, 300);
+
+            }
+        }
 
 
-        leg_1t = new Texture("Robot/leg_1.png");
-        leg_2t = new Texture("Robot/leg_2.png");
-
-        leg_1 = new TextureRegion(leg_1t, 200, 200);
-        leg_2 = new TextureRegion(leg_2t, 200, 200);
-
-        Ball_2t = new Texture("Robot/ball_2.png");
-        Ball_1t = new Texture("Robot/ball_1.png");
 
 
-
-        Ball_1 = new TextureRegion(Ball_1t, 300, 300);
-        Ball_2 = new TextureRegion(Ball_2t, 300, 300);
-        Ball_2_rightt = new Texture("Robot/ball_2_right.png");
-        Ball_1_rightt = new Texture("Robot/ball_1_right.png");
-        Ball_1_right = new TextureRegion(Ball_1t, 300, 300);
-        Ball_2_right = new TextureRegion(Ball_2t, 300, 300);
         Cross = new Texture("Object/aim.png");
+
+
+
         EBullet_right.dispose();
         EBullet_left.dispose();
         Bullet_right.dispose();
         Bullet_left.dispose();
 
+
+
         EBullet_right = new Texture("Object/bullet" + Ecolor_right + ".png");
         EBullet_left = new Texture("Object/bullet" + Ecolor_left + ".png");
         Bullet_right = new Texture("Object/bullet" + color_right + ".png");
         Bullet_left = new Texture("Object/bullet" + color_left + ".png");
+
+        if(power_small==2||Epower_small==2) {
+
+            leg_1t = new Texture("Robot/leg_1.png");
+            leg_2t = new Texture("Robot/leg_2.png");
+
+            leg_1 = new TextureRegion(leg_1t, 200, 200);
+            leg_2 = new TextureRegion(leg_2t, 200, 200);
+        }
+
+
         Energy = new Texture("Interface/energy.png");
         EnergyBack = new Texture("Interface/back_energy.png");
         EnergyFront = new Texture("Interface/front_energy.png");
         EnergyWarning1 = new Texture("Interface/front_energy_w1.png");
         EnergyWarning2 = new Texture("Interface/front_energy_w2.png");
+
         ESelect = new Texture("Interface/select.png");
         Select = new Texture("Interface/select2.png");
+
         BackHealth = new Texture("Interface/back_health.png");
         RobotIcon = new Texture("Interface/friend.png");
         EnemyIcon = new Texture("Interface/enemy.png");
         RobotHealth = new Texture("Interface/friend_health.png");
         EnemyHealth = new Texture("Interface/enemy_health.png");
-        HeadSwapt = new Texture("Robot/head_swap.png");
-        BodySwapt = new Texture("Robot/body_swap.png");
-        LeftLegSwapt = new Texture("Robot/leg_swap.png");
-        RightLegSwapt = new Texture("Robot/leg_swap.png");
-        LeftHandSwapt = new Texture("Robot/hand_swap.png");
-        RightHandSwapt = new Texture("Robot/hand_swap.png");
+
+        if(power_small==3||Epower_small==3) {
+            HeadSwapt = new Texture("Robot/head_swap.png");
+            BodySwapt = new Texture("Robot/body_swap.png");
+            LeftLegSwapt = new Texture("Robot/leg_swap.png");
+            RightLegSwapt = new Texture("Robot/leg_swap.png");
+            LeftHandSwapt = new Texture("Robot/hand_swap.png");
+            RightHandSwapt = new Texture("Robot/hand_swap.png");
+        }
+
         HeadHurtt = new Texture("Robot/head_hurt.png");
         BodyHurtt = new Texture("Robot/body_hurt.png");
         LeftLegHurtt = new Texture("Robot/leg_hurt.png");
         RightLegHurtt = new Texture("Robot/leg_hurt.png");
         LeftHandHurtt = new Texture("Robot/hand_hurt.png");
         RightHandHurtt = new Texture("Robot/hand_hurt.png");
+
         HeadDeadt = new Texture("Robot/head_dead.png");
         BodyDeadt = new Texture("Robot/body_dead.png");
         LeftLegDeadt = new Texture("Robot/leg_dead.png");
         RightLegDeadt = new Texture("Robot/leg_dead.png");
         LeftHandDeadt = new Texture("Robot/hand_dead.png");
         RightHandDeadt = new Texture("Robot/hand_dead.png");
+
         HeadEnergyt = new Texture("Robot/head_energy.png");
         BodyEnergyt = new Texture("Robot/body_energy.png");
         LeftLegEnergyt = new Texture("Robot/leg_energy.png");
@@ -792,25 +862,120 @@ public class RoboStructure {
         LeftHandEnergyt = new Texture("Robot/hand_energy.png");
         RightHandEnergyt = new Texture("Robot/hand_energy.png");
 
-        jetpack_1[0] = new Texture("Robot/jetpack_" + jetpack + "_left.png");
-        jetpack_1[1] = new Texture("Robot/jetpack_" + jetpack + "_left_1.png");
-        jetpack_1[2] = new Texture("Robot/jetpack_" + jetpack + "_left_2.png");
-        jetpack_1[3] = new Texture("Robot/jetpack_" + jetpack + "_left_3.png");
-        jetpack_2[0] = new Texture("Robot/jetpack_" + jetpack + "_right.png");
-        jetpack_2[1] = new Texture("Robot/jetpack_" + jetpack + "_right_1.png");
-        jetpack_2[2] = new Texture("Robot/jetpack_" + jetpack + "_right_2.png");
-        jetpack_2[3] = new Texture("Robot/jetpack_" + jetpack + "_right_3.png");
-        jetpack_3 = new Texture("Robot/jetpack_" + jetpack + ".png");
 
-        Ejetpack_1[0] = new Texture("Robot/jetpack_" + Ejetpack + "_left.png");
-        Ejetpack_1[1] = new Texture("Robot/jetpack_" + Ejetpack + "_left_1.png");
-        Ejetpack_1[2] = new Texture("Robot/jetpack_" + Ejetpack + "_left_2.png");
-        Ejetpack_1[3] = new Texture("Robot/jetpack_" + Ejetpack + "_left_3.png");
-        Ejetpack_2[0] = new Texture("Robot/jetpack_" + Ejetpack + "_right.png");
-        Ejetpack_2[1] = new Texture("Robot/jetpack_" + Ejetpack + "_right_1.png");
-        Ejetpack_2[2] = new Texture("Robot/jetpack_" + Ejetpack + "_right_2.png");
-        Ejetpack_2[3] = new Texture("Robot/jetpack_" + Ejetpack + "_right_3.png");
-        Ejetpack_3 = new Texture("Robot/jetpack_" + Ejetpack + ".png");
+        if(power_large==3||power_large==2) {
+            jetpack_1[0] = new Texture("Robot/jetpack_" + jetpack + "_left.png");
+            jetpack_1[1] = new Texture("Robot/jetpack_" + jetpack + "_left_1.png");
+            jetpack_1[2] = new Texture("Robot/jetpack_" + jetpack + "_left_2.png");
+            jetpack_1[3] = new Texture("Robot/jetpack_" + jetpack + "_left_3.png");
+            jetpack_2[0] = new Texture("Robot/jetpack_" + jetpack + "_right.png");
+            jetpack_2[1] = new Texture("Robot/jetpack_" + jetpack + "_right_1.png");
+            jetpack_2[2] = new Texture("Robot/jetpack_" + jetpack + "_right_2.png");
+            jetpack_2[3] = new Texture("Robot/jetpack_" + jetpack + "_right_3.png");
+            jetpack_3 = new Texture("Robot/jetpack_" + jetpack + ".png");
+        }
+        if(Epower_large==3||Epower_large==2) {
+            Ejetpack_1[0] = new Texture("Robot/jetpack_" + Ejetpack + "_left.png");
+            Ejetpack_1[1] = new Texture("Robot/jetpack_" + Ejetpack + "_left_1.png");
+            Ejetpack_1[2] = new Texture("Robot/jetpack_" + Ejetpack + "_left_2.png");
+            Ejetpack_1[3] = new Texture("Robot/jetpack_" + Ejetpack + "_left_3.png");
+            Ejetpack_2[0] = new Texture("Robot/jetpack_" + Ejetpack + "_right.png");
+            Ejetpack_2[1] = new Texture("Robot/jetpack_" + Ejetpack + "_right_1.png");
+            Ejetpack_2[2] = new Texture("Robot/jetpack_" + Ejetpack + "_right_2.png");
+            Ejetpack_2[3] = new Texture("Robot/jetpack_" + Ejetpack + "_right_3.png");
+            Ejetpack_3 = new Texture("Robot/jetpack_" + Ejetpack + ".png");
+        }
+    }
+    public void DisposeGamePlayTextures(){
+        if(power_large==1||Epower_large==1) {
+            for (int i = 1; i < 6; i++) ToBall_1t[i - 1].dispose();
+            for (int i = 1; i < 6; i++) ToBall_2t[i - 1].dispose();
+            for (int i = 1; i < 6; i++) ToBall_3t[i - 1].dispose();
+
+            Ball_1t.dispose();
+            Ball_2t.dispose();
+            Ball_1_rightt.dispose();
+            Ball_2_rightt.dispose();
+        }
+        if(power_small==2||Epower_small==2) {
+            leg_1t.dispose();
+            leg_2t.dispose();
+        }
+        if(power_small==4||Epower_small==4) {
+            for (int i = 0; i < 3; i++) {
+                HPt[i].dispose();
+                BPt[i].dispose();
+                RHPt[i].dispose();
+                LHPt[i].dispose();
+                RLPt[i].dispose();
+                LLPt[i].dispose();
+            }
+        }
+        Cross.dispose();
+        Energy.dispose();
+        EnergyBack.dispose();
+        EnergyFront.dispose();
+        EnergyWarning1.dispose();
+        EnergyWarning2.dispose();
+        EBullet_right.dispose();
+        EBullet_left.dispose();
+        Bullet_right.dispose();
+        Bullet_left.dispose();
+        ESelect.dispose();
+        Select.dispose();
+        BackHealth.dispose();
+        RobotIcon.dispose();
+        EnemyIcon.dispose();
+        RobotHealth.dispose();
+        EnemyHealth.dispose();
+        if(power_small==3||Epower_small==3) {
+            HeadSwapt.dispose();
+            BodySwapt.dispose();
+            LeftLegSwapt.dispose();
+            RightLegSwapt.dispose();
+            LeftHandSwapt.dispose();
+            RightHandSwapt.dispose();
+        }
+        HeadHurtt.dispose();
+        BodyHurtt.dispose();
+        LeftLegHurtt.dispose();
+        RightLegHurtt.dispose();
+        LeftHandHurtt.dispose();
+        RightHandHurtt.dispose();
+        HeadDeadt.dispose();
+        BodyDeadt.dispose();
+        LeftLegDeadt.dispose();
+        RightLegDeadt.dispose();
+        LeftHandDeadt.dispose();
+        RightHandDeadt.dispose();
+        HeadEnergyt.dispose();
+        BodyEnergyt.dispose();
+        LeftLegEnergyt.dispose();
+        RightLegEnergyt.dispose();
+        LeftHandEnergyt.dispose();
+        RightHandEnergyt.dispose();
+        if(power_large==3||power_large==2) {
+            jetpack_1[0].dispose();
+            jetpack_1[1].dispose();
+            jetpack_1[2].dispose();
+            jetpack_1[3].dispose();
+            jetpack_2[0].dispose();
+            jetpack_2[1].dispose();
+            jetpack_2[2].dispose();
+            jetpack_2[3].dispose();
+            jetpack_3.dispose();
+        }
+        if(Epower_large==3||Epower_large==2) {
+            Ejetpack_1[0].dispose();
+            Ejetpack_1[1].dispose();
+            Ejetpack_1[2].dispose();
+            Ejetpack_1[3].dispose();
+            Ejetpack_2[0].dispose();
+            Ejetpack_2[1].dispose();
+            Ejetpack_2[2].dispose();
+            Ejetpack_2[3].dispose();
+            Ejetpack_3.dispose();
+        }
     }
     public void UpdatePuck() {
         puck.dispose();
@@ -911,76 +1076,7 @@ public class RoboStructure {
         }
         game.safes.flush();
     }
-    public void DisposeGamePlayTextures(){
-        for(int i=1;i<6; i++) ToBall_1t[i-1].dispose();
-        for(int i=1;i<6; i++) ToBall_2t[i-1].dispose();
-        for(int i=1;i<6; i++) ToBall_3t[i-1].dispose();
-        leg_1t.dispose();
-        leg_2t.dispose();
-        Ball_1t.dispose();
-        Ball_2t.dispose();
-        Ball_1_rightt.dispose();
-        Ball_2_rightt.dispose();
-        Cross.dispose();
-        Energy.dispose();
-        EnergyBack.dispose();
-        EnergyFront.dispose();
-        EnergyWarning1.dispose();
-        EnergyWarning2.dispose();
-        EBullet_right.dispose();
-        EBullet_left.dispose();
-        Bullet_right.dispose();
-        Bullet_left.dispose();
-        ESelect.dispose();
-        Select.dispose();
-        BackHealth.dispose();
-        RobotIcon.dispose();
-        EnemyIcon.dispose();
-        RobotHealth.dispose();
-        EnemyHealth.dispose();
-        HeadSwapt.dispose();
-        BodySwapt.dispose();
-        LeftLegSwapt.dispose();
-        RightLegSwapt.dispose();
-        LeftHandSwapt.dispose();
-        RightHandSwapt.dispose();
-        HeadHurtt.dispose();
-        BodyHurtt.dispose();
-        LeftLegHurtt.dispose();
-        RightLegHurtt.dispose();
-        LeftHandHurtt.dispose();
-        RightHandHurtt.dispose();
-        HeadDeadt.dispose();
-        BodyDeadt.dispose();
-        LeftLegDeadt.dispose();
-        RightLegDeadt.dispose();
-        LeftHandDeadt.dispose();
-        RightHandDeadt.dispose();
-        HeadEnergyt.dispose();
-        BodyEnergyt.dispose();
-        LeftLegEnergyt.dispose();
-        RightLegEnergyt.dispose();
-        LeftHandEnergyt.dispose();
-        RightHandEnergyt.dispose();
-        jetpack_1[0].dispose();
-        jetpack_1[1].dispose();
-        jetpack_1[2].dispose();
-        jetpack_1[3].dispose();
-        jetpack_2[0].dispose();
-        jetpack_2[1].dispose();
-        jetpack_2[2].dispose();
-        jetpack_2[3].dispose();
-        jetpack_3.dispose();
-        Ejetpack_1[0].dispose();
-        Ejetpack_1[1].dispose();
-        Ejetpack_1[2].dispose();
-        Ejetpack_1[3].dispose();
-        Ejetpack_2[0].dispose();
-        Ejetpack_2[1].dispose();
-        Ejetpack_2[2].dispose();
-        Ejetpack_2[3].dispose();
-        Ejetpack_3.dispose();
-    }
+
     public void SetFirstChanges(){
 
         metal_chance[0] = 60;
@@ -1137,7 +1233,7 @@ public class RoboStructure {
         ELHl = game.random.nextInt(5) + 1; //Левая рука
         ERLl = game.random.nextInt(5) + 1; //Правая нога
         ELLl = game.random.nextInt(5) + 1; //Левая нога
-        while(EHid+EBid+ERHid+ERLid+ELLid+ELHid>level_arm+6||EHl+EBl+ERHl+ERLl+ELLl+ELHl>level_arm+6) {
+        while(EHid+EBid+ERHid+ERLid+ELLid+ELHid>level_arm+6||EHid+EBid+ERHid+ERLid+ELLid+ELHid<level_arm+4||EHl+EBl+ERHl+ERLl+ELLl+ELHl>level_arm+6||EHl+EBl+ERHl+ERLl+ELLl+ELHl<level_arm+4) {
 
 
             EHid = game.random.nextInt(5) + 1;

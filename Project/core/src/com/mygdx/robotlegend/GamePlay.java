@@ -16,7 +16,10 @@
     SpriteBatch batch;
     Server server;
     Client client;
-    Sound[] blaster;
+    Sound[] Lblaster;
+    Sound[] ELblaster;
+    Sound[] Rblaster;
+    Sound[] ERblaster;
     Sound[] hit;
     Sound[] move;
     Sound death;
@@ -65,6 +68,7 @@
 
     Texture[] rain = new Texture[3];
 
+    Texture pull;
     Texture fire_touched;
     Texture ball;
     Texture Meteort;
@@ -97,6 +101,7 @@
     Texture button_cant_touch;
     Texture circlet;
     Texture mine;
+    Texture mine_off;
     Texture[] boom_front = new Texture[3];
     TextureRegion circle;
     TextureRegion FrontLevel2_region;
@@ -143,6 +148,7 @@
     float[] rain_dir_x = new float[rain_quantity];
     float[] rain_dir_y = new float[rain_quantity];
     float[] mine_rotate = new float[3];
+    float[] Emine_rotate = new float[3];
     int explosive_dir_x;
     int explosive_dir_y;
     int Eexplosive_dir_x;
@@ -239,13 +245,21 @@
     int mines = 0;
     float[] leg_scale = new float[3];
     int[] mine_exist = new int[3];
-    float[] mine_explosive_state = new float[3];
     float[] mine_scale = new float[3];
     int[] mine_x = new int[3];
     int[] mine_y = new int[3];
     int  explosive_anime = 0;
     float[] mine_legs_rotate_1 = new float[3];
     float[] mine_legs_rotate_2 = new float[3];
+     int Emines = 0;
+     float[] Eleg_scale = new float[3];
+     int[] Emine_exist = new int[3];
+     float[] Emine_scale = new float[3];
+     int[] Emine_x = new int[3];
+     int[] Emine_y = new int[3];
+     int  Eexplosive_anime = 0;
+     float[] Emine_legs_rotate_1 = new float[3];
+     float[] Emine_legs_rotate_2 = new float[3];
     float robot_x = 0;
     float robot_y = 0;
     float Erobot_x = 0;
@@ -305,8 +319,8 @@
     boolean move_control = true;
     boolean robot_explosive = false;
     boolean enemy_explosive = false;
-    boolean mine_touch = false;
     boolean mine_clicked = false;
+    boolean Emine_clicked = false;
     boolean Esaw_can = true;
     boolean circle_can = true;
     boolean circle_touch = false;
@@ -381,6 +395,22 @@
     boolean Ejetpack_can = true;
     boolean Ejetpack_clicked=false;
     boolean Ejetpack_flying=false;
+    boolean Epull_clicked = false;
+    boolean Epull_touch = false;
+    boolean pull_clicked = false;
+    boolean pull_touch = false;
+
+    int[] Epulls_x = new int[3];
+    int[] Epulls_y = new int[3];
+    int Epull_will_x = 0;
+    int Epull_will_y = 0;
+
+    int[] pulls_x = new int[3];
+    int[] pulls_y = new int[3];
+    int pull_will_x = 0;
+    int pull_will_y = 0;
+
+
     int energy_circle_size = 0;
     int Eenergy_circle_size = 0;
     int dead_state;
@@ -461,16 +491,62 @@
         for(int i=0;i<5;i++){ explosivet[i] = new Texture("Object/explosive_"+(i+1)+".png"); }
         for(int i=0;i<5;i++){ explosive[i] = new TextureRegion(explosivet[i], 300, 300); }
 
-        mine  = new Texture("Object/mine.png");
-        circlet = new Texture("Object/energy_circle.png");
-        circle = new TextureRegion(circlet, 300, 300);
+
+
+        if(game.robot.power_small==2||game.robot.Epower_small==2) {
+            mine = new Texture("Object/mine.png");
+            mine_off = new Texture("Object/mine_2.png");
+        }
+        if(game.robot.power_large==4||game.robot.Epower_large==4) {
+            circlet = new Texture("Object/energy_circle.png");
+            circle = new TextureRegion(circlet, 300, 300);
+        }
+
+
+        if(game.robot.Epower_small==1) {
+            Esawt[0] = new Texture("Object/saw_1_2.png");
+            Esawt[1] = new Texture("Object/saw_2_2.png");
+            Esawt[2] = new Texture("Object/saw_3_2.png");
+            for (int i = 0; i < 3; i++) {
+                Esaw[i] = new TextureRegion(Esawt[i], 300, 300);
+            }
+
+        }
+        if(game.robot.power_small==4) {
+            pull = new Texture("Button/button_1_4_1.png");
+        }
+        if(game.robot.power_small==1) {
+            sawt[0] = new Texture("Object/saw_1_1.png");
+            sawt[1] = new Texture("Object/saw_2_1.png");
+            sawt[2] = new Texture("Object/saw_3_1.png");
+            for (int i = 0; i < 3; i++) {
+                saw[i] = new TextureRegion(sawt[i], 300, 300);
+            }
+            button_saw = new Texture("Button/button_1_1_1.png");
+        }
+
+        if(game.robot.power_large==4) {
+            button_circle = new Texture("Button/button_2_4_1.png");
+        }
+        if(game.robot.power_small==2) {
+            button_mine = new Texture("Button/button_1_2_1.png");
+        }
         button_touched = new Texture("Button/button_touched.png");
         button_cant_touch = new Texture("Button/button_cant_touch.png");
-        button_circle = new Texture("Button/button_2_4_1.png");
-        button_mine = new Texture("Button/button_1_2_1.png");
-        rain[0] = new Texture("Object/snow_1.png");
-        rain[1] = new Texture("Object/snow_2.png");
-        rain[2] = new Texture("Object/snow_3.png");
+        if(game.robot.level == 5) {
+            rain[0] = new Texture("Object/snow_1.png");
+            rain[1] = new Texture("Object/snow_2.png");
+            rain[2] = new Texture("Object/snow_3.png");
+        }
+        if (game.robot.power_large==3||game.robot.power_large==2 ) {
+            jetpack = new Texture("Button/button_2_" + (2 + (2 - game.robot.jetpack)) + "_1.png");
+        }
+        if(game.robot.power_small==3) {
+            jump = new Texture("Button/button_1_3_1.png");
+        }
+        if(game.robot.power_large==1) {
+            ball = new Texture("Button/button_2_1_1.png");
+        }
         Frontcolor = new Texture("Interface/frontground_color_" + game.robot.level + ".png");
 
         level_circle = new Texture("Object/level_circle.png");
@@ -485,13 +561,9 @@
         begin_right[2] = new Texture("Interface/openlevel_right_3.png");
         big_grass= new Texture("Location/grass_" + game.robot.level + "_2.png");
 
-        button_saw = new Texture("Button/button_1_1_1.png");
-        sawt[0] = new Texture("Object/saw_1_1.png");
-        sawt[1] = new Texture("Object/saw_2_1.png");
-        sawt[2] = new Texture("Object/saw_3_1.png");
-        Esawt[0] = new Texture("Object/saw_1_2.png");
-        Esawt[1] = new Texture("Object/saw_2_2.png");
-        Esawt[2] = new Texture("Object/saw_3_2.png");
+
+
+
 
         metall = new Texture("Item/metall.png");
         chip = new Texture("Item/chip.png");
@@ -544,7 +616,8 @@
         grass = new Texture("Location/grass_" + game.robot.level + ".png");
         Meteort = new Texture("Location/meteor_" + game.robot.level + ".png");
         Meteor = new TextureRegion(Meteort, 300, 300);
-        jetpack = new Texture("Button/button_2_" + (2+(2-game.robot.jetpack)) + "_1.png");
+
+
         background = new Texture("Location/background_" + game.robot.level + ".png");
         if(game.robot.level == 2){
             background_region = new TextureRegion(background, 1280, 720);
@@ -560,9 +633,8 @@
         down_2 = new Texture("Button/button_down_1.png");
         redir = new Texture("Button/button_redir.png");
         fire = new Texture("Button/button_fire.png");
-        jump = new Texture("Button/button_1_3_1.png");
 
-        ball = new Texture("Button/button_2_1_1.png");
+
 
 
 
@@ -574,17 +646,16 @@
         leg_scale[0] = 1.0f;
         leg_scale[1] = 1.0f;
         leg_scale[2] = 1.0f;
+
+        Eleg_scale[0] = 1.0f;
+        Eleg_scale[1] = 1.0f;
+        Eleg_scale[2] = 1.0f;
         for(int i = 0; i < 10; i++){ grass_1_anime[i] = 0;grass_2_anime[i] = 0;grass_3_anime[i] = 0;}
         for(int i = 0; i < 10; i++){ grass_1_dir[i] = 1;grass_2_dir[i] = 1;grass_3_dir[i] = 1;}
         for (int i = 0; i < 5; i++) {
             med[i] = new Texture("Object/health_" + (i + 1) + ".png");
         }
-        for (int i = 0; i < 3; i++) {
-            saw[i] = new TextureRegion(sawt[i], 300, 300);
-        }
-        for (int i = 0; i < 3; i++) {
-            Esaw[i] = new TextureRegion(Esawt[i], 300, 300);
-        }
+
 
         for(int i = 0; i < 6; i++){
             Erip_dir_x[i] = 0;
@@ -640,10 +711,37 @@
             }
         }
 
-        blaster = new Sound[3];
-        blaster[0] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_1.wav"));
-        blaster[1] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_2.wav"));
-        blaster[2] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_3.wav"));
+        Rblaster = new Sound[3];
+        Lblaster = new Sound[3];
+        Rblaster[0] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_"+game.robot.LHid+"_1.wav"));
+        Rblaster[1] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_"+game.robot.LHid+"_2.wav"));
+        Rblaster[2] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_"+game.robot.LHid+"_3.wav"));
+        if(game.robot.RHid != game.robot.LHid) {
+            Lblaster[0] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_" + game.robot.RHid + "_1.wav"));
+            Lblaster[1] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_" + game.robot.RHid + "_2.wav"));
+            Lblaster[2] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_" + game.robot.RHid + "_3.wav"));
+        }else{
+            Lblaster[0] = Rblaster[0];
+            Lblaster[1] = Rblaster[1];
+            Lblaster[2] = Rblaster[2];
+        }
+
+        ERblaster = new Sound[3];
+        ELblaster = new Sound[3];
+        ERblaster[0] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_"+game.robot.ELHid+"_1.wav"));
+        ERblaster[1] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_"+game.robot.ELHid+"_2.wav"));
+        ERblaster[2] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_"+game.robot.ELHid+"_3.wav"));
+        if(game.robot.ERHid != game.robot.ELHid) {
+            ELblaster[0] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_" + game.robot.ERHid + "_1.wav"));
+            ELblaster[1] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_" + game.robot.ERHid + "_2.wav"));
+            ELblaster[2] = Gdx.audio.newSound(Gdx.files.internal("Sound/fire_" + game.robot.ERHid + "_3.wav"));
+        }else{
+            ELblaster[0] = ERblaster[0];
+            ELblaster[1] = ERblaster[1];
+            ELblaster[2] = ERblaster[2];
+        }
+
+
         hit = new Sound[3];
         hit[0] = Gdx.audio.newSound(Gdx.files.internal("Sound/hit_1.wav"));
         hit[1] = Gdx.audio.newSound(Gdx.files.internal("Sound/hit_2.wav"));
@@ -765,9 +863,15 @@
                 mine_legs_rotate_1[0]=-50f;
                 mine_legs_rotate_1[1]=-50f;
                 mine_legs_rotate_1[2]=-50f;
+                Emine_legs_rotate_1[0]=-50f;
+                Emine_legs_rotate_1[1]=-50f;
+                Emine_legs_rotate_1[2]=-50f;
                 int dir_rotate_1 = 1;
                 int dir_rotate_2 = 1;
                 int dir_rotate_3 = 1;
+                int Edir_rotate_1 = 1;
+                int Edir_rotate_2 = 1;
+                int Edir_rotate_3 = 1;
                 while(!closed){
                     if(dir_rotate_1 == 1){
                         if(!ECheckCircle(mine_x[0], (int)(mine_y[0]+90*mine_scale[0]), (int)(400*mine_scale[0]), (int)(400*mine_scale[0]))) {
@@ -826,6 +930,68 @@
                             dir_rotate_3 = 1;
                         }
                     }
+
+
+
+
+
+                    if(Edir_rotate_1 == 1){
+                        if(!CheckCircle(Emine_x[0], (int)(Emine_y[0]+90*Emine_scale[0]), (int)(400*Emine_scale[0]), (int)(400*Emine_scale[0]))) {
+                            Emine_legs_rotate_1[0]+=2.5f;
+                        }else{
+                            Emine_legs_rotate_1[0]+=2.5f/8f;
+                        }
+                        if(Emine_legs_rotate_1[0] >= 15f){
+                            Edir_rotate_1 = -1;
+                        }
+                    }else{
+                        if(!CheckCircle(Emine_x[0], (int)(Emine_y[0]+90*Emine_scale[0]), (int)(400*Emine_scale[0]), (int)(400*Emine_scale[0]))) {
+                            Emine_legs_rotate_1[0]-=2.5f;
+                        }else{
+                            Emine_legs_rotate_1[0]-=2.5f/8f;
+                        }
+                        if(  Emine_legs_rotate_1[0] <= -50f){
+                            Edir_rotate_1 = 1;
+                        }
+                    }
+                    if(Edir_rotate_2 == 1){
+                        if(!CheckCircle(Emine_x[1], (int)(Emine_y[1]+90*Emine_scale[1]), (int)(400*Emine_scale[1]), (int)(400*Emine_scale[1]))) {
+                            Emine_legs_rotate_1[1]+=2.5f;
+                        }else{
+                            Emine_legs_rotate_1[1]+=2.5f/8f;
+                        }
+                        if(Emine_legs_rotate_1[1] >= 15f){
+                            Edir_rotate_2 = -1;
+                        }
+                    }else{
+                        if(!CheckCircle(Emine_x[1], (int)(Emine_y[1]+90*Emine_scale[1]), (int)(400*Emine_scale[1]), (int)(400*Emine_scale[1]))) {
+                            Emine_legs_rotate_1[1]-=2.5f;
+                        }else{
+                            Emine_legs_rotate_1[1]-=2.5f/8f;
+                        }
+                        if(  Emine_legs_rotate_1[1] <= -50f){
+                            Edir_rotate_2 = 1;
+                        }
+                    }
+                    if(Edir_rotate_3 == 1){
+                        if(!CheckCircle(Emine_x[2], (int)(Emine_y[1]+90*Emine_scale[2]), (int)(400*Emine_scale[2]), (int)(400*Emine_scale[2]))) {
+                            Emine_legs_rotate_1[2]+=2.5f;
+                        }else{
+                            Emine_legs_rotate_1[2]+=2.5f/8f;
+                        }
+                        if(Emine_legs_rotate_1[2] >= 15f){
+                            Edir_rotate_3 = -1;
+                        }
+                    }else{
+                        if(!CheckCircle(Emine_x[2], (int)(Emine_y[2]+90*Emine_scale[2]), (int)(400*Emine_scale[2]), (int)(400*Emine_scale[2]))) {
+                            Emine_legs_rotate_1[2]-=2.5f;
+                        }else{
+                            Emine_legs_rotate_1[2]-=2.5f/8f;
+                        }
+                        if(  Emine_legs_rotate_1[2] <= -50f){
+                            Edir_rotate_3 = 1;
+                        }
+                    }
                     Sleep(5);
                 }
             }
@@ -840,6 +1006,9 @@
                 int dir_rotate_1 = 1;
                 int dir_rotate_2 = 1;
                 int dir_rotate_3 = 1;
+                int Edir_rotate_1 = 1;
+                int Edir_rotate_2 = 1;
+                int Edir_rotate_3 = 1;
                 while(!closed){
                     if(dir_rotate_1 == 1){
                         if(!ECheckCircle(mine_x[0], (int)(mine_y[0]+90*mine_scale[0]), (int)(400*mine_scale[0]), (int)(400*mine_scale[0]))) {
@@ -898,6 +1067,85 @@
                             dir_rotate_3 = 1;
                         }
                     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    if(Edir_rotate_1 == 1){
+                        if(!CheckCircle(Emine_x[0], (int)(Emine_y[0]+90*Emine_scale[0]), (int)(400*Emine_scale[0]), (int)(400*Emine_scale[0]))) {
+                            Emine_legs_rotate_2[0]+=2.5f;
+                        }else{
+                            Emine_legs_rotate_2[0]+=2.5f/8f;
+                        }
+                        if(Emine_legs_rotate_2[0] >= 15f){
+                            Edir_rotate_1 = -1;
+                        }
+                    }else{
+                        if(!CheckCircle(Emine_x[0], (int)(Emine_y[0]+90*Emine_scale[0]), (int)(400*Emine_scale[0]), (int)(400*Emine_scale[0]))) {
+                            Emine_legs_rotate_2[0]-=2.5f;
+                        }else{
+                            Emine_legs_rotate_2[0]-=2.5f/8f;
+                        }
+                        if(  Emine_legs_rotate_2[0] <= -50f){
+                            Edir_rotate_1 = 1;
+                        }
+                    }
+                    if(Edir_rotate_2 == 1){
+                        if(!CheckCircle(Emine_x[1], (int)(Emine_y[1]+90*Emine_scale[1]), (int)(400*Emine_scale[1]), (int)(400*Emine_scale[1]))) {
+                            Emine_legs_rotate_2[1]+=2.5f;
+                        }else{
+                            Emine_legs_rotate_2[1]+=2.5f/8f;
+                        }
+                        if(Emine_legs_rotate_2[1] >= 15f){
+                            Edir_rotate_2 = -1;
+                        }
+                    }else{
+                        if(!CheckCircle(Emine_x[1], (int)(Emine_y[1]+90*Emine_scale[1]), (int)(400*Emine_scale[1]), (int)(400*Emine_scale[1]))) {
+                            Emine_legs_rotate_2[1]-=2.5f;
+                        }else{
+                            Emine_legs_rotate_2[1]-=2.5f/8f;
+                        }
+                        if(  Emine_legs_rotate_2[1] <= -50f){
+                            Edir_rotate_2 = 1;
+                        }
+                    }
+                    if(Edir_rotate_3 == 1){
+                        if(!CheckCircle(Emine_x[2], (int)(Emine_y[1]+90*Emine_scale[2]), (int)(400*Emine_scale[2]), (int)(400*Emine_scale[2]))) {
+                            Emine_legs_rotate_2[2]+=2.5f;
+                        }else{
+                            Emine_legs_rotate_2[2]+=2.5f/8f;
+                        }
+                        if(Emine_legs_rotate_2[2] >= 15f){
+                            Edir_rotate_3 = -1;
+                        }
+                    }else{
+                        if(!CheckCircle(Emine_x[2], (int)(Emine_y[2]+90*Emine_scale[2]), (int)(400*Emine_scale[2]), (int)(400*Emine_scale[2]))) {
+                            Emine_legs_rotate_2[2]-=2.5f;
+                        }else{
+                            Emine_legs_rotate_2[2]-=2.5f/8f;
+                        }
+                        if(  Emine_legs_rotate_2[2] <= -50f){
+                            Edir_rotate_3 = 1;
+                        }
+                    }
+
+
+
+
+
+
+
                     Sleep(5);
                 }
             }
@@ -2641,12 +2889,36 @@
                 }
                 if(mine_exist[num]!=3) {
                     if(mine_exist[num]!=0) {
+                        if(mine_exist[num] == 2) {
+                            drawer.draw(mine, mine_x[num], mine_y[num] + 90 * mine_scale[num], mine_scale[num] * 400, mine_scale[num] * 400);
 
-                        drawer.draw(mine, mine_x[num], mine_y[num] + 90 * mine_scale[num], mine_scale[num] * 400, mine_scale[num] * 400);
+                        }else{
+                            drawer.draw(mine_off, mine_x[num], mine_y[num] + 90 * mine_scale[num], mine_scale[num] * 400, mine_scale[num] * 400);
+                        }
                     }
                     }
             }
         }
+
+
+        if(Emine_clicked) {
+            for(int num = 0;num<3;num++) {
+                if(Emine_exist[num]!=3 && Emine_exist[num]!=0) {
+                    DrawLegs(drawer, Emine_x[num] + (int) (200 * Emine_scale[num] - 200 * Eleg_scale[num] * Emine_scale[num]), Emine_y[num] + (int) ((1.0f - Eleg_scale[num]) * 325 * Emine_scale[num]), Emine_scale[num] * Eleg_scale[num], 400 * Emine_scale[num] * Eleg_scale[num], Emine_legs_rotate_1[num], Emine_legs_rotate_2[num]);
+                }
+                if(Emine_exist[num]!=3) {
+                    if(Emine_exist[num]!=0) {
+                        if(Emine_exist[num] == 2) {
+                            drawer.draw(mine, Emine_x[num], Emine_y[num] + 90 * Emine_scale[num], Emine_scale[num] * 400, Emine_scale[num] * 400);
+
+                        }else{
+                            drawer.draw(mine_off, Emine_x[num], Emine_y[num] + 90 * Emine_scale[num], Emine_scale[num] * 400, Emine_scale[num] * 400);
+                        }
+                    }
+                }
+            }
+        }
+
         if(saw_clicked){
 
             int m = 0, n;
@@ -2681,8 +2953,12 @@
                 m++;
             }
         }
-
-
+        if (Epull_clicked) {
+            DrawPull(drawer, Epulls_x[0], Epulls_y[0] - 60 - 10 * Ey, Epulls_x[1], Epulls_y[1] - 60 - 10 * Ey, Epulls_x[2], Epulls_y[2] - 60 - 10 * Ey, Escale * (1.0f - 0.03f * Ey), Erothand + 90, Erothead, Erotleg, Erot, 0 );
+        }
+        if (pull_clicked) {
+            DrawPull(drawer, pulls_x[0], pulls_y[0] - 60 - 10 * y, pulls_x[1], pulls_y[1] - 60 - 10 * y, pulls_x[2], pulls_y[2] - 60 - 10 * y, scale * (1.0f - 0.03f * y), rothand + 90, rothead, rotleg, rot, 0 );
+        }
 
         int index = 0;
         if(bullets>0) {
@@ -2872,11 +3148,17 @@
         if(mine_clicked) {
             for(int num = 0;num<3;num++) {
                 if(mine_exist[num]==3) {
-                    drawer.draw(explosive[explosive_anime], mine_x[num] - 200 * mine_scale[num], mine_y[num] - 200 * mine_scale[num] + 90 * mine_scale[num], 200 * mine_scale[num], 200 * mine_scale[num], mine_scale[num] * 400, mine_scale[num] * 400, 1, 1, mine_rotate[num]);
+                    drawer.draw(explosive[(int)Math.floor(explosive_anime/2.0f)], mine_x[num] - 200 * mine_scale[num], mine_y[num] - 200 * mine_scale[num] + 90 * mine_scale[num], 200 * mine_scale[num], 200 * mine_scale[num], mine_scale[num] * 400, mine_scale[num] * 400, 1, 1, mine_rotate[num]);
                 }
             }
         }
-
+        if(Emine_clicked) {
+            for(int num = 0;num<3;num++) {
+                if(Emine_exist[num]==3) {
+                    drawer.draw(explosive[(int)Math.floor(Eexplosive_anime/2.0f)], Emine_x[num] - 200 * Emine_scale[num], Emine_y[num] - 200 * Emine_scale[num] + 90 * Emine_scale[num], 200 * Emine_scale[num], 200 * Emine_scale[num], Emine_scale[num] * 400, Emine_scale[num] * 400, 1, 1, Emine_rotate[num]);
+                }
+            }
+        }
 
         if(isboom && boom_y == 1){
             drawer.draw(booms[boom_anime-1], boom_x*(width/10)-275*boom_flip,  (height/5)*boom_y-60-10*boom_y+(height-boom_height), 550*boom_flip, boom_height);
@@ -3045,10 +3327,10 @@
 
             }
             if (game.robot.power_small == 4) {
-                if (jump_touch) {
+                if (pull_touch) {
                     drawer.draw(button_touched, (int) (width - 400 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
                 }
-                drawer.draw(jump, (int) (width - 400 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+                drawer.draw(pull, (int) (width - 400 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
 
             }
             if (game.robot.power_small == 5) {
@@ -3161,13 +3443,13 @@
             ESaw();
         }
         if(game.robot.Epower_small == 2) {
-            EJump();
+            EMine();
         }
         if(game.robot.Epower_small == 3) {
             EJump();
         }
         if(game.robot.Epower_small == 4) {
-            EJump();
+            EPull();
         }
         if(game.robot.Epower_small == 5) {
             EJump();
@@ -3204,7 +3486,7 @@
             Jump();
         }
         if(game.robot.power_small == 4) {
-            Jump();
+            Pull();
         }
         if(game.robot.power_small == 5) {
             Jump();
@@ -3566,7 +3848,7 @@
         }
     }
     public void DamageEnemy(int damage){
-        if(!Eswap && !Eball_clicked) {
+        if(!Eswap && !Eball_clicked && !Epull_clicked) {
                 if (!Ehurt) {
                     Ehealth -= damage;
                     if(Ehealth <= 0) {
@@ -3613,7 +3895,7 @@
             }
     }
     public void DamageRobot(int damage){
-        if(!swap && !ball_clicked) {
+        if(!swap && !ball_clicked && !pull_clicked) {
             if (!hurt) {
 
                     health -= damage;
@@ -3891,8 +4173,142 @@
             anime.start();
         }
     }
+    public void Pull(){
+        if(!dead && !ball_clicked && !jetpack_clicked && !down_clicked && !up_clicked && !fire_clicked && !pull_clicked) {
+            pull_clicked = true;
+            Thread anime = new Thread() {
+                @Override
+                public void run() {
+                    pull_will_y = y;
+                    pull_will_x = x+dir*5;
+
+                    pulls_x[0] = (int)(x*width/10+robot_x);
+                    pulls_x[1] = (int)(x*width/10+robot_x);
+                    pulls_x[2] = (int)(x*width/10+robot_x);
+
+                    pulls_y[0] = (int)(y*height/5+robot_y);
+                    pulls_y[1] = (int)(y*height/5+robot_y);
+                    pulls_y[2] = (int)(y*height/5+robot_y);
+
+                    Thread tail = new Thread() {
+                        @Override
+                        public void run() {
+                            while(pull_clicked){
+                                pulls_x[2] = pulls_x[1];
+                                pulls_x[1] = pulls_x[0];
+                                pulls_x[0] = (int)(x*width/10+robot_x);
+                                Sleep(50);
+                            }
+                        }};
+                    tail.start();
+
+
+                    if(pull_will_x < 1){
+                        pull_will_x = 1;
+                    }
+                    if(pull_will_x > 8){
+                        pull_will_x = 8;
+                    }
+
+                    while(x!=pull_will_x){
+                        if(x<pull_will_x){
+                            robot_x+=10;
+                        }
+                        if(x>pull_will_x){
+                            robot_x-=10;
+                        }
+                        if(robot_x>=width/10){
+                            x+=1;
+                            robot_x = 0;
+                            TakeSkin();
+                            UseMed();
+                        }
+                        if(robot_x<=-width/10){
+                            x-=1;
+                            robot_x = 0;
+                            TakeSkin();
+                            UseMed();
+                        }
+                        Sleep(5);
+                    }
+                    while(pulls_x[0]!=pulls_x[2]){
+                        Sleep(10);
+                    }
+                    pull_clicked = false;
+                }
+            };
+            anime.start();
+        }
+    }
+     public void EPull(){
+         if(!Edead && !Eball_clicked && !Ejetpack_clicked && !Edown_clicked && !Eup_clicked && !Efire_clicked && !Epull_clicked) {
+             Epull_clicked = true;
+             Thread anime = new Thread() {
+                 @Override
+                 public void run() {
+                     Epull_will_y = Ey;
+                     Epull_will_x = Ex+Edir*5;
+
+                     Epulls_x[0] = (int)(Ex*width/10+Erobot_x);
+                     Epulls_x[1] = (int)(Ex*width/10+Erobot_x);
+                     Epulls_x[2] = (int)(Ex*width/10+Erobot_x);
+
+                     Epulls_y[0] = (int)(Ey*height/5+Erobot_y);
+                     Epulls_y[1] = (int)(Ey*height/5+Erobot_y);
+                     Epulls_y[2] = (int)(Ey*height/5+Erobot_y);
+
+                     Thread tail = new Thread() {
+                         @Override
+                         public void run() {
+                             while(Epull_clicked){
+                                 Epulls_x[2] = Epulls_x[1];
+                                 Epulls_x[1] = Epulls_x[0];
+                                 Epulls_x[0] = (int)(Ex*width/10+Erobot_x);
+                                 Sleep(50);
+                             }
+                         }};
+                     tail.start();
+
+
+                     if(Epull_will_x < 1){
+                         Epull_will_x = 1;
+                     }
+                     if(Epull_will_x > 8){
+                         Epull_will_x = 8;
+                     }
+
+                     while(Ex!=Epull_will_x){
+                         if(Ex<Epull_will_x){
+                             Erobot_x+=10;
+                         }
+                         if(Ex>Epull_will_x){
+                             Erobot_x-=10;
+                         }
+                         if(Erobot_x>=width/10){
+                             Ex+=1;
+                             Erobot_x = 0;
+                             ETakeSkin();
+                             EUseMed();
+                         }
+                         if(Erobot_x<=-width/10){
+                             Ex-=1;
+                             Erobot_x = 0;
+                             ETakeSkin();
+                             EUseMed();
+                         }
+                         Sleep(5);
+                     }
+                     while(Epulls_x[0]!=Epulls_x[2]){
+                         Sleep(10);
+                     }
+                     Epull_clicked = false;
+                 }
+             };
+             anime.start();
+         }
+     }
     public void EBall(){
-        if(!Efire_clicked && !Eup_clicked && !Edown_clicked && !Eredir_clicked && !Ejump_clicked && !Edead && !pause && !Eball_clicked && Eball_can) {
+        if(!Efire_clicked && !Eup_clicked && !Edown_clicked && !Eredir_clicked && !Ejump_clicked && !Edead && !pause && !Eball_clicked && Eball_can && !Epull_clicked) {
             Eball_clicked = true;
             Eball_can = false;
             Thread anime = new Thread() {
@@ -3959,7 +4375,7 @@
         }
     }
     public void Ball(){
-        if(!fire_clicked && !up_clicked && !down_clicked && !redir_clicked && !jump_clicked && !dead && !pause && !ball_clicked && ball_can && !jetpack_clicked && !robot_explosive) {
+        if(!fire_clicked && !up_clicked && !down_clicked && !redir_clicked && !jump_clicked && !dead && !pause && !ball_clicked && ball_can && !jetpack_clicked && !robot_explosive && !pull_clicked) {
 
                 ball_clicked = true;
                 ball_can = false;
@@ -4266,7 +4682,7 @@
         }
     }
     public void EFire(){
-        if(!Efire_clicked && !Eup_clicked && !Edown_clicked && !Eredir_clicked && !Ejump_clicked && !Edead && !pause && !Eball_clicked && !Ejetpack_clicked && bullets < 50) {
+        if(!Efire_clicked && !Eup_clicked && !Edown_clicked && !Eredir_clicked && !Ejump_clicked && !Edead && !pause && !Eball_clicked && !Ejetpack_clicked && bullets < 50 && !enemy_explosive && !Epull_clicked) {
             if (EEnergyExists(10)) {
                 EEnergyUse(10);
                 Efire_clicked = true;
@@ -4277,7 +4693,7 @@
                         float lastrot = Erothand;
                         float rot = 0;
                         int rotdir = 1;
-                        RandomFireSound();
+                        ERandomFireSound();
                         while (true) {
                             if (rotdir == 1) {
                                 rot += Edir;
@@ -4308,7 +4724,7 @@
         }
     }
     public void Fire(){
-        if(!fire_clicked && !up_clicked && !down_clicked && !redir_clicked && !jump_clicked && !dead && !pause && !ball_clicked &&!fire_cant && !jetpack_clicked && bullets < 50) {
+        if(!fire_clicked && !up_clicked && !down_clicked && !redir_clicked && !jump_clicked && !dead && !pause && !ball_clicked && !fire_cant && !jetpack_clicked && bullets < 50 && !robot_explosive && !pull_clicked) {
             if (EnergyExists(10)) {
                 EnergyUse(10);
                 turnedFire++;
@@ -4355,8 +4771,20 @@
     }
     public void RandomFireSound(){
         int random = game.random.nextInt(3);
-        blaster[random].play(0.8f-((float)game.random.nextInt(3)*0.1f));
+        if(dir == 1) {
+            Rblaster[random].play(0.8f - ((float) game.random.nextInt(3) * 0.1f));
+        }else{
+            Lblaster[random].play(0.8f - ((float) game.random.nextInt(3) * 0.1f));
+        }
     }
+     public void ERandomFireSound(){
+         int random = game.random.nextInt(3);
+         if(Edir == 1) {
+             ERblaster[random].play(0.8f - ((float) game.random.nextInt(3) * 0.1f));
+         }else{
+             ELblaster[random].play(0.8f - ((float) game.random.nextInt(3) * 0.1f));
+         }
+     }
     public void RandomHitSound(){
         int random = game.random.nextInt(3);
         hit[random].play(0.8f-((float)game.random.nextInt(3)*0.1f));
@@ -4475,7 +4903,7 @@
         }
     }
     public void EUp(){
-        if(!Eup_clicked && !Edown_clicked && !Efire_clicked && !Edead && !pause && !Eball_clicked && !Ejetpack_clicked) {
+        if(!Eup_clicked && !Edown_clicked && !Efire_clicked && !Edead && !pause && !Eball_clicked && !Ejetpack_clicked && !Epull_clicked) {
 
             if (Ey < 3) {
                 Thread anime = new Thread() {
@@ -4572,7 +5000,7 @@
         }
     }
     public void EDown(){
-        if(!Eup_clicked && !Edown_clicked && !Efire_clicked && !Edead && !pause && !Eball_clicked && !Ejetpack_clicked) {
+        if(!Eup_clicked && !Edown_clicked && !Efire_clicked && !Edead && !pause && !Eball_clicked && !Ejetpack_clicked && !Epull_clicked) {
 
             if (Ey > 1) {
                 Thread anime = new Thread() {
@@ -4669,7 +5097,7 @@
         }
     }
     public void Up(){                                                                                        //Вира!
-        if(!up_clicked && !down_clicked && !fire_clicked && !dead && !pause && !ball_clicked && !jetpack_clicked && !robot_explosive) {
+        if(!up_clicked && !down_clicked && !fire_clicked && !dead && !pause && !ball_clicked && !jetpack_clicked && !robot_explosive && !pull_clicked) {
             if (y < 3) {
                 turnedUp++;
                 up_clicked = true;
@@ -4767,7 +5195,7 @@
         }
     }
     public void Down(){                                             //Майна!
-        if(!up_clicked && !down_clicked && !fire_clicked  && !dead && !pause && !ball_clicked && !jetpack_clicked && !robot_explosive) {
+        if(!up_clicked && !down_clicked && !fire_clicked  && !dead && !pause && !ball_clicked && !jetpack_clicked && !robot_explosive && !pull_clicked) {
             if (y > 1) {
                 down_clicked = true;
                 turnedDown++;
@@ -4864,7 +5292,7 @@
         }
     }
     public void ERedir() {                                                       // Поворот.
-        if (!Eredir_clicked && !Efire_clicked && !Edead && !pause && !Eball_clicked) {
+        if (!Eredir_clicked && !Efire_clicked && !Edead && !pause && !Eball_clicked && !Epull_clicked) {
             Eredir_clicked = true;
             Thread anime = new Thread() {
                 @Override
@@ -4904,7 +5332,7 @@
         }
     }
     public void Redir() {                                                       // Поворот.
-        if (!redir_clicked && !fire_clicked && !dead && !pause && !ball_clicked && !robot_explosive) {
+        if (!redir_clicked && !fire_clicked && !dead && !pause && !ball_clicked && !robot_explosive && !pull_clicked) {
             redir_clicked = true;
             turnedRedir++;
             Thread anime = new Thread() {
@@ -4951,6 +5379,12 @@
                 Thread anime = new Thread() {
                     @Override
                     public void run() {
+                        if(Ecircle_clicked){
+                            while(Ecircle_scale>0.1f ){
+                                Ecircle_scale-=0.1f;
+                                Sleep(5);
+                            }
+                        }
                         Eswap = true;
                         move[0].play();
                         while (true) {
@@ -4978,6 +5412,10 @@
                             }
                             Sleep(  (int)(8*speed));
                         }
+                        while(Ecircle_scale<2.0f && Ecircle_clicked){
+                            Ecircle_scale+=0.1f;
+                            Sleep(5);
+                        }
                         EUseMed();
                         ETakeSkin();
                         ECheckMine();
@@ -4991,7 +5429,7 @@
         }
     }
      public void Jetpack() {
-         if (!up_clicked && !down_clicked && !jump_clicked && !dead && !pause && !ball_clicked && !jetpack_clicked  && jetpack_can && !robot_explosive) {
+         if (!up_clicked && !down_clicked && !jump_clicked && !dead && !pause && !ball_clicked && !jetpack_clicked  && jetpack_can && !robot_explosive && !pull_clicked) {
              jetpack_can = false;
              jetpack_clicked = true;
              Thread anime = new Thread() {
@@ -5190,7 +5628,7 @@
          }
      }
     public void EJetpack() {
-        if (!Eup_clicked && !Edown_clicked && !Ejump_clicked && !Edead && !pause && !Eball_clicked && !Ejetpack_clicked  && Ejetpack_can) {
+        if (!Eup_clicked && !Edown_clicked && !Ejump_clicked && !Edead && !pause && !Eball_clicked && !Ejetpack_clicked  && Ejetpack_can && !Epull_clicked) {
             Ejetpack_can = false;
             Ejetpack_clicked = true;
             Thread anime = new Thread() {
@@ -5432,7 +5870,7 @@
                             Sleep(  (int)(8*speed));
                         }
 
-                            while(circle_scale<1.8f && circle_clicked){
+                            while(circle_scale<2.0f && circle_clicked){
                                 circle_scale+=0.1f;
                                 Sleep(5);
                             }
@@ -5519,7 +5957,11 @@
                             if (saws_rotate[(saw_num - 1) * 3] >= 360.0f) {
                                 saws_rotate[(saw_num - 1) * 3] = 0.0f;
                             }
-                            Sleep(5);
+                            if(!ECheckCircle(saws_pos_x[(saw_num - 1) * 3], saws_pos_y[(saw_num - 1) * 3], 200, 200)) {
+                                Sleep(5);
+                            }else{
+                                Sleep(40);
+                            }
                         }
                         while (saws_pos_x[(saw_num - 1) * 3] != x * (width / 10) + (int) robot_x || saws_pos_y[(saw_num - 1) * 3] != y * (height / 5) + (int) (80 * scale + robot_y)) {
 
@@ -5539,7 +5981,11 @@
                             if (saws_rotate[(saw_num - 1) * 3] <= 0.0f) {
                                 saws_rotate[(saw_num - 1) * 3] = 360.0f;
                             }
-                            Sleep(5);
+                            if(!ECheckCircle(saws_pos_x[(saw_num - 1) * 3], saws_pos_y[(saw_num - 1) * 3], 200, 200)) {
+                                Sleep(5);
+                            }else{
+                                Sleep(40);
+                            }
                         }
                         saws[saw_num - 1] = 0;
                         saws_entered--;
@@ -5702,7 +6148,7 @@
         return  detect_x && detect_y;
     }
     public void Circle(){
-        if (!dead && !pause  && !circle_clicked && !jump_clicked && circle_can) {
+        if (!dead && !pause  && !circle_clicked && !jump_clicked && circle_can && !pull_clicked) {
             circle_clicked = true;
             circle_can = false;
             Thread anime = new Thread() {
@@ -5710,7 +6156,7 @@
                 public void run() {
                     circle_scale = 0.0f;
 
-                    while(circle_scale<1.80f && !jump_clicked){
+                    while(circle_scale<2.0f && !jump_clicked){
                         circle_scale+=0.05f;
                         Sleep(10);
                     }
@@ -5751,7 +6197,7 @@
         }
     }
      public void ECircle(){
-         if (!Edead && !pause  && !Ecircle_clicked && !Ejump_clicked && Ecircle_can) {
+         if (!Edead && !pause  && !Ecircle_clicked && !Ejump_clicked && Ecircle_can && !Epull_clicked) {
              Ecircle_clicked = true;
              Ecircle_can = false;
              Thread anime = new Thread() {
@@ -5759,7 +6205,7 @@
                  public void run() {
                      Ecircle_scale = 0.0f;
 
-                     while(Ecircle_scale<1.80f && !Ejump_clicked){
+                     while(Ecircle_scale<2.0f && !Ejump_clicked){
                          Ecircle_scale+=0.05f;
                          Sleep(10);
                      }
@@ -5799,6 +6245,108 @@
              anime2.start();
          }
      }
+
+     public void EExplosive(int dir_x, int dir_y, int strong) {
+         if (!enemy_explosive) {
+             enemy_explosive = true;
+             Eexplosive_dir_x = dir_x;
+             Eexplosive_dir_y = dir_y;
+
+             Thread anime = new Thread() {
+                 @Override
+                 public void run() {
+
+                     int will_x_1 = Eexplosive_dir_x * width / 5;
+                     int will_x_2 = Eexplosive_dir_x * (int)(width / 2.5f);
+
+
+
+                     float last_rothand = Erothand;
+                     int access = 0;
+                     while (access != 1) {
+                         Erothand-=2f*Eexplosive_dir_x;
+                         if(Erothand>=360){
+                             Erothand = 0.0f;
+                         }
+                         if(Erothand<0){
+                             Erothand = 360.0f;
+                         }
+                         if(Erotleg<100){
+                             Erotleg+=0.5f;
+                         }
+                         Erobot_x += Eexplosive_dir_x*5;
+                         Erobot_y += Eexplosive_dir_y*2;
+                         if ((Erobot_x >= will_x_1 - 10 && Erobot_x <= will_x_1 + 10) || Erobot_x+width/10*Ex >= width-2*width/10 ||  Erobot_x+width/10*Ex <= width/10 ) {
+                             access = 1;
+                         }
+                         if(!CheckCircle(Ex * (width / 10) + (int) Erobot_x - (int)(90*Escale), (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y, (int)(380*Escale), (int)(535*Escale))) {
+                             Sleep(4);
+                         }else{
+                             Sleep(16);
+                         }
+                     }
+                     while (access != 2) {
+                         Erothand-=2f*Eexplosive_dir_x;
+                         if(Erothand>=360){
+                             Erothand = 0.0f;
+                         }
+                         if(Erothand<0){
+                             Erothand = 360.0f;
+                         }
+                         if(Erotleg>0){
+                             Erotleg-=0.25f;
+                         }
+                         Erobot_x += Eexplosive_dir_x*5;
+                         Erobot_y -= Eexplosive_dir_y*2;
+                         if ((Erobot_x >= will_x_2 - 10 && Erobot_x <= will_x_2 + 10) || Erobot_x+width/10*Ex >= width-2*width/10||  Erobot_x+width/10*Ex <= width/10 ) {
+                             access = 2;
+                         }
+                         if(!CheckCircle(Ex * (width / 10) + (int) Erobot_x - (int)(90*Escale), (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y, (int)(380*Escale), (int)(535*Escale))) {
+                             Sleep(4);
+                         }else{
+                             Sleep(16);
+                         }
+                     }
+                     while(Erobot_y>0){
+                         Erobot_y-=2;
+                         if(Erotleg>0){
+                             Erotleg-=0.25f;
+                         }
+                         if(!CheckCircle(Ex * (width / 10) + (int) Erobot_x - (int)(90*Escale), (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y, (int)(380*Escale), (int)(535*Escale))) {
+                             Sleep(4);
+                         }else{
+                             Sleep(16);
+                         }
+                     }
+                     while(Erothand>last_rothand+3||Erothand<last_rothand-3){
+                         Erothand-=2.5f*Eexplosive_dir_x;
+                         if(Erothand>360){
+                             Erothand = 0.0f;
+                         }
+                         if(Erothand<0){
+                             Erothand = 360.0f;
+                         }
+                         if(Erotleg>0){
+                             Erotleg-=0.5f;
+                         }
+                         if(!CheckCircle(Ex * (width / 10) + (int) Erobot_x - (int)(90*Escale), (height / 5) * Ey - 60 - 10 * Ey + (int) Erobot_y, (int)(380*Escale), (int)(535*Escale))) {
+                             Sleep(4);
+                         }else{
+                             Sleep(16);
+                         }
+                     }
+                     Ex += Math.round(Erobot_x/(width/10));
+                     Erobot_x=0;
+                     enemy_explosive = false;
+                     CheckMine();
+                     ETakeSkin();
+                     EUseMed();
+                 }
+             };
+             anime.start();
+         }
+     }
+
     public void Explosive(int dir_x, int dir_y, int strong) {
         if (!robot_explosive) {
             robot_explosive = true;
@@ -5891,22 +6439,29 @@
                     x += Math.round(robot_x/(width/10));
                     robot_x=0;
                     robot_explosive = false;
-
+                    CheckMine();
+                    TakeSkin();
+                    UseMed();
                 }
             };
             anime.start();
         }
     }
      public void CheckMine() {
-        for(int i=0;i<3;i++){
-            if(Math.round((mine_x[i]+200*mine_scale[i])/(width/10))==x&&Math.floor((mine_y[i]+90*mine_scale[i])/(height/5))+1==y&&mine_exist[i] == 2){
-                mine_exist[i] = 3;
-                Explosive(dir, 1, 1);
-            }
-        }
+         for(int i=0;i<3;i++){
+             if(Math.round((Emine_x[i]+200*Emine_scale[i])/(width/10))==x&&Math.floor((Emine_y[i]+90*Emine_scale[i])/(height/5))+1==y&&Emine_exist[i] == 2){
+                 Emine_exist[i] = 3;
+                 Explosive(dir, 1, 1);
+             }
+         }
      }
      public void ECheckMine() {
-
+         for(int i=0;i<3;i++){
+             if(Math.round((mine_x[i]+200*mine_scale[i])/(width/10))==Ex&&Math.floor((mine_y[i]+90*mine_scale[i])/(height/5))+1==Ey&&mine_exist[i] == 2){
+                 mine_exist[i] = 3;
+                 EExplosive(Edir, 1, 1);
+             }
+         }
      }
     public void Mine(){
         if(mines < 3){
@@ -5951,7 +6506,7 @@
                     while(mine_exist[num] == 1 && steps<20){
                         int move_random = game.random.nextInt(2);
                         int last_mine_x = mine_x[num];
-                        if(move_random == 0 && last_mine_x+width/10<width-width/10) {
+                        if(move_random == 0 && last_mine_x+width/10<width-width/5) {
                             while (mine_x[num] < last_mine_x+width/10) {
                                 mine_x[num]+=5;
                                 if(!ECheckCircle(mine_x[num], (int)(mine_y[num]+90*mine_scale[num]), (int)(400*mine_scale[num]), (int)(400*mine_scale[num]))) {
@@ -6004,9 +6559,9 @@
                     }
                     while(mine_scale[num]<1.75f){
 
-
+                        DamageEnemy(8-(game.robot.attack_speed)*2);
                         explosive_anime++;
-                        if(explosive_anime>=5){
+                        if(explosive_anime>=8){
                             explosive_anime=0;
                         }
 
@@ -6027,7 +6582,7 @@
 
                         explosive_anime--;
                         if(explosive_anime<0){
-                            explosive_anime=4;
+                            explosive_anime=7;
                         }
 
 
@@ -6050,13 +6605,173 @@
             anime.start();
         }
     }
+
+
+
+     public void EMine(){
+         if(Emines < 3){
+             Emine_clicked = true;
+             Emines++;
+             Thread anime = new Thread() {
+                 @Override
+                 public void run() {
+                     int move_y_dir = 0;
+                     int steps = 0;
+                     int num = 0;
+                     while (true) {
+                         if (Emine_exist[num] == 0) break;
+                         num++;
+                     }
+                     Emine_rotate[num] = 0.0f;
+                     Emine_exist[num] = 1;
+                     Eleg_scale[num] = 1.0f;
+                     Emine_x[num] = (int)((Ex*width/10)+Erobot_x);
+                     Emine_y[num] = (int)((Ey*height/5)+Erobot_y);
+                     float last_scale;
+                     Emine_scale[num] = 0.3f;
+                     int will_y = (height/5)*Ey-65-Ey*10;
+                     while(Emine_y[num] > will_y){
+                         Emine_y[num]-=5;
+                         if(!CheckCircle(Emine_x[num], (int)(Emine_y[num]+90*Emine_scale[num]), (int)(400*Emine_scale[num]), (int)(400*Emine_scale[num]))) {
+                             Sleep(10);
+                         }else{
+                             Sleep(80);
+                         }
+                     }
+                     while(Emine_y[num] < will_y){
+                         Emine_y[num]+=5;
+                         if(!CheckCircle(Emine_x[num], (int)(Emine_y[num]+90*Emine_scale[num]), (int)(400*Emine_scale[num]), (int)(400*Emine_scale[num]))) {
+                             Sleep(10);
+                         }else{
+                             Sleep(80);
+                         }
+                     }
+
+                     last_scale = Emine_scale[num];
+                     while(Emine_exist[num] == 1 && steps<20){
+                         int move_random = game.random.nextInt(2);
+                         int last_mine_x = Emine_x[num];
+                         if(move_random == 0 && last_mine_x+width/10<width-width/5) {
+                             while (Emine_x[num] < last_mine_x+width/10) {
+                                 Emine_x[num]+=5;
+                                 if(!CheckCircle(Emine_x[num], (int)(Emine_y[num]+90*Emine_scale[num]), (int)(400*Emine_scale[num]), (int)(400*Emine_scale[num]))) {
+                                     Sleep(10);
+                                 }else{
+                                     Sleep(80);
+                                 }
+                             }
+                         }
+                         if(move_random == 1 && last_mine_x-width/10>width/10) {
+                             while (Emine_x[num] > last_mine_x-width/10) {
+                                 Emine_x[num]-=5;
+                                 if(!CheckCircle(Emine_x[num], (int)(Emine_y[num]+90*Emine_scale[num]), (int)(400*Emine_scale[num]), (int)(400*Emine_scale[num]))) {
+                                     Sleep(10);
+                                 }else{
+                                     Sleep(80);
+                                 }
+                             }
+                         }
+                         if(move_y_dir == 0){
+                             Emine_scale[num]+=0.001f;
+                             if(Emine_scale[num] > last_scale+0.02f){
+                                 move_y_dir = 1;
+                             }
+                         }else{
+                             Emine_scale[num]-=0.01f;
+                             if(Emine_scale[num] < last_scale-0.02f){
+                                 move_y_dir = 0;
+                             }
+                         }
+                         steps++;
+                     }
+                     Emine_exist[num] = 2;
+                     int last_mine_y = Emine_y[num];
+                     while(Emine_exist[num] == 2){
+                         if(Emine_y[num] > last_mine_y-70){
+                             Emine_y[num]-=2;
+                         }
+                         if(Emine_scale[num] < last_scale+0.1f){
+                             Emine_scale[num]+=0.005f;
+                         }
+                         if(Eleg_scale[num] > 0.0f){
+                             Eleg_scale[num]-=0.01f;
+                         }
+                         if(!CheckCircle(Emine_x[num], (int)(Emine_y[num]+90*Emine_scale[num]), (int)(400*Emine_scale[num]), (int)(400*Emine_scale[num]))) {
+                             Sleep(10);
+                         }else{
+                             Sleep(80);
+                         }
+                     }
+                     while(Emine_scale[num]<1.75f){
+
+                         DamageRobot(8-(game.robot.Eattack_speed)*2);
+                         Eexplosive_anime++;
+                         if(Eexplosive_anime>=8){
+                             Eexplosive_anime=0;
+                         }
+
+
+                         Emine_scale[num]+=0.05f;
+                         Emine_rotate[num]+=1.0f;
+                         if(Emine_rotate[num]>=360.0f){
+                             Emine_rotate[num]=0f;
+                         }
+                         if(!ECheckCircle(Emine_x[num], (int)(Emine_y[num]+90*Emine_scale[num]), (int)(400*Emine_scale[num]), (int)(400*Emine_scale[num]))) {
+                             Sleep(10);
+                         }else{
+                             Sleep(80);
+                         }
+                     }
+                     while(Emine_scale[num]>0.1f){
+
+
+                         Eexplosive_anime--;
+                         if(Eexplosive_anime<0){
+                             Eexplosive_anime=7;
+                         }
+
+
+                         Emine_scale[num]-=0.05f;
+                         Emine_rotate[num]+=1.0f;
+                         if(Emine_rotate[num]>=360.0f){
+                             Emine_rotate[num]=0f;
+                         }
+                         if(!ECheckCircle(Emine_x[num], (int)(Emine_y[num]+90*Emine_scale[num]), (int)(400*Emine_scale[num]), (int)(400*Emine_scale[num]))) {
+                             Sleep(10);
+                         }else{
+                             Sleep(80);
+                         }
+                     }
+                     Emine_exist[num]=0;
+                     Emines--;
+
+                 }
+             };
+             anime.start();
+         }
+     }
+
     @Override
     public void dispose (){
 
-        button_circle.dispose();
-        blaster[0].dispose();
-        blaster[1].dispose();
-        blaster[2].dispose();
+        if(game.robot.power_large==4) {
+            button_circle.dispose();
+        }
+        if(game.robot.power_small==2) {
+            button_mine.dispose();
+        }
+        Rblaster[0].dispose();
+        Rblaster[1].dispose();
+        Rblaster[2].dispose();
+        Lblaster[0].dispose();
+        Lblaster[1].dispose();
+        Lblaster[2].dispose();
+        ERblaster[0].dispose();
+        ERblaster[1].dispose();
+        ERblaster[2].dispose();
+        ELblaster[0].dispose();
+        ELblaster[1].dispose();
+        ELblaster[2].dispose();
         hit[0].dispose();
         hit[1].dispose();
         hit[2].dispose();
@@ -6064,8 +6779,19 @@
         move[1].dispose();
         move[2].dispose();
         for(Texture texture: med){ texture.dispose(); }
-        for(Texture texture: sawt){ texture.dispose(); }
-        for(Texture texture: Esawt){ texture.dispose(); }
+        if(game.robot.Epower_small==1) {
+            for(Texture texture: Esawt){ texture.dispose(); }
+
+        }
+        if(game.robot.power_small==1) {
+            for (Texture texture : sawt) {
+                texture.dispose();
+            }
+            button_saw.dispose();
+        }
+        if(game.robot.power_small==4) {
+            pull.dispose();
+        }
         for(Texture texture: explosivet){ texture.dispose(); }
         death.dispose();
         grass.dispose();
@@ -6082,8 +6808,6 @@
         down_2.dispose();
         redir.dispose();
         fire.dispose();
-        jump.dispose();
-        mine.dispose();
         fire_touched.dispose();
         boom_front[0].dispose();
         boom_front[1].dispose();
@@ -6104,7 +6828,15 @@
         booms[4].dispose();
         booms[5].dispose();
         booms[6].dispose();
-
+        if (game.robot.power_large==3||game.robot.power_large==2 ) {
+            jetpack.dispose();
+        }
+        if(game.robot.power_small==3) {
+            jump.dispose();
+        }
+        if(game.robot.power_large==1) {
+            ball.dispose();
+        }
         begin_left[0].dispose();
         begin_left[1].dispose();
         begin_left[2].dispose();
@@ -6112,10 +6844,12 @@
         begin_right[1].dispose();
         begin_right[2].dispose();
         background.dispose();
-        ball.dispose();
-        rain[0].dispose();
-        rain[1].dispose();
-        rain[2].dispose();
+
+        if(game.robot.level == 5) {
+            rain[0].dispose();
+            rain[1].dispose();
+            rain[2].dispose();
+        }
         big_grass.dispose();
         level_circle.dispose();
         level_back.dispose();
@@ -6124,14 +6858,19 @@
         machine_4.dispose();
         machine_2.dispose();
         machine_3.dispose();
-        circlet.dispose();
-        button_mine.dispose();
-        button_saw.dispose();
+        if(game.robot.power_large==4||game.robot.Epower_large==4) {
+            circlet.dispose();
+
+        }
         Frontcolor.dispose();
         button_touched.dispose();
         button_cant_touch.dispose();
         button_control.dispose();
         button_control_back.dispose();
+        if(game.robot.power_small==2||game.robot.Epower_small==2) {
+            mine.dispose();
+            mine_off.dispose();
+        }
         if(game.robot.level!=2) {
             fire_location[0].dispose();
             fire_location[1].dispose();

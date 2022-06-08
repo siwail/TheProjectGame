@@ -65,6 +65,7 @@ public class GameMenu extends Openable implements Screen{
     Texture box_item_2;
     Texture Frontcolor;
     Texture Frontground;
+    Texture background;
     Texture bonus_1;
     Texture bonus_2;
     Texture[] box = new Texture[9];
@@ -276,6 +277,10 @@ public class GameMenu extends Openable implements Screen{
         throne = new Texture("Object/stand.png");
         Frontcolor = new Texture("Interface/frontground_color_" + game.robot.level + ".png");
         Frontground = new Texture("Interface/frontground.png");
+
+
+            background = new Texture("Interface/camp_" + game.robot.level  + "_back.png");
+
         smoke[0] = new Texture("Object/smoke1.png");
         smoke[1] = new Texture("Object/smoke2.png");
         smoke[2] = new Texture("Object/smoke3.png");
@@ -678,6 +683,12 @@ public class GameMenu extends Openable implements Screen{
             drawer.draw(location_2_space_2, -width/2.0f,-height/2.0f, width, height, width*2.0f, height*2.0f, 1, 1,  location_2_space_3_rotate, true);
             drawer.draw(location_2_planet, width/2+100, height/2-200, 300, 300, 600, 600, 1, 1,  location_2_planet_rotate, true);
         }
+
+        drawer.draw(background, 0, 0, width, height);
+        if(game.robot.level==3||game.robot.level==4) {
+            drawer.draw(grass, width - 200, 225, 250, 250 + anime_grass_1);
+            drawer.draw(grass, -70, 225, 250, 250 + anime_grass_2);
+        }
         drawer.draw(camp, 0, 0, width, height);
 
         if (BirdFly) {
@@ -699,14 +710,15 @@ public class GameMenu extends Openable implements Screen{
             }
         }
         drawer.draw(game.robot.contrast, 0, 0, width, height);
-        if(game.robot.level!=2) {
-            drawer.draw(grass, width - 200, 225, 250, 250 + anime_grass_1);
-            drawer.draw(grass, -70, 225, 250, 250 + anime_grass_2);
-        }else{
-            drawer.draw(grass, width - 200, 235, 250, 260 + anime_grass_1);
-            drawer.draw(grass, -70, 235, 245, 260 + anime_grass_2);
+        if(game.robot.level!=3&&game.robot.level!=4) {
+            if (game.robot.level != 2) {
+                drawer.draw(grass, width - 200, 225, 250, 250 + anime_grass_1);
+                drawer.draw(grass, -70, 225, 250, 250 + anime_grass_2);
+            } else {
+                drawer.draw(grass, width - 200, 235, 250, 260 + anime_grass_1);
+                drawer.draw(grass, -70, 235, 245, 260 + anime_grass_2);
+            }
         }
-
         if(game.robot.box_empty && !box_dark_back) {
             DrawBox(drawer, this, box_x, box_y, box_scale, box_state);
         }
@@ -770,6 +782,7 @@ public class GameMenu extends Openable implements Screen{
             birds[2].dispose();
             birds[3].dispose();
             Frontcolor.dispose();
+            background.dispose();
             Frontcolor = new Texture("Interface/frontground_color_" + game.robot.level + ".png");
             if(game.robot.level == 3 || game.robot.level == 4 ) {
                 birds[0] = new Texture("Object/bird_1.png");
@@ -796,6 +809,7 @@ public class GameMenu extends Openable implements Screen{
                 birds[3] = new Texture("Object/bird_4_5.png");
             }
             camp = new Texture("Interface/camp_" + game.robot.level + ".png");
+            background = new Texture("Interface/camp_" + game.robot.level  + "_back.png");
         }
         DrawDefaultButton(drawer, button_left_part, button_center_part, button_right_part, back_light, button_exit_icon, button_exit_state, 100, -20, 400);
 
@@ -1775,6 +1789,8 @@ public class GameMenu extends Openable implements Screen{
         Frontground.dispose();
         dark.dispose();
         bluefire.dispose();
+
+            background.dispose();
 
         for(int i = 0; i<9; i++) box[i].dispose();
         for(int i = 0; i<11; i++) tutorial_frame_color[i].dispose();

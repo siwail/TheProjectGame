@@ -47,7 +47,7 @@ public class GamePlayTouch implements InputProcessor {
                 gamePlay.jump_touch = true;
             }
             if(game.robot.power_small == 4) {
-                gamePlay.jump_touch = true;
+                gamePlay.pull_touch = true;
             }
             if(game.robot.power_small == 5) {
                 gamePlay.jump_touch = true;
@@ -85,6 +85,7 @@ public class GamePlayTouch implements InputProcessor {
         gamePlay.ball_touch = false;
         gamePlay.jetpack_touch = false;
         gamePlay.saw_touch = false;
+        gamePlay.pull_touch = false;
         gamePlay.circle_touch = false;
         if(screenX >= SX(0*gamePlay.scale_inteface) && screenX <= SX(300*gamePlay.scale_inteface) && screenY > SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-0*gamePlay.scale_inteface)){
             gamePlay.needMove = true;
