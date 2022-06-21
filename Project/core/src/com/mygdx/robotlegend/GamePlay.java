@@ -7,7 +7,6 @@
  import com.badlogic.gdx.graphics.Texture;
  import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  import com.badlogic.gdx.graphics.g2d.TextureRegion;
- import com.badlogic.gdx.math.Interpolation;
  import com.esotericsoftware.kryonet.Client;
  import com.esotericsoftware.kryonet.Server;
  import com.esotericsoftware.minlog.Log;
@@ -102,6 +101,9 @@
     Texture circlet;
     Texture mine;
     Texture mine_off;
+    Texture plasma;
+    Texture plasma_ball;
+    Texture plasma_tail;
     Texture[] boom_front = new Texture[3];
     TextureRegion circle;
     TextureRegion FrontLevel2_region;
@@ -114,7 +116,7 @@
     Texture[] sawt = new Texture[3];
     Texture[] Esawt = new Texture[3];
     Texture[] explosivet = new Texture[5];
-     TextureRegion[] explosive = new TextureRegion[5];
+    TextureRegion[] explosive = new TextureRegion[5];
     TextureRegion planet;
     TextureRegion Meteor;
     TextureRegion Effect;
@@ -140,7 +142,7 @@
     int jetpack_state = 0;
     int Ejetpack_state = 0;
 
-    int rain_quantity = 50;
+    int rain_quantity = 350;
     float[] rain_x = new float[rain_quantity];
     int[] rain_type = new int[rain_quantity];
     float[] rain_y = new float[rain_quantity];
@@ -219,7 +221,6 @@
     int time = 120;
     int type_achivement = 1;
     int gift_index = 0;
-    int local_speed = 0;
     int boom_front_anime;
     int experience = 0;
     float speed = 1.0f;
@@ -260,6 +261,10 @@
      int  Eexplosive_anime = 0;
      float[] Emine_legs_rotate_1 = new float[3];
      float[] Emine_legs_rotate_2 = new float[3];
+     int plasma_x = 0;
+     int plasma_y = 0;
+     int plasma_dir = 0;
+     float plasma_scale = 1.0f;
     float robot_x = 0;
     float robot_y = 0;
     float Erobot_x = 0;
@@ -396,9 +401,11 @@
     boolean Ejetpack_clicked=false;
     boolean Ejetpack_flying=false;
     boolean Epull_clicked = false;
-    boolean Epull_touch = false;
     boolean pull_clicked = false;
     boolean pull_touch = false;
+    boolean plasma_clicked = false;
+    boolean plasma_touch = false;
+
 
     int[] Epulls_x = new int[3];
     int[] Epulls_y = new int[3];
@@ -511,6 +518,11 @@
                 Esaw[i] = new TextureRegion(Esawt[i], 300, 300);
             }
 
+        }
+        if(game.robot.power_small==5) {
+            plasma = new Texture("Button/button_1_5_1.png");
+            plasma_ball = new Texture("Object/plasma.png");
+            plasma_tail = new Texture("Object/plasma_tail.png");
         }
         if(game.robot.power_small==4) {
             pull = new Texture("Button/button_1_4_1.png");
@@ -2953,6 +2965,10 @@
                 m++;
             }
         }
+        if(plasma_clicked){
+           drawer.draw(plasma_tail, plasma_x+50*plasma_scale, plasma_y, 100*plasma_scale*(-plasma_dir)*4, 100*plasma_scale);
+           drawer.draw(plasma_ball, plasma_x, plasma_y, 100*plasma_scale, 100*plasma_scale);
+        }
         if (Epull_clicked) {
             DrawPull(drawer, Epulls_x[0], Epulls_y[0] - 60 - 10 * Ey, Epulls_x[1], Epulls_y[1] - 60 - 10 * Ey, Epulls_x[2], Epulls_y[2] - 60 - 10 * Ey, Escale * (1.0f - 0.03f * Ey), Erothand + 90, Erothead, Erotleg, Erot, 0 );
         }
@@ -3204,6 +3220,8 @@
 
         }
 
+
+
         if(circle_clicked){
             drawer.draw(circle, x * (width / 10) + (int) robot_x-175*circle_scale+100*scale, (height / 5) * y - 60 - 10 * y + (int) robot_y+(220*scale)-175*circle_scale+15, 175*circle_scale, 175*circle_scale, 350*circle_scale, 350*circle_scale, 1, 1, circle_rotate);
         }
@@ -3334,10 +3352,10 @@
 
             }
             if (game.robot.power_small == 5) {
-                if (jump_touch) {
+                if (plasma_touch) {
                     drawer.draw(button_touched, (int) (width - 400 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
                 }
-                drawer.draw(jump, (int) (width - 400 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
+                drawer.draw(plasma, (int) (width - 400 * scale_inteface), -pos_interface, (int) (150 * scale_inteface), (int) (150 * scale_inteface));
 
             }
             DrawEnergy(drawer, (int) (400 * (scale_inteface - 0.1)),   - pos_interface, 0.8f * (scale_inteface - 0.1f), energy, warning);
@@ -3434,7 +3452,7 @@
             ECircle();
         }
         if(game.robot.Epower_large == 5) {
-            EBall();
+            EField();
         }
     }
     public void ESmallPower(){
@@ -3452,7 +3470,7 @@
             EPull();
         }
         if(game.robot.Epower_small == 5) {
-            EJump();
+            EPlasma();
         }
     }
 
@@ -3471,7 +3489,7 @@
             Circle();
         }
         if(game.robot.power_large == 5) {
-            Ball();
+            Field();
         }
     }
     public void SmallPower(){
@@ -3489,7 +3507,7 @@
             Pull();
         }
         if(game.robot.power_small == 5) {
-            Jump();
+            Plasma();
         }
 
     }
@@ -4172,6 +4190,38 @@
             };
             anime.start();
         }
+    }
+    public void Plasma(){
+       if(!dead && !ball_clicked && !jetpack_clicked && !down_clicked && !up_clicked && !fire_clicked && !plasma_clicked && !redir_clicked) {
+          plasma_clicked = true;
+          Thread anime = new Thread() {
+             @Override
+             public void run() {
+                plasma_x = x*width/10+(int)robot_x;
+                plasma_y = (int)(y*height/5+robot_y+200*scale);
+                plasma_scale = 0.1f;
+                plasma_dir = dir;
+                while(plasma_x<width+400*plasma_scale&&plasma_x>-400*plasma_scale){
+                     if(plasma_scale < 1.0f){
+                        plasma_scale+=0.007f;
+                     }
+                     plasma_x += plasma_dir*10;
+
+                   Sleep(5);
+                }
+                plasma_clicked = false;
+             }};
+          anime.start();
+       }
+    }
+    public void EPlasma(){
+
+    }
+    public void Field(){
+
+    }
+    public void EField(){
+
     }
     public void Pull(){
         if(!dead && !ball_clicked && !jetpack_clicked && !down_clicked && !up_clicked && !fire_clicked && !pull_clicked) {
@@ -6246,7 +6296,7 @@
          }
      }
 
-     public void EExplosive(int dir_x, int dir_y, int strong) {
+     public void EExplosive(int dir_x, int dir_y) {
          if (!enemy_explosive) {
              enemy_explosive = true;
              Eexplosive_dir_x = dir_x;
@@ -6347,7 +6397,7 @@
          }
      }
 
-    public void Explosive(int dir_x, int dir_y, int strong) {
+    public void Explosive(int dir_x, int dir_y) {
         if (!robot_explosive) {
             robot_explosive = true;
             explosive_dir_x = dir_x;
@@ -6451,7 +6501,7 @@
          for(int i=0;i<3;i++){
              if(Math.round((Emine_x[i]+200*Emine_scale[i])/(width/10))==x&&Math.floor((Emine_y[i]+90*Emine_scale[i])/(height/5))+1==y&&Emine_exist[i] == 2){
                  Emine_exist[i] = 3;
-                 Explosive(dir, 1, 1);
+                 Explosive(dir, 1);
              }
          }
      }
@@ -6459,7 +6509,7 @@
          for(int i=0;i<3;i++){
              if(Math.round((mine_x[i]+200*mine_scale[i])/(width/10))==Ex&&Math.floor((mine_y[i]+90*mine_scale[i])/(height/5))+1==Ey&&mine_exist[i] == 2){
                  mine_exist[i] = 3;
-                 EExplosive(Edir, 1, 1);
+                 EExplosive(Edir, 1);
              }
          }
      }
@@ -6861,6 +6911,11 @@
         if(game.robot.power_large==4||game.robot.Epower_large==4) {
             circlet.dispose();
 
+        }
+        if(game.robot.power_small == 5) {
+           plasma.dispose();
+           plasma_ball.dispose();
+           plasma_tail.dispose();
         }
         Frontcolor.dispose();
         button_touched.dispose();

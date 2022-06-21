@@ -50,7 +50,7 @@ public class GamePlayTouch implements InputProcessor {
                 gamePlay.pull_touch = true;
             }
             if(game.robot.power_small == 5) {
-                gamePlay.jump_touch = true;
+                gamePlay.plasma_touch = true;
             }
 
         }
@@ -82,12 +82,13 @@ public class GamePlayTouch implements InputProcessor {
         gamePlay.redir_touch = false;
         gamePlay.fire_touch = false;
         gamePlay.jump_touch = false;
+        gamePlay.plasma_touch = false;
         gamePlay.ball_touch = false;
         gamePlay.jetpack_touch = false;
         gamePlay.saw_touch = false;
         gamePlay.pull_touch = false;
         gamePlay.circle_touch = false;
-        if(screenX >= SX(0*gamePlay.scale_inteface) && screenX <= SX(300*gamePlay.scale_inteface) && screenY > SY(gamePlay.height-300*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-0*gamePlay.scale_inteface)){
+        if(screenX >= SX(0*gamePlay.scale_inteface) && screenX <= SX(500*gamePlay.scale_inteface) && screenY > SY(gamePlay.height-500*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-0*gamePlay.scale_inteface)){
             gamePlay.needMove = true;
         }
         if (!gamePlay.robotboom && gamePlay.win != 1){
@@ -121,7 +122,7 @@ public class GamePlayTouch implements InputProcessor {
     }
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if(screenX >= SX(30*gamePlay.scale_inteface) && screenX <= SX(270*gamePlay.scale_inteface) && screenY > SY(gamePlay.height-270*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-30*gamePlay.scale_inteface)){
+        if(screenX >= SX(0*gamePlay.scale_inteface) && screenX <= SX(470*gamePlay.scale_inteface) && screenY > SY(gamePlay.height-470*gamePlay.scale_inteface) && screenY <= SY(gamePlay.height-0*gamePlay.scale_inteface)){
             gamePlay.move_control = false;
             gamePlay.control_pos_y = (int)((gamePlay.height-(int)(screenY/gamePlay.hph))/gamePlay.scale_inteface);
             gamePlay.control_pos_x = (int)(screenX/gamePlay.wpw/gamePlay.scale_inteface);

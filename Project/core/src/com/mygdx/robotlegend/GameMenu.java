@@ -17,6 +17,7 @@ public class GameMenu extends Openable implements Screen{
     Thread TutorialIconAnime;
     Thread button_anime;
     Thread box_anime;
+    Thread ItemsAnime;
     Sound[] hush = new Sound[3];
     Texture button_left_part;
     Texture button_right_part;
@@ -31,10 +32,10 @@ public class GameMenu extends Openable implements Screen{
     Texture music;
     Texture music_stop;
     Texture grass;
-    Texture gear;
-    Texture chip;
-    Texture metall;
-    Texture bulb;
+    Texture[] gear = new Texture[5];
+    Texture[] chip = new Texture[5];
+    Texture[] metall = new Texture[5];
+    Texture[] bulb = new Texture[5];
     Texture front_break;
     Texture ring;
     Texture throne;
@@ -108,6 +109,7 @@ public class GameMenu extends Openable implements Screen{
     int icon_color_2 = 2;
     int icon_color_3 = 3;
     int icon_color_4 = 4;
+    int items_anime = 0;
     int tutorial_circle_size = 0;
     float bird_scale = 1.0f;
     float rotation_hand = 0.0f;
@@ -332,10 +334,18 @@ public class GameMenu extends Openable implements Screen{
         location_2_planet_texture = new Texture("Object/planet_3.png");
         front_break = new Texture("Interface/break.png");
         grass = new Texture("Location/grass_" + game.robot.level + ".png");
-        metall = new Texture("Item/metall.png");
-        chip = new Texture("Item/chip.png");
-        bulb = new Texture("Item/bulb.png");
-        gear = new Texture("Item/gear.png");
+        for(int i=0;i<5;i++) {
+            metall[i] = new Texture("Item/metall_"+(i+1)+".png");
+        }
+        for(int i=0;i<5;i++) {
+            chip[i] = new Texture("Item/chip_"+(i+1)+".png");
+        }
+        for(int i=0;i<5;i++) {
+            bulb[i] = new Texture("Item/bulb_"+(i+1)+".png");
+        }
+        for(int i=0;i<5;i++) {
+            gear[i] = new Texture("Item/gear_"+(i+1)+".png");
+        }
         frame= new Texture("Interface/frame.png");
         planet_id = game.robot.level;
         location_2_planet = new TextureRegion(location_2_planet_texture, 400, 400);
@@ -434,6 +444,20 @@ public class GameMenu extends Openable implements Screen{
             }
         };
         box_anime.start();
+        ItemsAnime = new Thread(){
+            @Override
+            public void run(){
+                while(!closed){
+                    items_anime++;
+                    if(items_anime>=5){
+                       items_anime=0;
+                    }
+
+                    Sleep(75);
+                }
+            }
+        };
+        ItemsAnime.start();
         button_anime = new Thread(){
             @Override
             public void run(){
@@ -821,10 +845,10 @@ public class GameMenu extends Openable implements Screen{
             drawer.draw(music, 1020, height - 100, 100, 100);
         } else {
             drawer.draw(music_stop, 1020, height - 100, 100, 100); }
-        drawer.draw(metall, 10, height-120, 120, 120);
-        drawer.draw(gear, 130, height-120, 120, 120);
-        drawer.draw(chip, 250, height-120, 120, 120);
-        drawer.draw(bulb, 370, height-120, 120, 120);
+        drawer.draw(metall[items_anime], 10, height-120, 120, 120);
+        drawer.draw(gear[items_anime], 130, height-120, 120, 120);
+        drawer.draw(chip[items_anime], 250, height-120, 120, 120);
+        drawer.draw(bulb[items_anime], 370, height-120, 120, 120);
         item_font.draw(batch, Integer.toString(game.robot.metal), (int)(25.0*wpw), (int)((height-130)*hph));
         item_font.draw(batch, Integer.toString(game.robot.gears), (int)(145.0*wpw), (int)((height-130)*hph));
         item_font.draw(batch, Integer.toString(game.robot.microchips), (int)(275.0*wpw), (int)((height-130)*hph));
@@ -851,10 +875,10 @@ public class GameMenu extends Openable implements Screen{
             drawer.draw(frame_green_2, width-275, 50-prob_y, 150, 150);
             drawer.draw(frame_green_1, 350, 50-prob_y, 150, 150);
             drawer.draw(frame_green_2, width-500, 50-prob_y, 150, 150);
-            drawer.draw(chip, 50, 200-prob_y, 150, 150);
-            drawer.draw(gear, width-200, 200-prob_y, 150, 150);
-            drawer.draw(bulb, 275, 200-prob_y, 150, 150);
-            drawer.draw(metall, width-425, 200-prob_y, 150, 150);
+            drawer.draw(chip[items_anime], 50, 200-prob_y, 150, 150);
+            drawer.draw(gear[items_anime], width-200, 200-prob_y, 150, 150);
+            drawer.draw(bulb[items_anime], 275, 200-prob_y, 150, 150);
+            drawer.draw(metall[items_anime], width-425, 200-prob_y, 150, 150);
             item_font.draw(batch, game.robot.chip_chance[game.robot.level-1]+"%", (int)(155.0*wpw), (int)((110-prob_y)*hph));
             item_font.draw(batch, game.robot.gear_chance[game.robot.level-1]+"%", (int)((width-275+30)*wpw), (int)((110-prob_y)*hph));
             item_font.draw(batch, game.robot.bulb_chance[game.robot.level-1]+"%", (int)(380*wpw), (int)((110-prob_y)*hph));
@@ -1730,6 +1754,18 @@ public class GameMenu extends Openable implements Screen{
     }
     @Override
     public void dispose () {
+        for(int i=0;i<5;i++) {
+        bulb[i].dispose();
+        }
+        for(int i=0;i<5;i++) {
+            chip[i].dispose();
+        }
+        for(int i=0;i<5;i++) {
+            gear[i].dispose();
+        }
+        for(int i=0;i<5;i++) {
+            metall[i].dispose();
+        }
         bonus_1.dispose();
         bonus_2.dispose();
         machine_4.dispose();
@@ -1751,10 +1787,9 @@ public class GameMenu extends Openable implements Screen{
         camp.dispose();
         music.dispose();
         music_stop.dispose();
-        bulb.dispose();
-        gear.dispose();
-        metall.dispose();
-        chip.dispose();
+
+
+
         front_break.dispose();
         throne.dispose();
         ring.dispose();

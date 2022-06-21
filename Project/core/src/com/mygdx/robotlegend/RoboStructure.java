@@ -1154,6 +1154,8 @@ public class RoboStructure {
         skins_open[0] = 0;
         skin = 0;
         index_skin = 0;
+
+
         UpdateParameters();
         EBullet_right = new Texture("Object/bullet" + Ecolor_right + ".png");
         EBullet_left = new Texture("Object/bullet" + Ecolor_left + ".png");
