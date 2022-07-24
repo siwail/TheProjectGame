@@ -2710,12 +2710,15 @@
             i++;
         }
         i = 0;
-        while(i!=10) {
-            if (fire_state_3[i] != 0) {
-                drawer.draw(fire_location[fire_anime_3[i]-1], i * (width / 10) + ((width/10)-fire_state_3[i])/2, (height / 5) * 3 - 80 - 15 * 3, fire_state_3[i], fire_state_3[i]);
-            }
-            i++;
-        }
+       if(game.robot.level != 2) {
+          while (i != 10) {
+             if (fire_state_3[i] != 0) {
+                drawer.draw(fire_location[fire_anime_3[i] - 1], i * (width / 10) + ((width / 10) - fire_state_3[i]) / 2, (height / 5) * 3 - 80 - 15 * 3, fire_state_3[i], fire_state_3[i]);
+             }
+             i++;
+          }
+       }
+
         i = 0;
         if(game.robot.level == 5) {
             while (i != rain_quantity) {
@@ -2777,11 +2780,13 @@
             i++;
         }
         i = 0;
-        while(i!=10) {
-            if (fire_state_2[i] != 0) {
-                drawer.draw(fire_location[fire_anime_2[i]-1], i * (width / 10) + ((width/10)-fire_state_2[i])/2, (height / 5) * 2 - 80 - 20 * 2, fire_state_2[i], fire_state_2[i]);
-            }
-            i++;
+        if(game.robot.level != 2) {
+           while (i != 10) {
+              if (fire_state_2[i] != 0) {
+                 drawer.draw(fire_location[fire_anime_2[i] - 1], i * (width / 10) + ((width / 10) - fire_state_2[i]) / 2, (height / 5) * 2 - 80 - 20 * 2, fire_state_2[i], fire_state_2[i]);
+              }
+              i++;
+           }
         }
         if(game.robot.level == 5) {
             while (i != rain_quantity) {
@@ -2844,12 +2849,14 @@
             i++;
         }
         i = 0;
-        while(i!=10) {
-            if (fire_state_1[i] != 0) {
-                drawer.draw(fire_location[fire_anime_1[i]-1], i * (width / 10) + ((width/10)-fire_state_1[i])/2, (height / 5)  - 80 - 30 , fire_state_1[i], fire_state_1[i]);
-            }
-            i++;
-        }
+       if(game.robot.level != 2) {
+          while (i != 10) {
+             if (fire_state_1[i] != 0) {
+                drawer.draw(fire_location[fire_anime_1[i] - 1], i * (width / 10) + ((width / 10) - fire_state_1[i]) / 2, (height / 5) - 80 - 30, fire_state_1[i], fire_state_1[i]);
+             }
+             i++;
+          }
+       }
         if(game.robot.level == 5) {
             while (i != rain_quantity) {
                 if (rain_z[i] == 1) {
@@ -3529,174 +3536,176 @@
         }
     }
     public void SetFire(int x, int y){
-        boolean can_fire = true;
-        if(game.robot.level == 5 && !(grass_1_type[ x ] == 1)){
-            can_fire = false;
-        }
-        int broke_plus = 1;
-        boolean grass_fired = false;
-        if(y == 1 && fire_x_1[ x ] == 0 && fire_state_1[ x ] == 0 && grass_1_type[ x ] != 0 && can_fire){
-            fire_x_1[ x ] = 1;
-            
-            fire_state_1[ x ] = 1;
-            if(grass_1_type[ x ] != 0){
-                grass_fired = true;
-            }
-            while(fire_state_1[ x ]<width/10*1.5f){
-                if(fire_x_1[ x ] == 0){
-                    broke_plus = 20;
-                    break;
-                }
-                if(grass_fired){
-                    grass_1_scale[ x ]-=0.01f;
-                }
-                fire_state_1[ x ]+=1+broke_plus;
-                if(this.x==x && this.y==y && !jetpack_flying && fire_x_1[ x ] != 0 && fire_state_1[ x ]>100){
-                    DamageRobot(game.robot.fire_damage);
-                }
-                if(this.Ex==x && this.Ey==y && !Ejetpack_flying && fire_x_1[ x ] != 0 && fire_state_1[ x ]>100){
-                    DamageEnemy(game.robot.fire_damage);
-                }
-                if(!CheckCircle(x * (width / 10) + ((width/10)-fire_state_1[x])/2, (height / 5)  - 80 - 30 , fire_state_1[x], fire_state_1[x])){
-                Sleep(3);
-                }else{
-                    Sleep(24);
-                }
-            }
-            while(fire_state_1[ x ]>1){
-                if(fire_x_1[ x ] == 0){
-                    broke_plus = 20;
-                }
-                if(grass_fired){
-                    grass_1_scale[ x ]-=0.05f;
-                }
-                fire_state_1[ x ]-=broke_plus;
-                if(this.x==x && this.y==y  && !jetpack_flying && fire_x_1[ x ] != 0 && fire_state_1[ x ]>100){
-                    DamageRobot(game.robot.fire_damage);
-                }
-                if(this.Ex==x && this.Ey==y && !Ejetpack_flying && fire_x_1[ x ] != 0 && fire_state_1[ x ]>100){
-                    DamageEnemy(game.robot.fire_damage);
-                }
-                if(!CheckCircle(x * (width / 10) + ((width/10)-fire_state_1[x])/2, (height / 5)  - 80 - 30 , fire_state_1[x], fire_state_1[x])){
-                    Sleep(60);
-                }else{
-                    Sleep(480);
-                }
-            }
-            if(grass_fired && grass_1_scale[ x ] <= 0.1f){
-                grass_1_type[ x ] = 0;
-            }
-            fire_x_1[ x ] = 0;
-            fire_state_1[ x ] = 0;
-        }
-        if(y == 2 && fire_x_2[ x ] == 0 && fire_state_2[ x ] == 0 && grass_2_type[ x ] != 0 && can_fire){
-            fire_x_2[ x ] = 1;
+       if(x > -1 && x < 10) {
+          boolean can_fire = true;
+          if (game.robot.level == 5 && !(grass_1_type[x] == 1)) {
+             can_fire = false;
+          }
+          int broke_plus = 1;
+          boolean grass_fired = false;
+          if (y == 1 && fire_x_1[x] == 0 && fire_state_1[x] == 0 && grass_1_type[x] != 0 && can_fire) {
+             fire_x_1[x] = 1;
 
-            fire_state_2[ x ] = 1;
-            if(grass_2_type[ x ] != 0){
+             fire_state_1[x] = 1;
+             if (grass_1_type[x] != 0) {
                 grass_fired = true;
-            }
-            while(fire_state_2[ x ]<width/10*1.5f){
-                if(fire_x_2[ x ] == 0){
-                    broke_plus = 20;
-                    break;
+             }
+             while (fire_state_1[x] < width / 10 * 1.5f) {
+                if (fire_x_1[x] == 0) {
+                   broke_plus = 20;
+                   break;
                 }
-                if(grass_fired){
-                    grass_2_scale[ x ]-=0.01f;
+                if (grass_fired) {
+                   grass_1_scale[x] -= 0.01f;
                 }
-                fire_state_2[ x ]+=1+broke_plus;
-                if(this.x==x && this.y==y && !jetpack_flying && fire_x_2[ x ] != 0 && fire_state_2[ x ]>100){
-                    DamageRobot(game.robot.fire_damage);
+                fire_state_1[x] += 1 + broke_plus;
+                if (this.x == x && this.y == y && !jetpack_flying && fire_x_1[x] != 0 && fire_state_1[x] > 100) {
+                   DamageRobot(game.robot.fire_damage);
                 }
-                if(this.Ex==x && this.Ey==y && !Ejetpack_flying && fire_x_2[ x ] != 0 && fire_state_2[ x ]>100){
-                    DamageEnemy(game.robot.fire_damage);
+                if (this.Ex == x && this.Ey == y && !Ejetpack_flying && fire_x_1[x] != 0 && fire_state_1[x] > 100) {
+                   DamageEnemy(game.robot.fire_damage);
                 }
-                if(!CheckCircle(x * (width / 10) + ((width/10)-fire_state_2[x])/2, (height / 5) * 2  - 80 - 20 * 2 , fire_state_2[x], fire_state_2[x])){
-                    Sleep(3);
-                }else{
-                    Sleep(24);
+                if (!CheckCircle(x * (width / 10) + ((width / 10) - fire_state_1[x]) / 2, (height / 5) - 80 - 30, fire_state_1[x], fire_state_1[x])) {
+                   Sleep(3);
+                } else {
+                   Sleep(24);
                 }
-            }
-            while(fire_state_2[ x ]>1){
-                if(fire_x_2[ x ] == 0){
-                    broke_plus = 20;
+             }
+             while (fire_state_1[x] > 1) {
+                if (fire_x_1[x] == 0) {
+                   broke_plus = 20;
                 }
-                if(grass_fired){
-                    grass_2_scale[ x ]-=0.05f;
+                if (grass_fired) {
+                   grass_1_scale[x] -= 0.05f;
                 }
-                fire_state_2[ x ]-=broke_plus;
-                if(this.x==x && this.y==y && !jetpack_flying && fire_x_2[ x ] != 0 && fire_state_2[ x ]>100){
-                    DamageRobot(game.robot.fire_damage);
+                fire_state_1[x] -= broke_plus;
+                if (this.x == x && this.y == y && !jetpack_flying && fire_x_1[x] != 0 && fire_state_1[x] > 100) {
+                   DamageRobot(game.robot.fire_damage);
                 }
-                if(this.Ex==x && this.Ey==y && !Ejetpack_flying && fire_x_2[ x ] != 0 && fire_state_2[ x ]>100){
-                    DamageEnemy(game.robot.fire_damage);
+                if (this.Ex == x && this.Ey == y && !Ejetpack_flying && fire_x_1[x] != 0 && fire_state_1[x] > 100) {
+                   DamageEnemy(game.robot.fire_damage);
                 }
-                if(!CheckCircle(x * (width / 10) + ((width/10)-fire_state_2[x])/2, (height / 5) * 2  - 80 - 20 * 2 , fire_state_2[x], fire_state_2[x])){
-                    Sleep(60);
-                }else{
-                    Sleep(480);
+                if (!CheckCircle(x * (width / 10) + ((width / 10) - fire_state_1[x]) / 2, (height / 5) - 80 - 30, fire_state_1[x], fire_state_1[x])) {
+                   Sleep(60);
+                } else {
+                   Sleep(480);
                 }
-            }
-            if(grass_fired && grass_2_scale[ x ] <= 0.1f){
-                grass_2_type[ x ] = 0;
-            }
-            fire_x_2[ x ] = 0;
-            fire_state_2[ x ] = 0;
-        }
-        if(y == 3 && fire_x_3[ x ] == 0 && fire_state_3[ x ] == 0 && grass_3_type[ x ] != 0 && can_fire){
-            fire_x_3[ x ] = 1;
+             }
+             if (grass_fired && grass_1_scale[x] <= 0.1f) {
+                grass_1_type[x] = 0;
+             }
+             fire_x_1[x] = 0;
+             fire_state_1[x] = 0;
+          }
+          if (y == 2 && fire_x_2[x] == 0 && fire_state_2[x] == 0 && grass_2_type[x] != 0 && can_fire) {
+             fire_x_2[x] = 1;
 
-            fire_state_3[ x ] = 1;
-            if(grass_3_type[ x ] != 0){
+             fire_state_2[x] = 1;
+             if (grass_2_type[x] != 0) {
                 grass_fired = true;
-            }
-            while(fire_state_3[ x ]<width/10*1.5f){
-                if(fire_x_3[ x ] == 0){
-                    broke_plus = 20;
-                    break;
+             }
+             while (fire_state_2[x] < width / 10 * 1.5f) {
+                if (fire_x_2[x] == 0) {
+                   broke_plus = 20;
+                   break;
                 }
-                if(grass_fired){
-                    grass_3_scale[ x ]-=0.01f;
+                if (grass_fired) {
+                   grass_2_scale[x] -= 0.01f;
                 }
-                fire_state_3[ x ]+=1+broke_plus;
-                if(this.x==x && this.y==y && !jetpack_flying && fire_x_3[ x ] != 0 && fire_state_3[ x ]>100){
-                    DamageRobot(game.robot.fire_damage);
+                fire_state_2[x] += 1 + broke_plus;
+                if (this.x == x && this.y == y && !jetpack_flying && fire_x_2[x] != 0 && fire_state_2[x] > 100) {
+                   DamageRobot(game.robot.fire_damage);
                 }
-                if(this.Ex==x && this.Ey==y && !Ejetpack_flying && fire_x_3[ x ] != 0 && fire_state_3[ x ]>100){
-                    DamageEnemy(game.robot.fire_damage);
+                if (this.Ex == x && this.Ey == y && !Ejetpack_flying && fire_x_2[x] != 0 && fire_state_2[x] > 100) {
+                   DamageEnemy(game.robot.fire_damage);
                 }
-                if(!CheckCircle(x * (width / 10) + ((width/10)-fire_state_3[x])/2, (height / 5) * 3  - 80 - 15 * 3 , fire_state_3[x], fire_state_3[x])){
-                    Sleep(3);
-                }else{
-                    Sleep(24);
+                if (!CheckCircle(x * (width / 10) + ((width / 10) - fire_state_2[x]) / 2, (height / 5) * 2 - 80 - 20 * 2, fire_state_2[x], fire_state_2[x])) {
+                   Sleep(3);
+                } else {
+                   Sleep(24);
                 }
-            }
-            while(fire_state_3[ x ]>1){
-                if(fire_x_3[ x ] == 0){
-                    broke_plus = 20;
+             }
+             while (fire_state_2[x] > 1) {
+                if (fire_x_2[x] == 0) {
+                   broke_plus = 20;
                 }
-                if(grass_fired){
-                    grass_3_scale[ x ]-=0.05f;
+                if (grass_fired) {
+                   grass_2_scale[x] -= 0.05f;
                 }
-                fire_state_3[ x ]-=broke_plus;
-                if(this.x==x && this.y==y && !jetpack_flying && fire_x_3[ x ] != 0 && fire_state_3[ x ]>100){
-                    DamageRobot(game.robot.fire_damage);
+                fire_state_2[x] -= broke_plus;
+                if (this.x == x && this.y == y && !jetpack_flying && fire_x_2[x] != 0 && fire_state_2[x] > 100) {
+                   DamageRobot(game.robot.fire_damage);
                 }
-                if(this.Ex==x && this.Ey==y && !Ejetpack_flying && fire_x_3[ x ] != 0 && fire_state_3[ x ]>100){
-                    DamageEnemy(game.robot.fire_damage);
+                if (this.Ex == x && this.Ey == y && !Ejetpack_flying && fire_x_2[x] != 0 && fire_state_2[x] > 100) {
+                   DamageEnemy(game.robot.fire_damage);
                 }
-                if(!CheckCircle(x * (width / 10) + ((width/10)-fire_state_3[x])/2, (height / 5) * 3  - 80 - 15 * 3 , fire_state_3[x], fire_state_3[x])){
-                    Sleep(60);
-                }else{
-                    Sleep(480);
+                if (!CheckCircle(x * (width / 10) + ((width / 10) - fire_state_2[x]) / 2, (height / 5) * 2 - 80 - 20 * 2, fire_state_2[x], fire_state_2[x])) {
+                   Sleep(60);
+                } else {
+                   Sleep(480);
                 }
-            }
-            if(grass_fired && grass_3_scale[ x ] <= 0.1f){
-                grass_3_type[ x ] = 0;
-            }
-            fire_x_3[ x ] = 0;
-            fire_state_3[ x ] = 0;
-        }
+             }
+             if (grass_fired && grass_2_scale[x] <= 0.1f) {
+                grass_2_type[x] = 0;
+             }
+             fire_x_2[x] = 0;
+             fire_state_2[x] = 0;
+          }
+          if (y == 3 && fire_x_3[x] == 0 && fire_state_3[x] == 0 && grass_3_type[x] != 0 && can_fire) {
+             fire_x_3[x] = 1;
+
+             fire_state_3[x] = 1;
+             if (grass_3_type[x] != 0) {
+                grass_fired = true;
+             }
+             while (fire_state_3[x] < width / 10 * 1.5f) {
+                if (fire_x_3[x] == 0) {
+                   broke_plus = 20;
+                   break;
+                }
+                if (grass_fired) {
+                   grass_3_scale[x] -= 0.01f;
+                }
+                fire_state_3[x] += 1 + broke_plus;
+                if (this.x == x && this.y == y && !jetpack_flying && fire_x_3[x] != 0 && fire_state_3[x] > 100) {
+                   DamageRobot(game.robot.fire_damage);
+                }
+                if (this.Ex == x && this.Ey == y && !Ejetpack_flying && fire_x_3[x] != 0 && fire_state_3[x] > 100) {
+                   DamageEnemy(game.robot.fire_damage);
+                }
+                if (!CheckCircle(x * (width / 10) + ((width / 10) - fire_state_3[x]) / 2, (height / 5) * 3 - 80 - 15 * 3, fire_state_3[x], fire_state_3[x])) {
+                   Sleep(3);
+                } else {
+                   Sleep(24);
+                }
+             }
+             while (fire_state_3[x] > 1) {
+                if (fire_x_3[x] == 0) {
+                   broke_plus = 20;
+                }
+                if (grass_fired) {
+                   grass_3_scale[x] -= 0.05f;
+                }
+                fire_state_3[x] -= broke_plus;
+                if (this.x == x && this.y == y && !jetpack_flying && fire_x_3[x] != 0 && fire_state_3[x] > 100) {
+                   DamageRobot(game.robot.fire_damage);
+                }
+                if (this.Ex == x && this.Ey == y && !Ejetpack_flying && fire_x_3[x] != 0 && fire_state_3[x] > 100) {
+                   DamageEnemy(game.robot.fire_damage);
+                }
+                if (!CheckCircle(x * (width / 10) + ((width / 10) - fire_state_3[x]) / 2, (height / 5) * 3 - 80 - 15 * 3, fire_state_3[x], fire_state_3[x])) {
+                   Sleep(60);
+                } else {
+                   Sleep(480);
+                }
+             }
+             if (grass_fired && grass_3_scale[x] <= 0.1f) {
+                grass_3_type[x] = 0;
+             }
+             fire_x_3[x] = 0;
+             fire_state_3[x] = 0;
+          }
+       }
     }
    /* public boolean CheckBullet(){
         if(bullets>0) {
@@ -4198,16 +4207,29 @@
              @Override
              public void run() {
                 plasma_x = x*width/10+(int)robot_x;
-                plasma_y = (int)(y*height/5+robot_y+200*scale);
+                plasma_y = (int)(y*height/5+robot_y+230*scale-y*15);
                 plasma_scale = 0.1f;
                 plasma_dir = dir;
-                while(plasma_x<width+400*plasma_scale&&plasma_x>-400*plasma_scale){
+                while(plasma_x<width+400*plasma_scale&&plasma_x>-400*plasma_scale && !CheckCircle(plasma_x, plasma_y, (int)(450*plasma_scale), (int)(100*plasma_scale))){
                      if(plasma_scale < 1.0f){
                         plasma_scale+=0.007f;
                      }
                      plasma_x += plasma_dir*10;
-
+                   Thread fire = new Thread() {
+                      @Override
+                      public void run() {
+                     SetFire(Math.round(plasma_x/(width/10)), (int)Math.floor(plasma_y/(height/5)));
+                      }};
+                   fire.start();
                    Sleep(5);
+                }
+                while(plasma_scale>0.01f){
+                   plasma_scale-=0.01f;
+                   if(!CheckCircle(plasma_x, plasma_y, (int)(450*plasma_scale), (int)(100*plasma_scale))) {
+                      Sleep(5);
+                   }else{
+                      Sleep(40);
+                   }
                 }
                 plasma_clicked = false;
              }};
